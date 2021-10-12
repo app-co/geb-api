@@ -51,16 +51,19 @@ model Feed {
 
 model Consumo {
    id                String         @id @default(uuid())
-   user_id           String
+   consumidor_id     String
+   presstador_id     String
    type              String
-   user              User  @relation(fields: [user_id], references: [id])
-   created_at        DateTime 
+   valor             String
+   descricao         String
+   user              User  @relation(fields: [consumidor_id], references: [id])
+   created_at        DateTime @default(now())
 }
 
-model Like {
+model transaction {
    id String @id @default(uuid())
-   post_id String
-   user_id String
-   like Int @default(0)
-   // post Post @relation(fields: [post_id], references: [id])
+   prestador_id String
+   consumidor_id String
+   valor Int @default(0)
+   descricao   String
 }
