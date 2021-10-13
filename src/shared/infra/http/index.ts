@@ -6,7 +6,7 @@ import cors from 'cors';
 import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
+import socket from 'socket.io';
 
 import path from 'path';
 
@@ -16,10 +16,17 @@ import '@shared/container';
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new socket.Server(server);
 
-io.on('connection', socket => {
-   console.log('conected', socket.id);
+export const clients: Array<any> = [];
+
+io.on('connection', (client: any) => {
+   console.log(`conectado ${client.id}`);
+});
+
+app.use((req: Request, res: Response, nex: NextFunction) => {
+   req.io = io;
+   nex();
 });
 
 app.use(cors());
@@ -64,6 +71,6 @@ app.use((err: Error, req: Request, res: Response, _: NextFunction) => {
    });
 });
 
-app.listen(3333, () => console.log('listening on port 3333'));
+server.listen(3333, () => console.log('listening on port 3333'));
 
 export { app };

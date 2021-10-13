@@ -109,8 +109,8 @@ export class UserController {
    async findUnicUser(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(FindUniqUser);
 
-      const { id } = req.user;
-      const user = await service.execute(id);
+      const { id } = req.query;
+      const user = await service.execute({ id: String(id) });
 
       return res.json(user);
    }

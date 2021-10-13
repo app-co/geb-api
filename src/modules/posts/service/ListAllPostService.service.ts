@@ -20,6 +20,8 @@ export class ListAllPost {
          url_image: `${awsUrl}/${h.image}`,
       }));
 
+      posts.reverse();
+
       return posts;
    }
 }

@@ -11,6 +11,10 @@ interface Props {
    logo_url: string;
 }
 
+interface IRes {
+   id: string;
+}
+
 @injectable()
 export class FindUniqUser {
    constructor(
@@ -18,7 +22,7 @@ export class FindUniqUser {
       private userRepository: IUsersRepository,
    ) {}
 
-   async execute(id: string): Promise<Props> {
+   async execute({ id }: IRes): Promise<Props> {
       const user = await this.userRepository.findById(id);
 
       if (!user) {

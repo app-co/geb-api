@@ -27,6 +27,8 @@ export class PostController {
          description,
       });
 
+      req.io.emit('post', post);
+
       return res.json(post);
    }
 

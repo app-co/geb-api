@@ -7,6 +7,11 @@ import { S3Storage } from '@shared/StorageProvider/implementations/S3Storage';
 import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { container } from 'tsyringe';
 
+import { ConsumoRepository } from '../../modules/consumo/repositories/ConsumoRepository';
+import { IConsumoRepository } from '../../modules/consumo/repositories/IConsumoRepository';
+import { ITransactionRepository } from '../../modules/transaction/repositories/ITransactionRespository';
+import { TransactionRepository } from '../../modules/transaction/repositories/TransactionRepository';
+
 // const providers = {
 //    disk: DiskStorageProvider,
 //    s3: S3StoreageProvider,
@@ -16,3 +21,11 @@ container.registerSingleton<IStorageProvider>('StorageProvider', S3Storage);
 
 container.registerSingleton<IUsersRepository>('PrismaUser', UsersRespository);
 container.registerSingleton<IPostsRepository>('PrismaPost', PostRepository);
+container.registerSingleton<IConsumoRepository>(
+   'PrismaConsumo',
+   ConsumoRepository,
+);
+container.registerSingleton<ITransactionRepository>(
+   'PrismaTransaction',
+   TransactionRepository,
+);

@@ -56,14 +56,14 @@ model Consumo {
    type              String
    valor             String
    descricao         String
-   user              User  @relation(fields: [consumidor_id], references: [id])
+   consumidor        User  @relation(fields: [presstador_id], references: [id])
    created_at        DateTime @default(now())
 }
 
-model transaction {
+model Transaction {
    id String @id @default(uuid())
    prestador_id String
    consumidor_id String
-   valor Int @default(0)
+   valor String
    descricao   String
 }
