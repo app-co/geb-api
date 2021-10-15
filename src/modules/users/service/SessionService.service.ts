@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import auth from '@config/auth';
 import { User } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
@@ -32,7 +33,7 @@ export class SessionService {
          throw new Err('usuario nao encontrado');
       }
 
-      const compareHash = await compare(senha, user.senha);
+      const compareHash = await compare(senha, user.senha!);
       if (!compareHash) {
          throw new Err('senha invalida');
       }

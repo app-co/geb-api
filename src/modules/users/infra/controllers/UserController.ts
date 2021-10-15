@@ -35,8 +35,7 @@ export class UserController {
    async update(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateProfileService);
 
-      const { nome, sobrenome, membro, senha, whats, workName, CNPJ, adm } =
-         req.body;
+      const { nome, sobrenome, membro, whats, workName, CNPJ, adm } = req.body;
 
       const { id } = req.user;
 
@@ -44,7 +43,6 @@ export class UserController {
          nome,
          sobrenome,
          membro,
-         senha,
          whats,
          workName,
          CNPJ,

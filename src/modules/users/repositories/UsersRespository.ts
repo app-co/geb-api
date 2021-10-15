@@ -53,7 +53,6 @@ export class UsersRespository implements IUsersRepository {
             membro: data.membro,
             adm: data.adm,
             CNPJ: data.CNPJ,
-            senha: data.senha,
             whats: data.whats,
             workName: data.workName,
          },

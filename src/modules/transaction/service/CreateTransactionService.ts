@@ -24,6 +24,7 @@ export class CreateTransactionService {
       valor,
       descricao,
    }: Props): Promise<Transaction> {
+      console.log(descricao);
       const create = this.transactionRepository.create({
          prestador_id,
          consumidor_id,

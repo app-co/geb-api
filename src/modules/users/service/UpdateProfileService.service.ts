@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { inject, injectable } from 'tsyringe';
@@ -10,7 +11,6 @@ interface Props {
    nome: string;
    sobrenome: string;
    membro: string;
-   senha: string;
    whats: number;
    workName: string;
    CNPJ: number;
@@ -29,7 +29,6 @@ export class UpdateProfileService {
       nome,
       sobrenome,
       membro,
-      senha,
       whats,
       workName,
       CNPJ,
@@ -43,14 +42,11 @@ export class UpdateProfileService {
          throw new Err('Esse membro já está cadastrado');
       }
 
-      const has = await hash(senha, 8);
-
       const user = await this.userRepository.update(
          {
             nome,
             sobrenome,
             membro,
-            senha: has,
             whats,
             workName,
             CNPJ,

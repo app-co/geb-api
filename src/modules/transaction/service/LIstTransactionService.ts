@@ -13,9 +13,9 @@ export class ListTransactionService {
    ) {}
 
    async execute(id: string): Promise<Transaction[]> {
-      const find = await this.transactionRepository.findByConsumidor(id);
+      const find = await this.transactionRepository.findByPrestador(id);
 
-      console.log(id);
+      console.log(find);
       if (!find) {
          throw new Err('transação nao encontrada');
       }
