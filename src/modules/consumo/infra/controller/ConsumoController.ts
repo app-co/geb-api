@@ -1,33 +1,64 @@
-import { ListConsumoService } from '@modules/consumo/services/ListConsumoService.service';
+import { CreateConsumoConsumidorService } from '@modules/consumo/services/CreateConsumoConsumidor';
+import { ListValorPrestadorConsumoService } from '@modules/consumo/services/ListValorPrestadorConsumoService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import { CreateConsumoService } from '../../services/CreateConsumoService.service';
+import { CreateConsumoPrestadorService } from '../../services/CreateConsumoPrestadorService.service';
+import { ListConsumoService } from '../../services/ListConsumoService.service';
+import { ListValorConsumoService } from '../../services/ListValorConsumoService';
 
 export class ConsumoController {
-   async create(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(CreateConsumoService);
+   async createPrestador(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(CreateConsumoPrestadorService);
 
-      const { prestador_id, descricao, type, valor } = req.body;
-      const consumidor_id = req.user.id;
+      const { descricao, type, valor } = req.body;
+      const prestador_id = req.user.id;
 
       const consumo = await service.execute({
          prestador_id,
          descricao,
          type,
          valor,
-         consumidor_id,
       });
 
       return res.json(consumo);
    }
 
-   async list(req: Request, res: Response): Promise<Response> {
+   async createConsumidor(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(CreateConsumoConsumidorService);
+
+      const { consumidor_id, descricao, type, valor } = req.body;
+
+      const consumo = await service.execute({
+         consumidor_id,
+         descricao,
+         type,
+         valor,
+      });
+
+      return res.json(consumo);
+   }
+
+   async listAll(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(ListConsumoService);
 
-      const user_id = req.user.id;
+      const consumo = await service.execute();
 
-      const consumo = await service.execute({ user_id });
+      return res.json(consumo);
+   }
+
+   async listValorP(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(ListValorPrestadorConsumoService);
+
+      const consumo = await service.execute();
+
+      return res.json(consumo);
+   }
+
+   async listValorC(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(ListValorConsumoService);
+
+      const consumo = await service.execute();
 
       return res.json(consumo);
    }

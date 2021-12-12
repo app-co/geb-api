@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { PrismaClient, User } from '@prisma/client';
 
 import { IUserDtos } from '../dtos/IUserDtos';
@@ -10,13 +11,16 @@ export class UsersRespository implements IUsersRepository {
       const user = await this.prisma.user.create({
          data: {
             nome: data.nome,
-            sobrenome: data.sobrenome,
             membro: data.membro,
-            senha: data.senha,
-            workName: data.workName,
-            whats: data.whats,
-            CNPJ: data.CNPJ,
             adm: data.adm,
+            CNPJ: data.CNPJ,
+            senha: data.senha!,
+            whats: data.whats,
+            CPF: data.CPF,
+            ramo: data.ramo,
+            enquadramento: data.enquadramento,
+            email: data.email,
+            workName: data.workName,
          },
       });
 
@@ -49,12 +53,27 @@ export class UsersRespository implements IUsersRepository {
          where: { id },
          data: {
             nome: data.nome,
-            sobrenome: data.sobrenome,
             membro: data.membro,
             adm: data.adm,
             CNPJ: data.CNPJ,
             whats: data.whats,
+            CPF: data.CPF,
+            ramo: data.ramo,
+            enquadramento: data.enquadramento,
+            email: data.email,
             workName: data.workName,
+            links: data.links,
+         },
+      });
+
+      return up;
+   }
+
+   async updateToken(id: string, token: string): Promise<User> {
+      const up = await this.prisma.user.update({
+         where: { id },
+         data: {
+            token,
          },
       });
 

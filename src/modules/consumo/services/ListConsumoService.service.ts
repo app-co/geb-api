@@ -16,13 +16,13 @@ export class ListConsumoService {
       private consumoRepository: IConsumoRepository,
    ) {}
 
-   async execute({ user_id }: Props): Promise<Consumo[]> {
-      const find = await this.consumoRepository.listByConsumo(user_id);
+   async execute(): Promise<Consumo[]> {
+      const findConsumidor = await this.consumoRepository.listAll();
 
-      if (!find) {
+      if (!findConsumidor) {
          throw new Err('nenhum consumo disponivel');
       }
 
-      return find;
+      return findConsumidor;
    }
 }

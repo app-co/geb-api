@@ -9,11 +9,15 @@ import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface Props {
    nome: string;
-   sobrenome: string;
    membro: string;
-   whats: number;
+   whats: string;
    workName: string;
-   CNPJ: number;
+   CNPJ: string;
+   CPF: string;
+   ramo: string;
+   enquadramento: string;
+   email: string;
+   links: [];
    adm: boolean;
    id: string;
 }
@@ -27,11 +31,15 @@ export class UpdateProfileService {
 
    async execute({
       nome,
-      sobrenome,
       membro,
       whats,
       workName,
       CNPJ,
+      CPF,
+      email,
+      links,
+      ramo,
+      enquadramento,
       adm,
       id,
    }: Props): Promise<User> {
@@ -45,11 +53,15 @@ export class UpdateProfileService {
       const user = await this.userRepository.update(
          {
             nome,
-            sobrenome,
             membro,
             whats,
             workName,
             CNPJ,
+            CPF,
+            email,
+            links,
+            ramo,
+            enquadramento,
             adm,
          },
          id,

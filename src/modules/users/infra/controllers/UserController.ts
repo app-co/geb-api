@@ -11,21 +11,37 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import { container } from 'tsyringe';
 
+import { UpdateUserTokenService } from '../../service/UpdateUserTokenService.service';
+
 export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateUserService);
 
-      const { nome, sobrenome, membro, senha, whats, workName, CNPJ, adm } =
-         req.body;
-
-      const user = await service.execute({
+      const {
          nome,
-         sobrenome,
          membro,
          senha,
          whats,
          workName,
          CNPJ,
+         CPF,
+         email,
+         ramo,
+         enquadramento,
+         adm,
+      } = req.body;
+
+      const user = await service.execute({
+         nome,
+         membro,
+         senha,
+         whats,
+         workName,
+         CNPJ,
+         CPF,
+         email,
+         ramo,
+         enquadramento,
          adm,
       });
 
@@ -35,17 +51,33 @@ export class UserController {
    async update(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateProfileService);
 
-      const { nome, sobrenome, membro, whats, workName, CNPJ, adm } = req.body;
+      const {
+         nome,
+         membro,
+         whats,
+         workName,
+         CNPJ,
+         CPF,
+         email,
+         links,
+         ramo,
+         enquadramento,
+         adm,
+      } = req.body;
 
       const { id } = req.user;
 
       const user = await service.execute({
          nome,
-         sobrenome,
          membro,
          whats,
          workName,
          CNPJ,
+         CPF,
+         ramo,
+         email,
+         links,
+         enquadramento,
          adm,
          id,
       });
@@ -111,5 +143,14 @@ export class UserController {
       const user = await service.execute({ id: String(id) });
 
       return res.json(user);
+   }
+
+   async updateToken(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(UpdateUserTokenService);
+      const { token } = req.body;
+      const { id } = req.user;
+      const up = await service.execute({ token, id });
+
+      return res.json(up);
    }
 }

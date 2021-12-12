@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Err } from '@shared/errors/AppError';
 import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { inject, injectable } from 'tsyringe';
@@ -27,9 +28,9 @@ export class UpdateLogoService {
          throw new Err('usuário nao encontrado');
       }
 
-      if (find.avatar) {
-         await this.storage.deleteFile(find.avatar, 'avatar');
-      }
+      // if (find.avatar) {
+      //    await this.storage.deleteFile(find.logotipo!, 'logo');
+      // }
 
       await this.storage.saveFile(logo, 'logo');
 

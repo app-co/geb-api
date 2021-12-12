@@ -1,5 +1,3 @@
-import { injectable } from 'tsyringe';
-
 import { Consumo, PrismaClient } from '.prisma/client';
 
 import { IConsumoDto } from '../Dtos/IConsumoDtos';
@@ -25,9 +23,13 @@ export class ConsumoRepository implements IConsumoRepository {
    async listByConsumo(user_id: string): Promise<Consumo[]> {
       const consumo = await this.prisma.consumo.findMany({
          where: { consumidor_id: user_id },
-         include: { consumidor: true },
       });
 
       return consumo;
+   }
+
+   async listAll(): Promise<Consumo[]> {
+      const find = await this.prisma.consumo.findMany();
+      return find;
    }
 }

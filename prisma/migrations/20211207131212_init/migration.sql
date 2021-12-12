@@ -2,14 +2,19 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "nome" TEXT NOT NULL,
-    "sobrenome" TEXT NOT NULL,
     "membro" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
-    "whats" INTEGER NOT NULL,
+    "whats" TEXT NOT NULL,
     "logotipo" TEXT,
     "avatar" TEXT,
     "workName" TEXT NOT NULL,
-    "CNPJ" INTEGER NOT NULL,
+    "token" TEXT,
+    "CNPJ" TEXT NOT NULL,
+    "CPF" TEXT NOT NULL,
+    "ramo" TEXT NOT NULL,
+    "enquadramento" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "links" TEXT[],
     "adm" BOOLEAN NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -44,8 +49,8 @@ CREATE TABLE "Feed" (
 -- CreateTable
 CREATE TABLE "Consumo" (
     "id" TEXT NOT NULL,
-    "consumidor_id" TEXT NOT NULL,
-    "presstador_id" TEXT NOT NULL,
+    "consumidor_id" TEXT,
+    "presstador_id" TEXT,
     "type" TEXT NOT NULL,
     "valor" TEXT NOT NULL,
     "descricao" TEXT NOT NULL,
@@ -57,8 +62,9 @@ CREATE TABLE "Consumo" (
 -- CreateTable
 CREATE TABLE "Transaction" (
     "id" TEXT NOT NULL,
-    "prestador_id" TEXT NOT NULL,
     "consumidor_id" TEXT NOT NULL,
+    "prestador_id" TEXT NOT NULL,
+    "nome" TEXT NOT NULL,
     "valor" TEXT NOT NULL,
     "descricao" TEXT NOT NULL,
 
@@ -73,6 +79,3 @@ ALTER TABLE "Post" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE
 
 -- AddForeignKey
 ALTER TABLE "Feed" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Consumo" ADD FOREIGN KEY ("presstador_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

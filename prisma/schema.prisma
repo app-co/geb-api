@@ -13,20 +13,32 @@ generator client {
 model User {
    id                String      @id      @default(uuid())
    nome              String
-   sobrenome         String
    membro            String      @unique
-   senha             String?
-   whats             Int
+   senha             String
+   whats             String
    logotipo          String?
    avatar            String?
    workName          String
-   CNPJ              Int
+   token             String?
+   CNPJ              String
+   CPF               String
+   ramo              String
+   enquadramento     String
+   email             String
+   links             String[]
    adm               Boolean     
    created_at        DateTime    @default(now())
    post              Post[]
    feed              Feed[]
-   consumo           Consumo[]
 }
+
+// model Links {
+//    id       String @id     @default(uuid())
+//    nome     String?
+//    link     String
+//    user_id  String
+//    user     User? @relation(references: [id], fields: [user_id])
+// }
 
 model Post {
    id                String @id @default(uuid())
@@ -51,19 +63,19 @@ model Feed {
 
 model Consumo {
    id                String         @id @default(uuid())
-   consumidor_id     String
-   presstador_id     String
+   consumidor_id     String?
+   presstador_id     String?
    type              String
    valor             String
    descricao         String
-   consumidor        User  @relation(fields: [presstador_id], references: [id])
    created_at        DateTime @default(now())
 }
 
 model Transaction {
-   id String @id @default(uuid())
-   prestador_id String
-   consumidor_id String
-   valor String
-   descricao   String
+   id             String @id @default(uuid())
+   consumidor_id  String
+   prestador_id   String
+   nome           String
+   valor          String
+   descricao      String
 }

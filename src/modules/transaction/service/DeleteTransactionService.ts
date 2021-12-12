@@ -17,6 +17,8 @@ export class DeleteTransactionService {
          throw new Err('transação nao encontrada');
       }
 
+      console.log(id);
+
       await this.transactionRepository.delete(transaction.id);
    }
 }

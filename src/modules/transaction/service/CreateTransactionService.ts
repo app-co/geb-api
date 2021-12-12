@@ -1,3 +1,5 @@
+import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
+import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
 import { Transaction } from '.prisma/client';
@@ -5,10 +7,12 @@ import { Transaction } from '.prisma/client';
 import { ITransactionRepository } from '../repositories/ITransactionRespository';
 
 interface Props {
-   prestador_id: string;
    consumidor_id: string;
+   prestador_id: string;
+
    valor: string;
    descricao: string;
+   nome: string;
 }
 
 @injectable()
@@ -19,17 +23,18 @@ export class CreateTransactionService {
    ) {}
 
    async execute({
-      prestador_id,
       consumidor_id,
       valor,
       descricao,
+      prestador_id,
+      nome,
    }: Props): Promise<Transaction> {
-      console.log(descricao);
       const create = this.transactionRepository.create({
-         prestador_id,
          consumidor_id,
+         prestador_id,
          valor,
          descricao,
+         nome,
       });
 
       return create;

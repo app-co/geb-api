@@ -7,12 +7,15 @@ import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface Props {
    nome: string;
-   sobrenome: string;
    membro: string;
    senha: string;
-   whats: number;
+   whats: string;
    workName: string;
-   CNPJ: number;
+   CNPJ: string;
+   CPF: string;
+   ramo: string;
+   enquadramento: string;
+   email: string;
    adm: boolean;
 }
 
@@ -25,12 +28,15 @@ export class CreateUserService {
 
    async execute({
       nome,
-      sobrenome,
       membro,
       senha,
       whats,
       workName,
       CNPJ,
+      CPF,
+      email,
+      enquadramento,
+      ramo,
       adm,
    }: Props): Promise<User> {
       const find = await this.userRepository.findByMembro(membro);
@@ -40,15 +46,19 @@ export class CreateUserService {
       }
 
       const has = await hash(senha, 8);
+      console.log(has);
 
       const user = await this.userRepository.create({
          nome,
-         sobrenome,
          membro,
          senha: has,
          whats,
          workName,
          CNPJ,
+         CPF,
+         email,
+         ramo,
+         enquadramento,
          adm,
       });
 

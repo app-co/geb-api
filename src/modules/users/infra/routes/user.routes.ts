@@ -19,5 +19,6 @@ user.delete('/del', Auth, control.delete);
 user.patch('/avatar', Auth, img.single('avatar'), control.updateAvatar);
 user.patch('/logo', Auth, img.single('logo'), control.updateLogo);
 user.get('/find', Auth, control.findUnicUser);
+user.put('/upToken', Auth, control.updateToken);
 
 export { user };

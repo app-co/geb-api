@@ -26,6 +26,7 @@ export class PostController {
          user_id,
          description,
       });
+      fs.unlinkSync(req.file!.path);
 
       req.io.emit('post', post);
 
@@ -38,6 +39,8 @@ export class PostController {
       const { image_id } = req.params;
 
       const like = await service.execute(image_id);
+
+      req.io.emit('like', like);
 
       return res.json(like);
    }

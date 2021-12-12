@@ -5,7 +5,7 @@
    "author": "App-com",
    "scripts": {
       "build": "tsc",
-      "dev": "ts-node-dev -r tsconfig-paths/register --inspect --ignore-watch node_modules src/shared/infra/http/index.ts",
+      "dev": "ts-node-dev -r tsconfig-paths/register --ignore-watch node_modules src/shared/infra/http/index.ts",
       "type": "ts-node-dev  -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
       "test": "jest"
    },

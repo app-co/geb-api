@@ -24,6 +24,10 @@ io.on('connection', (client: any) => {
    console.log(`conectado ${client.id}`);
 });
 
+io.off('dis', h => {
+   console.log(`disconectado ${h.id}`);
+});
+
 app.use((req: Request, res: Response, nex: NextFunction) => {
    req.io = io;
    nex();
@@ -37,7 +41,7 @@ app.use(errors());
 app.use(
    '/file/post',
    express.static(
-      path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'post', 'resized'),
+      path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'post'),
    ),
 );
 

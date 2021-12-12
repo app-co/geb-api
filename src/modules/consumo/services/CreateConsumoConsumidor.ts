@@ -13,17 +13,17 @@ import { Consumo } from '.prisma/client';
 // }
 
 @injectable()
-export class CreateConsumoService {
+export class CreateConsumoConsumidorService {
    constructor(
       @inject('PrismaConsumo')
       private consumoRepository: IConsumoRepository,
    ) {}
 
    async execute(data: IConsumoDto): Promise<Consumo> {
+      console.log(data.consumidor_id);
       const consumo = await this.consumoRepository.create({
          consumidor_id: data.consumidor_id,
          type: data.type,
-         prestador_id: data.prestador_id,
          descricao: data.descricao,
          valor: data.valor,
       });

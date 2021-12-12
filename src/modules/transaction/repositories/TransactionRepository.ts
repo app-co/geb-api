@@ -15,6 +15,7 @@ export class TransactionRepository implements ITransactionRepository {
             prestador_id: data.prestador_id,
             descricao: data.descricao,
             valor: data.valor,
+            nome: data.nome,
          },
       });
 

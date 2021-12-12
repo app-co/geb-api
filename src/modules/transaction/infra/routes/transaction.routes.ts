@@ -8,6 +8,6 @@ const controler = new TransactionControler();
 
 transaction.post('/', Auth, controler.create);
 transaction.get('/list', Auth, controler.find);
-transaction.delete('/del', Auth, controler.del);
+transaction.delete('/del/:id', Auth, controler.del);
 
 export { transaction };
