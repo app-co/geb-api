@@ -27,9 +27,9 @@ export class UpdateUserAvatarService {
          throw new Err('user not found');
       }
 
-      // if (find.avatar) {
-      //    await this.storage.deleteFile(find.avatar, 'avatar');
-      // }
+      if (find.avatar) {
+         await this.storage.deleteFile(find.avatar, 'avatar');
+      }
 
       await this.storage.saveFile(avatar, 'avatar');
 
