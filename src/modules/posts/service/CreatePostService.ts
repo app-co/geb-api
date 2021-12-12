@@ -12,7 +12,7 @@ export class CreatePostService {
       @inject('PrismaPost')
       private postRepository: IPostsRepository,
 
-      @inject('StorageProvider')
+      @inject('Storage')
       private storage: IStorageProvider,
    ) {}
 

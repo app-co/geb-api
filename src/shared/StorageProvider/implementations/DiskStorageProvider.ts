@@ -7,6 +7,7 @@ import path from 'path';
 import IStorageProvider from '../models/IStorageProviders';
 
 export class DiskStorageProvider implements IStorageProvider {
+   // TODO SALVAR ARQUIVO
    async saveFile(file: string, folder: string): Promise<string> {
       await fs.promises.rename(
          path.resolve(upload.tmpFolder, file),
@@ -16,6 +17,7 @@ export class DiskStorageProvider implements IStorageProvider {
       return file;
    }
 
+   // TODO DELETAR ARQUIVO
    async deleteFile(file: string, folder: string): Promise<void> {
       const filename = path.resolve(`${upload.tmpFolder}/${folder}`, file);
 

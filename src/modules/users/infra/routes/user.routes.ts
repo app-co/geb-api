@@ -8,7 +8,7 @@ import { UserController } from '../controllers/UserController';
 const user = Router();
 const control = new UserController();
 
-const img = multer(upload.multer);
+const img = multer(upload);
 
 user.post('/session', control.session);
 

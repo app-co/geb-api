@@ -17,7 +17,7 @@ export class UpdateLogoService {
       @inject('PrismaUser')
       private userRepostiroy: IUsersRepository,
 
-      @inject('StorageProvider')
+      @inject('Storage')
       private storage: IStorageProvider,
    ) {}
 
@@ -28,9 +28,9 @@ export class UpdateLogoService {
          throw new Err('usuário nao encontrado');
       }
 
-      // if (find.avatar) {
-      //    await this.storage.deleteFile(find.logotipo!, 'logo');
-      // }
+      if (find.avatar) {
+         await this.storage.deleteFile(find.logotipo!, 'logo');
+      }
 
       await this.storage.saveFile(logo, 'logo');
 

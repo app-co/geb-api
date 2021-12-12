@@ -17,8 +17,6 @@ import { TransactionRepository } from '../../modules/transaction/repositories/Tr
 //    s3: S3StoreageProvider,
 // };
 
-container.registerSingleton<IStorageProvider>('StorageProvider', S3Storage);
-
 container.registerSingleton<IUsersRepository>('PrismaUser', UsersRespository);
 container.registerSingleton<IPostsRepository>('PrismaPost', PostRepository);
 container.registerSingleton<IConsumoRepository>(
@@ -29,3 +27,5 @@ container.registerSingleton<ITransactionRepository>(
    'PrismaTransaction',
    TransactionRepository,
 );
+
+container.registerSingleton<IStorageProvider>('Storage', S3Storage);

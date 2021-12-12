@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import upload from '@config/upload';
+import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { S3 } from 'aws-sdk';
 import fs from 'fs';
-import mime from 'mime';
+import mine from 'mime';
 import { resolve } from 'path';
-
-import IStorageProvider from '../models/IStorageProviders';
 
 export class S3Storage implements IStorageProvider {
    private client: S3;
 
    constructor() {
       this.client = new S3({
-         region: 'us-east-2',
+         region: process.env.AWS_BUCKET_REGION,
       });
    }
 
@@ -20,7 +19,7 @@ export class S3Storage implements IStorageProvider {
       const originalName = resolve(upload.tmpFolder, file);
       const fileContent = await fs.promises.readFile(originalName);
 
-      const ContentType = mime.getType(originalName)!;
+      const ContentType = mine.getType(originalName)!;
 
       await this.client
          .putObject({
@@ -33,6 +32,7 @@ export class S3Storage implements IStorageProvider {
          .promise();
 
       await fs.promises.unlink(originalName);
+
       return file;
    }
 

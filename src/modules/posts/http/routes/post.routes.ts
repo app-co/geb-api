@@ -6,7 +6,7 @@ import { PostController } from '../controller/PostController';
 
 const post = Router();
 const controller = new PostController();
-const postUpload = multer(upload.multer);
+const postUpload = multer(upload);
 
 post.patch('/', postUpload.single('image'), controller.create);
 post.patch('/like/:image_id', controller.like);
