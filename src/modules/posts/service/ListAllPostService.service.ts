@@ -1,8 +1,9 @@
 import { inject, injectable } from 'tsyringe';
 
-import { Post } from '.prisma/client';
-
 import { IPostsRepository } from '../repositories/IPostRepositoty';
+import { IUsersRepository } from '../../users/repositories/IUsersRespository';
+
+import { Post } from '.prisma/client';
 
 @injectable()
 export class ListAllPost {
@@ -13,14 +14,15 @@ export class ListAllPost {
 
    async execute(): Promise<Post[]> {
       const find = await this.postRepository.listAllPost();
-      const awsUrl = 'https://geb.s3.us-east-2.amazonaws.com/posts';
 
       const posts = find.map(h => ({
          ...h,
-         url_image: `${awsUrl}/${h.image}`,
+         url_image: `${process.env.AWS_URL}/posts/${h.image}`,
       }));
 
       posts.reverse();
+
+      console.log(posts);
 
       return posts;
    }

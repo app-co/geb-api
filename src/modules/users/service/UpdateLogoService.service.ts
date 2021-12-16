@@ -28,7 +28,7 @@ export class UpdateLogoService {
          throw new Err('usuário nao encontrado');
       }
 
-      if (find.avatar) {
+      if (find.logotipo) {
          await this.storage.deleteFile(find.logotipo!, 'logo');
       }
 

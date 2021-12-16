@@ -49,7 +49,7 @@ export class SessionService {
          expiresIn,
       });
 
-      const awsUrl = 'https://geb.s3.us-east-2.amazonaws.com/';
+      const awsUrl = process.env.AWS_URL;
 
       const avatar_url = `${awsUrl}avatar/${findUser.avatar}`;
       const logo_url = `${awsUrl}logo/${findUser.logotipo}`;

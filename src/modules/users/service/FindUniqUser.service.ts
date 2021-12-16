@@ -28,7 +28,7 @@ export class FindUniqUser {
       if (!user) {
          throw new Err('usuario nao encontrado');
       }
-      const awsUrl = 'https://geb.s3.us-east-2.amazonaws.com';
+      const awsUrl = process.env.AWS_URL;
 
       const links = user.links.map(h => {
          return {

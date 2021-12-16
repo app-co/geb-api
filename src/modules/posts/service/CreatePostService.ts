@@ -6,6 +6,12 @@ import { Post } from '.prisma/client';
 import { IPostsDtos } from '../Dtos/IPostsDtos';
 import { IPostsRepository } from '../repositories/IPostRepositoty';
 
+interface IProps {
+   image: string;
+   user_id: string;
+   description: string;
+}
+
 @injectable()
 export class CreatePostService {
    constructor(
@@ -16,13 +22,15 @@ export class CreatePostService {
       private storage: IStorageProvider,
    ) {}
 
-   async execute(data: IPostsDtos): Promise<Post> {
-      await this.storage.saveFile(data.image, 'posts');
+   async execute({ image, user_id, description }: IProps): Promise<Post> {
+      await this.storage.saveFile(image, 'posts');
+
+      console.log(user_id, description);
 
       const create = await this.postRepository.create({
-         image: data.image,
-         user_id: data.user_id,
-         description: data.description,
+         image,
+         user_id,
+         description,
       });
 
       return create;

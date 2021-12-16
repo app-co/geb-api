@@ -17,8 +17,12 @@ export class ListAllUserService {
 
       const users = find.map(h => ({
          ...h,
-         logoUrl: h.logotipo ? `${awsUrl}/logo/${h.logotipo}` : undefined,
-         avatarUrl: h.avatar ? `${awsUrl}/avatar/${h.avatar}` : undefined,
+         logoUrl: h.logotipo
+            ? `${process.env.AWS_URL}/logo/${h.logotipo}`
+            : undefined,
+         avatarUrl: h.avatar
+            ? `${process.env.AWS_URL}/avatar/${h.avatar}`
+            : undefined,
       }));
 
       return users;
