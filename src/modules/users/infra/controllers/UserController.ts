@@ -5,6 +5,7 @@ import { FindUniqUser } from '@modules/users/service/FindUniqUser.service';
 import { ListAllUserService } from '@modules/users/service/ListAllUsersService.service';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { UpdateLogoService } from '@modules/users/service/UpdateLogoService.service';
+import { UpdatePadrinhoService } from '@modules/users/service/UpdatePadrinhoService';
 import { UpdateProfileService } from '@modules/users/service/UpdateProfileService.service';
 import { UpdateUserAvatarService } from '@modules/users/service/UpdateUserAvatarService.service';
 import { Request, Response } from 'express';
@@ -152,5 +153,14 @@ export class UserController {
       const up = await service.execute({ token, id });
 
       return res.json(up);
+   }
+
+   async updatePadrinho(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(UpdatePadrinhoService);
+
+      const { user_id } = req.body;
+      const user = await service.execute({ user_id });
+
+      return res.json(user);
    }
 }

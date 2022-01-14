@@ -25,20 +25,28 @@ model User {
    ramo              String
    enquadramento     String
    email             String
+   padrinhQuantity   Int         @default(0)
    links             String[]
    adm               Boolean     
    created_at        DateTime    @default(now())
    post              Post[]
    feed              Feed[]
+   presenca          Presenca[]
 }
 
-// model Links {
-//    id       String @id     @default(uuid())
-//    nome     String?
-//    link     String
-//    user_id  String
-//    user     User? @relation(references: [id], fields: [user_id])
-// }
+model Presenca {
+   id             String @id     @default(uuid())
+   user_id        String
+   user           User?          @relation(references: [id], fields: [user_id])
+   presenca       Boolean        @default(false)
+   createdAt      DateTime       @default(now())
+}
+
+model OrderPresenca{
+   id             String   @id   @default(uuid())
+   nome           String
+   createdAt      DateTime       @default(now())
+}
 
 model Post {
    id                String @id @default(uuid())

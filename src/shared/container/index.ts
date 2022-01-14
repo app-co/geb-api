@@ -9,6 +9,8 @@ import { container } from 'tsyringe';
 
 import { ConsumoRepository } from '../../modules/consumo/repositories/ConsumoRepository';
 import { IConsumoRepository } from '../../modules/consumo/repositories/IConsumoRepository';
+import { IPresencaRespository } from '../../modules/presensa/repositories/IPresençaRepository';
+import { PresencaRepository } from '../../modules/presensa/repositories/PresençaRepository';
 import { ITransactionRepository } from '../../modules/transaction/repositories/ITransactionRespository';
 import { TransactionRepository } from '../../modules/transaction/repositories/TransactionRepository';
 
@@ -29,3 +31,8 @@ container.registerSingleton<ITransactionRepository>(
 );
 
 container.registerSingleton<IStorageProvider>('Storage', S3Storage);
+
+container.registerSingleton<IPresencaRespository>(
+   'Presenca',
+   PresencaRepository,
+);

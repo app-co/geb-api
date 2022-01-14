@@ -14,9 +14,29 @@ CREATE TABLE "User" (
     "ramo" TEXT NOT NULL,
     "enquadramento" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "padrinhQuantity" INTEGER NOT NULL DEFAULT 0,
     "links" TEXT[],
     "adm" BOOLEAN NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Presenca" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "presenca" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OrderPresenca" (
+    "id" TEXT NOT NULL,
+    "nome" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -73,6 +93,9 @@ CREATE TABLE "Transaction" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User.membro_unique" ON "User"("membro");
+
+-- AddForeignKey
+ALTER TABLE "Presenca" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

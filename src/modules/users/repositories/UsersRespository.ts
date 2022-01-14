@@ -44,7 +44,9 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findAll(): Promise<User[]> {
-      const find = await this.prisma.user.findMany();
+      const find = await this.prisma.user.findMany({
+         include: { presenca: true },
+      });
       return find;
    }
 
@@ -63,6 +65,17 @@ export class UsersRespository implements IUsersRepository {
             email: data.email,
             workName: data.workName,
             links: data.links,
+         },
+      });
+
+      return up;
+   }
+
+   async updatePadrinho(user_id: string, padrinho: number): Promise<User> {
+      const up = await this.prisma.user.update({
+         where: { id: user_id },
+         data: {
+            padrinhQuantity: padrinho,
          },
       });
 

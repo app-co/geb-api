@@ -22,5 +22,6 @@ user.patch('/logo', Auth, img.single('logo'), control.updateLogo);
 
 user.get('/find', Auth, control.findUnicUser);
 user.put('/upToken', Auth, control.updateToken);
+user.put('/update-padrinho', Auth, control.updatePadrinho);
 
 export { user };

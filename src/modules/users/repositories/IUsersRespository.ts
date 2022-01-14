@@ -9,4 +9,5 @@ export interface IUsersRepository {
    findAll(): Promise<User[]>;
    update(data: IUserDtos, id: string): Promise<User>;
    updateToken(id: string, token: string): Promise<User>;
+   updatePadrinho(user_id: string, padrinho: number): Promise<User>;
 }
