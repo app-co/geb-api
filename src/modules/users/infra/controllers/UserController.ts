@@ -4,6 +4,7 @@ import { DeleteUserService } from '@modules/users/service/DeleteUserService.serv
 import { FindUniqUser } from '@modules/users/service/FindUniqUser.service';
 import { ListAllUserService } from '@modules/users/service/ListAllUsersService.service';
 import { SessionService } from '@modules/users/service/SessionService.service';
+import { UpdateSenhaUserService } from '@modules/users/service/UdateSenhaUserService';
 import { UpdateLogoService } from '@modules/users/service/UpdateLogoService.service';
 import { UpdatePadrinhoService } from '@modules/users/service/UpdatePadrinhoService';
 import { UpdateProfileService } from '@modules/users/service/UpdateProfileService.service';
@@ -162,5 +163,21 @@ export class UserController {
       const user = await service.execute({ user_id });
 
       return res.json(user);
+   }
+
+   async updateSenhaUser(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(UpdateSenhaUserService);
+      const { senha, id } = req.body;
+      const up = await service.execute({ senha, id });
+
+      return res.json(up);
+   }
+
+   async deleteUser(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(DeleteUserService);
+      const { user_id } = req.body;
+      const up = await service.execute(user_id);
+
+      return res.json(up);
    }
 }

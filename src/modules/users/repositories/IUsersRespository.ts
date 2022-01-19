@@ -10,4 +10,6 @@ export interface IUsersRepository {
    update(data: IUserDtos, id: string): Promise<User>;
    updateToken(id: string, token: string): Promise<User>;
    updatePadrinho(user_id: string, padrinho: number): Promise<User>;
+   updateSenha(senha: string, id: string): Promise<User>;
+   deleteUser(user_id: string): Promise<User>;
 }

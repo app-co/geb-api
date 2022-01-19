@@ -24,4 +24,7 @@ user.get('/find', Auth, control.findUnicUser);
 user.put('/upToken', Auth, control.updateToken);
 user.put('/update-padrinho', Auth, control.updatePadrinho);
 
+user.put('/update-senha', Auth, control.updateSenhaUser);
+user.delete('/delete', Auth, control.deleteUser);
+
 export { user };

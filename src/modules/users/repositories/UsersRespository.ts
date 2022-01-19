@@ -71,6 +71,17 @@ export class UsersRespository implements IUsersRepository {
       return up;
    }
 
+   async updateSenha(senha: string, id: string): Promise<User> {
+      const user = await this.prisma.user.update({
+         where: { id },
+         data: {
+            senha,
+         },
+      });
+
+      return user;
+   }
+
    async updatePadrinho(user_id: string, padrinho: number): Promise<User> {
       const up = await this.prisma.user.update({
          where: { id: user_id },
@@ -91,5 +102,13 @@ export class UsersRespository implements IUsersRepository {
       });
 
       return up;
+   }
+
+   async deleteUser(user_id: string): Promise<User> {
+      const user = await this.prisma.user.delete({
+         where: { id: user_id },
+      });
+
+      return user;
    }
 }
