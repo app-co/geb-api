@@ -15,7 +15,6 @@ user.post('/session', control.session);
 user.post('/', control.create);
 user.get('/', Auth, control.findAll);
 user.put('/update', Auth, control.update);
-user.delete('/del', Auth, control.delete);
 
 user.patch('/avatar', Auth, img.single('avatar'), control.updateAvatar);
 user.patch('/logo', Auth, img.single('logo'), control.updateLogo);
@@ -25,6 +24,6 @@ user.put('/upToken', Auth, control.updateToken);
 user.put('/update-padrinho', Auth, control.updatePadrinho);
 
 user.put('/update-senha', Auth, control.updateSenhaUser);
-user.delete('/delete', Auth, control.deleteUser);
+user.delete('/delete/:user_id', Auth, control.deleteUser);
 
 export { user };

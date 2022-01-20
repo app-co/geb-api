@@ -26,9 +26,11 @@ export class UpdateSenhaUserService {
          throw new Err('usuário nao encontrado');
       }
 
+      console.log(id);
+
       const has = await hash(senha, 8);
 
-      const user = await this.userRepository.updateSenha(id, has);
+      const user = await this.userRepository.updateSenha(has, id);
 
       return user;
    }

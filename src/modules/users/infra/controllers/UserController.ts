@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CreateUserService } from '@modules/users/service/CreateUserService';
-import { DeleteUserService } from '@modules/users/service/DeleteUserService.service';
+import { DeleteUserService } from '@modules/users/service/DeleteUserService';
 import { FindUniqUser } from '@modules/users/service/FindUniqUser.service';
 import { ListAllUserService } from '@modules/users/service/ListAllUsersService.service';
 import { SessionService } from '@modules/users/service/SessionService.service';
@@ -129,15 +129,6 @@ export class UserController {
       return res.json(user);
    }
 
-   async delete(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(DeleteUserService);
-
-      const { membro } = req.body;
-      const user = await service.execute(membro);
-
-      return res.json(user);
-   }
-
    async findUnicUser(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(FindUniqUser);
 
@@ -175,8 +166,10 @@ export class UserController {
 
    async deleteUser(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(DeleteUserService);
-      const { user_id } = req.body;
-      const up = await service.execute(user_id);
+
+      const { user_id } = req.params;
+
+      const up = await service.execute({ user_id });
 
       return res.json(up);
    }

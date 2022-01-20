@@ -6,7 +6,7 @@ import { User } from '.prisma/client';
 
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
-interface Props {
+interface IPros {
    user_id: string;
 }
 
@@ -17,8 +17,10 @@ export class DeleteUserService {
       private userRepository: IUsersRepository,
    ) {}
 
-   async execute({ user_id }: Props): Promise<User> {
+   async execute({ user_id }: IPros): Promise<User> {
       const findId = await this.userRepository.findById(user_id);
+
+      console.log('user', user_id);
 
       if (!findId) {
          throw new Err('usuário nao encontrado');
