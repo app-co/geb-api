@@ -90,12 +90,11 @@ export class UserController {
    async updateAvatar(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateUserAvatarService);
 
-      const user_id = req.user.id;
       const avatar = req.file!.filename;
 
       // fs.unlinkSync(req.file!.path);
 
-      const update = await service.execute({ user_id, avatar });
+      const update = await service.execute({ avatar });
 
       return res.json(update);
    }
