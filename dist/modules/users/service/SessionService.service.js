@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SessionService = void 0;
 
-var _auth = _interopRequireDefault(require("../../../config/*/auth"));
+var _auth = _interopRequireDefault(require("../../../config/auth"));
 
-var _AppError = require("../../../shared/*/errors/AppError");
+var _AppError = require("../../../shared/errors/AppError");
 
 var _bcryptjs = require("bcryptjs");
 

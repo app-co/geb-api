@@ -7,9 +7,7 @@ import { IPostsDtos } from '../Dtos/IPostsDtos';
 import { IPostsRepository } from '../repositories/IPostRepositoty';
 
 interface IProps {
-   image: string;
-   user_id: string;
-   description: string;
+   post: string;
 }
 
 @injectable()
@@ -22,17 +20,10 @@ export class CreatePostService {
       private storage: IStorageProvider,
    ) {}
 
-   async execute({ image, user_id, description }: IProps): Promise<Post> {
-      await this.storage.saveFile(image, 'posts');
-
-      console.log(user_id, description);
-
-      const create = await this.postRepository.create({
-         image,
-         user_id,
-         description,
-      });
-
-      return create;
+   async execute({ post }: IProps): Promise<string> {
+      await this.storage.deleteFile(post, 'post');
+      const res = await this.storage.saveFile(post, 'post');
+      const url = `https://geb-app.s3.us-east-2.amazonaws.com/post/${res}`;
+      return url;
    }
 }

@@ -5,11 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DeleteUserService = void 0;
 
-var _AppError = require("../../../shared/*/errors/AppError");
+var _AppError = require("../../../shared/errors/AppError");
 
 var _tsyringe = require("tsyringe");
-
-var _client = require(".prisma/client");
 
 var _IUsersRespository = require("../repositories/IUsersRespository");
 
@@ -22,28 +20,18 @@ let DeleteUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     this.userRepository = userRepository;
   }
 
-  async execute(membro) {
-    const find = await this.userRepository.findByMembro(membro);
+  async execute({
+    user_id
+  }) {
+    const findId = await this.userRepository.findById(user_id);
+    console.log('user', user_id);
 
-    if (!find) {
-      throw new _AppError.Err('Usuário não encontrado');
+    if (!findId) {
+      throw new _AppError.Err('usuário nao encontrado');
     }
 
-    if (!find.adm) {
-      throw new _AppError.Err('Vocẽ nao é um user ADM');
-    }
-
-    const {
-      user
-    } = new _client.PrismaClient();
-    await user.delete({
-      where: {
-        membro
-      }
-    });
-    return {
-      message: 'user deletado'
-    };
+    const user = await this.userRepository.deleteUser(user_id);
+    return user;
   }
 
 }) || _class) || _class) || _class) || _class);

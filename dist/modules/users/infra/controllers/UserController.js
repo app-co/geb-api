@@ -5,23 +5,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UserController = void 0;
 
-var _CreateUserService = require("../../../*/users/service/CreateUserService");
+var _CreateUserService = require("../../service/CreateUserService");
 
-var _DeleteUserService = require("../../../*/users/service/DeleteUserService.service");
+var _DeleteUserService = require("../../service/DeleteUserService");
 
-var _FindUniqUser = require("../../../*/users/service/FindUniqUser.service");
+var _FindUniqUser = require("../../service/FindUniqUser.service");
 
-var _ListAllUsersService = require("../../../*/users/service/ListAllUsersService.service");
+var _ListAllUsersService = require("../../service/ListAllUsersService.service");
 
-var _SessionService = require("../../../*/users/service/SessionService.service");
+var _SessionService = require("../../service/SessionService.service");
 
-var _UpdateLogoService = require("../../../*/users/service/UpdateLogoService.service");
+var _UdateSenhaUserService = require("../../service/UdateSenhaUserService");
 
-var _UpdatePadrinhoService = require("../../../*/users/service/UpdatePadrinhoService");
+var _UpdateLogoService = require("../../service/UpdateLogoService.service");
 
-var _UpdateProfileService = require("../../../*/users/service/UpdateProfileService.service");
+var _UpdatePadrinhoService = require("../../service/UpdatePadrinhoService");
 
-var _UpdateUserAvatarService = require("../../../*/users/service/UpdateUserAvatarService.service");
+var _UpdateProfileService = require("../../service/UpdateProfileService.service");
+
+var _UpdateUserAvatarService = require("../../service/UpdateUserAvatarService.service");
 
 var _tsyringe = require("tsyringe");
 
@@ -100,11 +102,8 @@ class UserController {
   async updateAvatar(req, res) {
     const service = _tsyringe.container.resolve(_UpdateUserAvatarService.UpdateUserAvatarService);
 
-    const user_id = req.user.id;
-    const avatar = req.file.filename; // fs.unlinkSync(req.file!.path);
-
+    const avatar = req.file.filename;
     const update = await service.execute({
-      user_id,
       avatar
     });
     return res.json(update);
@@ -113,11 +112,9 @@ class UserController {
   async updateLogo(req, res) {
     const service = _tsyringe.container.resolve(_UpdateLogoService.UpdateLogoService);
 
-    const user_id = req.user.id;
     const logo = req.file.filename; // fs.unlinkSync(req.file!.path);
 
     const update = await service.execute({
-      user_id,
       logo
     });
     return res.json(update);
@@ -141,16 +138,6 @@ class UserController {
       membro,
       senha
     });
-    return res.json(user);
-  }
-
-  async delete(req, res) {
-    const service = _tsyringe.container.resolve(_DeleteUserService.DeleteUserService);
-
-    const {
-      membro
-    } = req.body;
-    const user = await service.execute(membro);
     return res.json(user);
   }
 
@@ -192,6 +179,32 @@ class UserController {
       user_id
     });
     return res.json(user);
+  }
+
+  async updateSenhaUser(req, res) {
+    const service = _tsyringe.container.resolve(_UdateSenhaUserService.UpdateSenhaUserService);
+
+    const {
+      senha,
+      id
+    } = req.body;
+    const up = await service.execute({
+      senha,
+      id
+    });
+    return res.json(up);
+  }
+
+  async deleteUser(req, res) {
+    const service = _tsyringe.container.resolve(_DeleteUserService.DeleteUserService);
+
+    const {
+      user_id
+    } = req.params;
+    const up = await service.execute({
+      user_id
+    });
+    return res.json(up);
   }
 
 }

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CreatePostService = void 0;
 
-var _IStorageProviders = _interopRequireDefault(require("../../../shared/*/StorageProvider/models/IStorageProviders"));
+var _IStorageProviders = _interopRequireDefault(require("../../../shared/StorageProvider/models/IStorageProviders"));
 
 var _tsyringe = require("tsyringe");
 
@@ -26,18 +26,12 @@ let CreatePostService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
   }
 
   async execute({
-    image,
-    user_id,
-    description
+    post
   }) {
-    await this.storage.saveFile(image, 'posts');
-    console.log(user_id, description);
-    const create = await this.postRepository.create({
-      image,
-      user_id,
-      description
-    });
-    return create;
+    await this.storage.deleteFile(post, 'post');
+    const res = await this.storage.saveFile(post, 'post');
+    const url = `https://geb-app.s3.us-east-2.amazonaws.com/post/${res}`;
+    return url;
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

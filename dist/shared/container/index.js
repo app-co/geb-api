@@ -1,10 +1,10 @@
 "use strict";
 
-var _PostRepository = require("../../modules/*/posts/repositories/PostRepository");
+var _PostRepository = require("../../modules/posts/repositories/PostRepository");
 
-var _UsersRespository = require("../../modules/*/users/repositories/UsersRespository");
+var _UsersRespository = require("../../modules/users/repositories/UsersRespository");
 
-var _S3Storage = require("../*/StorageProvider/implementations/S3Storage");
+var _S3Storage = require("../StorageProvider/implementations/S3Storage");
 
 var _tsyringe = require("tsyringe");
 

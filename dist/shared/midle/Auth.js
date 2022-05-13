@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Auth = Auth;
 
-var _auth = _interopRequireDefault(require("../../config/*/auth"));
+var _auth = _interopRequireDefault(require("../../config/auth"));
 
-var _AppError = require("../*/errors/AppError");
+var _AppError = require("../errors/AppError");
 
 var _jsonwebtoken = require("jsonwebtoken");
 

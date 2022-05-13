@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PostController = void 0;
 
-var _CreatePostService = require("../../../*/posts/service/CreatePostService");
+var _CreatePostService = require("../../service/CreatePostService");
 
-var _LikeService = require("../../../*/posts/service/LikeService");
+var _LikeService = require("../../service/LikeService");
 
-var _ListAllPostService = require("../../../*/posts/service/ListAllPostService.service");
+var _ListAllPostService = require("../../service/ListAllPostService.service");
 
 var _tsyringe = require("tsyringe");
 
@@ -18,24 +18,16 @@ class PostController {
   async create(req, res) {
     const service = _tsyringe.container.resolve(_CreatePostService.CreatePostService);
 
-    const {
-      description
-    } = req.body;
-    const user_id = req.user.id;
-    const image = req.file.filename; // return res.json(req.file);
+    const post = req.file.filename; // return res.json(req.file);
     // await sharp(req.file?.path)
     //    .resize(500)
     //    .jpeg({ quality: 70 })
-    //    .toFile(path.resolve(req.file!.destination, 'post', image));
+    //    .toFile(path.resolve(req.file!.destination, 'post', post));
 
-    const post = await service.execute({
-      image: String(image),
-      user_id,
-      description
-    }); // fs.unlinkSync(req.file!.path);
-
-    req.io.emit('post', post);
-    return res.json(post);
+    const po = await service.execute({
+      post
+    });
+    return res.json(po);
   }
 
   async like(req, res) {

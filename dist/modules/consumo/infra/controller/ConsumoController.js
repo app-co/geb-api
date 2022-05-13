@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConsumoController = void 0;
 
-var _CreateConsumoConsumidor = require("../../../*/consumo/services/CreateConsumoConsumidor");
+var _CreateConsumoConsumidor = require("../../services/CreateConsumoConsumidor");
 
-var _ListValorPrestadorConsumoService = require("../../../*/consumo/services/ListValorPrestadorConsumoService");
+var _ListValorPrestadorConsumoService = require("../../services/ListValorPrestadorConsumoService");
 
 var _tsyringe = require("tsyringe");
 

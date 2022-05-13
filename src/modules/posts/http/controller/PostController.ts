@@ -12,26 +12,17 @@ export class PostController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreatePostService);
 
-      const { description } = req.body;
-      const user_id = req.user.id;
-      const image = req.file!.filename;
+      const post = req.file!.filename;
       // return res.json(req.file);
 
       // await sharp(req.file?.path)
       //    .resize(500)
       //    .jpeg({ quality: 70 })
-      //    .toFile(path.resolve(req.file!.destination, 'post', image));
+      //    .toFile(path.resolve(req.file!.destination, 'post', post));
 
-      const post = await service.execute({
-         image: String(image),
-         user_id,
-         description,
-      });
-      // fs.unlinkSync(req.file!.path);
+      const po = await service.execute({ post });
 
-      req.io.emit('post', post);
-
-      return res.json(post);
+      return res.json(po);
    }
 
    async like(req: Request, res: Response): Promise<Response> {

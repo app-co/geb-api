@@ -20,6 +20,9 @@ export class UpdateUserAvatarService {
    ) {}
 
    async execute({ avatar }: IUsers): Promise<any> {
-      await this.storage.saveFile(avatar, 'avatar');
+      await this.storage.deleteFile(avatar, 'avatar');
+      const res = await this.storage.saveFile(avatar, 'avatar');
+      const url = `https://geb-app.s3.us-east-2.amazonaws.com/avatar/${res}`;
+      return url;
    }
 }

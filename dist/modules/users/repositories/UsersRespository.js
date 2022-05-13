@@ -81,6 +81,18 @@ class UsersRespository {
     return up;
   }
 
+  async updateSenha(senha, id) {
+    const user = await this.prisma.user.update({
+      where: {
+        id
+      },
+      data: {
+        senha
+      }
+    });
+    return user;
+  }
+
   async updatePadrinho(user_id, padrinho) {
     const up = await this.prisma.user.update({
       where: {
@@ -103,6 +115,15 @@ class UsersRespository {
       }
     });
     return up;
+  }
+
+  async deleteUser(user_id) {
+    const user = await this.prisma.user.delete({
+      where: {
+        id: user_id
+      }
+    });
+    return user;
   }
 
 }

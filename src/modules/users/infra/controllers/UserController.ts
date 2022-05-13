@@ -92,8 +92,6 @@ export class UserController {
 
       const avatar = req.file!.filename;
 
-      // fs.unlinkSync(req.file!.path);
-
       const update = await service.execute({ avatar });
 
       return res.json(update);
@@ -102,12 +100,11 @@ export class UserController {
    async updateLogo(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateLogoService);
 
-      const user_id = req.user.id;
       const logo = req.file!.filename;
 
       // fs.unlinkSync(req.file!.path);
 
-      const update = await service.execute({ user_id, logo });
+      const update = await service.execute({ logo });
 
       return res.json(update);
    }

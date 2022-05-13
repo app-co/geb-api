@@ -8,7 +8,6 @@ import { PrismaClient, User } from '.prisma/client';
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface IUsers {
-   user_id: string;
    logo: string;
 }
 @injectable()
@@ -21,26 +20,10 @@ export class UpdateLogoService {
       private storage: IStorageProvider,
    ) {}
 
-   async execute({ user_id, logo }: IUsers): Promise<User> {
-      const find = await this.userRepostiroy.findById(user_id);
-
-      if (!find) {
-         throw new Err('usuário nao encontrado');
-      }
-
-      if (find.logotipo) {
-         await this.storage.deleteFile(find.logotipo!, 'logo');
-      }
-
-      await this.storage.saveFile(logo, 'logo');
-
-      const { user } = new PrismaClient();
-
-      const updateLogo = await user.update({
-         where: { id: find.id },
-         data: { logotipo: logo },
-      });
-
-      return updateLogo;
+   async execute({ logo }: IUsers): Promise<string> {
+      await this.storage.deleteFile(logo, 'logo');
+      const res = await this.storage.saveFile(logo, 'logo');
+      const url = `https://geb-app.s3.us-east-2.amazonaws.com/logo/${res}`;
+      return url;
    }
 }

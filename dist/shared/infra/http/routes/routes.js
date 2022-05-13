@@ -5,15 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.routes = void 0;
 
-var _index = require("../../../../modules/*/consumo/infra/routes/index.routes");
+var _index = require("../../../../modules/consumo/infra/routes/index.routes");
 
-var _routes = require("../../../../modules/*/posts/http/routes/routes");
+var _routes = require("../../../../modules/posts/http/routes/routes");
 
-var _routes2 = require("../../../../modules/*/presensa/infra/routes");
+var _routes2 = require("../../../../modules/presensa/infra/routes");
 
-var _routes3 = require("../../../../modules/*/transaction/infra/routes/routes.routes");
+var _routes3 = require("../../../../modules/transaction/infra/routes/routes.routes");
 
-var _routes4 = require("../../../../modules/*/users/infra/routes/routes");
+var _routes4 = require("../../../../modules/users/infra/routes/routes");
 
 var _express = require("express");
 

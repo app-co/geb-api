@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DeleteTransactionService = void 0;
 
-var _AppError = require("../../../shared/*/errors/AppError");
+var _AppError = require("../../../shared/errors/AppError");
 
 var _tsyringe = require("tsyringe");
 
@@ -27,7 +27,6 @@ let DeleteTransactionService = (_dec = (0, _tsyringe.injectable)(), _dec2 = func
       throw new _AppError.Err('transação nao encontrada');
     }
 
-    console.log(id);
     await this.transactionRepository.delete(transaction.id);
   }
 

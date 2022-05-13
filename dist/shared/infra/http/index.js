@@ -7,7 +7,7 @@ exports.clients = exports.app = void 0;
 
 require("reflect-metadata");
 
-var _AppError = require("../../*/errors/AppError");
+var _AppError = require("../../errors/AppError");
 
 var _celebrate = require("celebrate");
 
@@ -25,7 +25,7 @@ var _path = _interopRequireDefault(require("path"));
 
 var _index = require("./routes/index.routes");
 
-require("../../*/container");
+require("../../container");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

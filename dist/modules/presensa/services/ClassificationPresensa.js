@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ClassificationPresensa = void 0;
 
-var _IUsersRespository = require("../../*/users/repositories/IUsersRespository");
+var _IUsersRespository = require("../../users/repositories/IUsersRespository");
 
 var _tsyringe = require("tsyringe");
 

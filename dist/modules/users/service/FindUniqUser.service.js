@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FindUniqUser = void 0;
 
-var _AppError = require("../../../shared/*/errors/AppError");
+var _AppError = require("../../../shared/errors/AppError");
 
 var _tsyringe = require("tsyringe");
 

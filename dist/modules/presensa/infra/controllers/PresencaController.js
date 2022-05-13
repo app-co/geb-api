@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PresensaController = void 0;
 
-var _ClassificationPresensa = require("../../../*/presensa/services/ClassificationPresensa");
+var _ClassificationPresensa = require("../../services/ClassificationPresensa");
 
-var _CreatePresensaService = require("../../../*/presensa/services/CreatePresensaService");
+var _CreatePresensaService = require("../../services/CreatePresensaService");
 
-var _ListAllPresensaService = require("../../../*/presensa/services/ListAllPresensaService");
+var _ListAllPresensaService = require("../../services/ListAllPresensaService");
 
-var _UdatePresensaService = require("../../../*/presensa/services/UdatePresensaService");
+var _UdatePresensaService = require("../../services/UdatePresensaService");
 
 var _tsyringe = require("tsyringe");
 

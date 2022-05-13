@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.transaction = void 0;
 
-var _Auth = require("../../../../shared/*/midle/Auth");
+var _Auth = require("../../../../shared/midle/Auth");
 
 var _express = require("express");
 

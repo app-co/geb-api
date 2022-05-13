@@ -1,6 +1,6 @@
 "use strict";
 
-var _upload = _interopRequireDefault(require("../../config/*/upload"));
+var _upload = _interopRequireDefault(require("../../config/upload"));
 
 var _tsyringe = require("tsyringe");
 

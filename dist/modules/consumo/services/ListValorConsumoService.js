@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ListValorConsumoService = void 0;
 
-var _IUsersRespository = require("../../*/users/repositories/IUsersRespository");
+var _IUsersRespository = require("../../users/repositories/IUsersRespository");
 
-var _AppError = require("../../../shared/*/errors/AppError");
+var _AppError = require("../../../shared/errors/AppError");
 
 var _dateFns = require("date-fns");
 
