@@ -11,79 +11,106 @@ generator client {
 }
 
 model User {
-   id                String      @id      @default(uuid())
-   nome              String
-   membro            String      @unique
-   senha             String
-   whats             String
-   logotipo          String?
-   avatar            String?
-   workName          String
-   token             String?
-   CNPJ              String
-   CPF               String
-   ramo              String
-   enquadramento     String
-   email             String
-   padrinhQuantity   Int         @default(0)
-   links             String[]
-   adm               Boolean     
-   created_at        DateTime    @default(now())
-   post              Post[]
-   feed              Feed[]
-   presenca          Presenca[]
+   id                      String        @id       @default(uuid())
+   nome                    String      
+   membro                  String        @unique
+   token                   String?     
+   senha                   String      
+   adm                     Boolean           
+   created_at              DateTime                @default(now())
+   padrinho                Padrinho[]                  
+   post                    Post[]      
+   feed                    Feed[]      
+   presenca                Presenca[]
+   profile                 Profile[]
+   pontos                  Pontos[]
+}
+
+model Padrinho {
+   id                      String         @id      @default(uuid())
+   user_id                 String 
+   qnt                     Int                     @default(autoincrement())        
+   user                    User?                   @relation(references: [id], fields: [user_id])
+}
+
+model Profile {
+   id                      String        @id       @default(uuid())
+   whats                   String      
+   logotipo                String?     
+   avatar                  String?    
+   links                   String[]    
+   workName                String      
+   CNPJ                    String      
+   CPF                     String      
+   ramo                    String      
+   enquadramento           String      
+   email                   String
+   user_id                 String
+   user                    User?                   @relation(references: [id], fields: [user_id])    
 }
 
 model Presenca {
-   id             String @id     @default(uuid())
-   user_id        String
-   user           User?          @relation(references: [id], fields: [user_id])
-   presenca       Boolean        @default(false)
-   createdAt      DateTime       @default(now())
+   id                      String        @id       @default(uuid())
+   user_id                 String
+   user                    User?                   @relation(references: [id], fields: [user_id])
+   presenca                Boolean                 @default(false)
+   qnt                     Int                     @default(autoincrement())
+   createdAt               DateTime                @default(now())
 }
 
 model OrderPresenca{
-   id             String   @id   @default(uuid())
-   nome           String
-   createdAt      DateTime       @default(now())
+   id                      String        @id       @default(uuid())
+   user_id                 String
+   nome                    String
+   createdAt               DateTime                @default(now())
 }
 
 model Post {
-   id                String @id @default(uuid())
-   image             String
-   like              Int @default(0)
-   description       String
-   user_id           String
-   user              User  @relation(fields: [user_id], references: [id])
-   created_at        DateTime    @default(now())
+   id                      String        @id       @default(uuid())
+   image                   String
+   like                    Int                     @default(0)
+   description             String
+   user_id                 String
+   user                    User                    @relation(fields: [user_id], references: [id])
+   created_at              DateTime                @default(now())
 }
 
 model Feed {
-   id String         @id @default(uuid())
-   image             String
-   title             String
-   subTitle          String
-   texto             String
-   user_id           String
-   user              User @relation(fields: [user_id], references: [id])   
-   created_at        DateTime   
+   id String               @id                     @default(uuid())
+   image                   String
+   title                   String
+   subTitle                String
+   texto                   String
+   user_id                 String
+   user                    User                    @relation(fields: [user_id], references: [id])   
+   created_at              DateTime   
 }
 
 model Consumo {
-   id                String         @id @default(uuid())
-   consumidor_id     String?
-   presstador_id     String?
-   type              String
-   valor             String
-   descricao         String
-   created_at        DateTime @default(now())
+   id                      String         @id      @default(uuid())
+   consumidor_id           String?
+   presstador_id           String?
+   type                    String
+   valor                   String
+   descricao               String
+   created_at              DateTime                @default(now())
 }
 
 model Transaction {
-   id             String @id @default(uuid())
-   consumidor_id  String
-   prestador_id   String
-   nome           String
-   valor          String
-   descricao      String
+   id                      String         @id      @default(uuid())
+   consumidor_id           String
+   prestador_id            String
+   nome                    String
+   valor                   String
+   descricao               String
+}
+
+model Pontos {
+   id             String      @id         @default(uuid())
+   presenca       Int                     @default(0)
+   padrinho       Int                     @default(0)
+   compra         Int                     @default(0)
+   venda          Int                     @default(0)
+   user_id        String
+   user           User?                   @relation(references: [id], fields: [user_id])
 }

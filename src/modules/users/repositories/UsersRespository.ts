@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { PrismaClient, User } from '@prisma/client';
+import { IUserDtos } from '@shared/dtos';
 
-import { IUserDtos } from '../dtos/IUserDtos';
 import { IUsersRepository } from './IUsersRespository';
 
 export class UsersRespository implements IUsersRepository {
@@ -13,14 +13,7 @@ export class UsersRespository implements IUsersRepository {
             nome: data.nome,
             membro: data.membro,
             adm: data.adm,
-            CNPJ: data.CNPJ,
             senha: data.senha!,
-            whats: data.whats,
-            CPF: data.CPF,
-            ramo: data.ramo,
-            enquadramento: data.enquadramento,
-            email: data.email,
-            workName: data.workName,
          },
       });
 
@@ -43,33 +36,33 @@ export class UsersRespository implements IUsersRepository {
       return find;
    }
 
-   async findAll(): Promise<User[]> {
+   async listAllUser(): Promise<User[]> {
       const find = await this.prisma.user.findMany({
          include: { presenca: true },
       });
       return find;
    }
 
-   async update(data: IUserDtos, id: string): Promise<User> {
-      const up = await this.prisma.user.update({
-         where: { id },
-         data: {
-            nome: data.nome,
-            membro: data.membro,
-            adm: data.adm,
-            CNPJ: data.CNPJ,
-            whats: data.whats,
-            CPF: data.CPF,
-            ramo: data.ramo,
-            enquadramento: data.enquadramento,
-            email: data.email,
-            workName: data.workName,
-            links: data.links,
-         },
-      });
+   // async update(data: IProfileDto, id: string): Promise<User> {
+   //    const up = await this.prisma.user.update({
+   //       where: { id },
+   //       data: {
+   //          nome: data.nome,
+   //          membro: data.membro,
+   //          adm: data.adm,
+   //          CNPJ: data.CNPJ,
+   //          whats: data.whats,
+   //          CPF: data.CPF,
+   //          ramo: data.ramo,
+   //          enquadramento: data.enquadramento,
+   //          email: data.email,
+   //          workName: data.workName,
+   //          links: data.links,
+   //       },
+   //    });
 
-      return up;
-   }
+   //    return up;
+   // }
 
    async updateSenha(senha: string, id: string): Promise<User> {
       const user = await this.prisma.user.update({
@@ -82,16 +75,16 @@ export class UsersRespository implements IUsersRepository {
       return user;
    }
 
-   async updatePadrinho(user_id: string, padrinho: number): Promise<User> {
-      const up = await this.prisma.user.update({
-         where: { id: user_id },
-         data: {
-            padrinhQuantity: padrinho,
-         },
-      });
+   // async updatePadrinho(user_id: string, padrinho: number): Promise<User> {
+   //    const up = await this.prisma.user.update({
+   //       where: { id: user_id },
+   //       data: {
+   //          padrinhQuantity: padrinho,
+   //       },
+   //    });
 
-      return up;
-   }
+   //    return up;
+   // }
 
    async updateToken(id: string, token: string): Promise<User> {
       const up = await this.prisma.user.update({

@@ -1,53 +1,63 @@
-import { ClassificationPresensa } from '@modules/presensa/services/ClassificationPresensa';
+import { CreateOrderPresencaService } from '@modules/presensa/services/CreateOrderPresençaService';
 import { CreatePresencaService } from '@modules/presensa/services/CreatePresensaService';
-import { ListAllPresensaService } from '@modules/presensa/services/ListAllPresensaService';
-import { UpdatePresensaService } from '@modules/presensa/services/UdatePresensaService';
+import { GlobalPontsPresencaService } from '@modules/presensa/services/GlobalPontsPresencaService';
+import { ListAllOrderPresensaService } from '@modules/presensa/services/ListAllOrderPresencaService';
+import { ListPresencaUseraService } from '@modules/presensa/services/ListPresencaUserService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-
-import { ListPresensaService } from '../../services/ListPresensaService';
 
 export class PresensaController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreatePresencaService);
-      const { user_id } = req.body;
+      const { user_id, nome } = req.body;
 
       const create = await service.execute({
          user_id,
+         nome,
       });
 
       return res.json(create);
    }
 
-   async update(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(UpdatePresensaService);
-      const { id, presenca } = req.body;
+   async createOrder(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(CreateOrderPresencaService);
+      const { user_id, nome } = req.body;
 
-      const create = await service.execute({ id, presenca });
+      const create = await service.execute({
+         user_id,
+         nome,
+      });
 
       return res.json(create);
    }
 
-   async list(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ListPresensaService);
-      const user_id = req.user.id;
+   // async update(req: Request, res: Response): Promise<Response> {}
 
-      const list = await service.execute(user_id);
+   async listAllOrder(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(ListAllOrderPresensaService);
 
+      const list = await service.execute();
       return res.json(list);
    }
 
-   async listAll(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ListAllPresensaService);
-      const list = await service.execute();
+   async listAllPresecaUser(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(ListPresencaUseraService);
+      const user_id = req.user.id;
+
+      const list = await service.execute({ user_id });
 
       return res.json(list);
    }
 
    async rank(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ClassificationPresensa);
+      const service = container.resolve(GlobalPontsPresencaService);
+
       const list = await service.execute();
 
       return res.json(list);
    }
+
+   // async rank(req: Request, res: Response): Promise<Response> {}
+   // async rank(req: Request, res: Response): Promise<Response> {}
+   // async rank(req: Request, res: Response): Promise<Response> {}
 }

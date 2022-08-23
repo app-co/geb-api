@@ -25,7 +25,7 @@ export class ListValorPrestadorConsumoService {
 
    async execute(): Promise<any> {
       const findConsumo = await this.consumoRepository.listAll();
-      const finAllUser = await this.userRepository.findAll();
+      const finAllUser = await this.userRepository.listAllUser();
 
       if (!findConsumo) {
          throw new Err('nenhum consumo disponivel');
@@ -48,35 +48,29 @@ export class ListValorPrestadorConsumoService {
             return acc + Number(item.valor);
          }, 0);
 
-         return {
-            id: user.id,
-            nome: user.nome,
-            workName: user.workName,
-            total: valor,
-            data: dataF,
-         };
+         return user;
       });
 
-      data.sort(function (a, b) {
-         return Number(b.total) - Number(a.total);
-      });
+      // data.sort(function (a, b) {
+      //    return Number(b.total) - Number(a.total);
+      // });
 
-      const consumo = data.map(h => {
-         if (!h.data) {
-            return;
-         }
-         const dataFormatad = format(new Date(h.data), 'dd/MM/yyyy');
+      // const consumo = data.map(h => {
+      //    if (!h.data) {
+      //       return;
+      //    }
+      //    const dataFormatad = format(new Date(h.data), 'dd/MM/yyyy');
 
-         return {
-            ...h,
-            data: dataFormatad,
-         };
-      });
+      //    return {
+      //       ...h,
+      //       data: dataFormatad,
+      //    };
+      // });
 
-      const nu = consumo.filter(h => {
-         return h !== undefined;
-      });
+      // const nu = consumo.filter(h => {
+      //    return h !== undefined;
+      // });
 
-      return nu;
+      return 'user';
    }
 }

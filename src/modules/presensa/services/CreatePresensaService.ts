@@ -8,6 +8,7 @@ import { IPresencaRespository } from '../repositories/IPresençaRepository';
 
 interface IProps {
    user_id: string;
+   nome: string;
 }
 
 @injectable()
@@ -17,22 +18,20 @@ export class CreatePresencaService {
       private presencaRepository: IPresencaRespository,
    ) {}
 
-   async execute({ user_id }: IProps): Promise<Presenca> {
-      const find = await this.presencaRepository.list(user_id);
+   async execute({ user_id, nome }: IProps): Promise<Presenca> {
+      const find = await this.presencaRepository.listOrderWithId(user_id);
 
-      const created = find.find(h => {
-         const dataN = new Date(Date.now()).getHours();
-         const dataCreatd = h.createdAt.getHours();
-         if (dataCreatd === dataN) {
-            return h;
-         }
-      });
+      if (!find) {
+         throw new Err('Não há orderm de presença para validar');
+      }
 
-      if (created) {
-         throw new Err('Você ja enviou uma solicitaçao de presença');
+      if (find) {
+         const del = await this.presencaRepository.deleteOrderPresenca(find.id);
+         console.log(del);
       }
       const create = await this.presencaRepository.create({
          user_id,
+         nome,
       });
 
       return create;

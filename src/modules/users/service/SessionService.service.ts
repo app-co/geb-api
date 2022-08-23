@@ -1,7 +1,5 @@
 import auth from '@config/auth';
-import { FindUniqUser } from '@modules/users/service/FindUniqUser.service';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { User } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
@@ -16,12 +14,9 @@ interface IRequest {
 
 interface IResponse {
    user: {
+      id: string;
       nome: string;
-      workName: string;
-      avatar: string | null;
-      avatar_url: string;
-      logo: string | null;
-      logo_url: string;
+      adm: boolean;
    };
    token: string;
 }
@@ -49,10 +44,10 @@ export class SessionService {
          expiresIn,
       });
 
-      const awsUrl = process.env.AWS_URL;
+      // const awsUrl = process.env.AWS_URL;
 
-      const avatar_url = `${awsUrl}avatar/${findUser.avatar}`;
-      const logo_url = `${awsUrl}logo/${findUser.logotipo}`;
+      // const avatar_url = `${awsUrl}avatar/${findUser.avatar}`;
+      // const logo_url = `${awsUrl}logo/${findUser.logotipo}`;
 
       const [nome, sobrenome] = findUser.nome.split(' ').map(String);
 
@@ -60,11 +55,6 @@ export class SessionService {
          user: {
             id: findUser.id,
             nome,
-            workName: findUser.workName,
-            avatar: findUser.avatar,
-            avatar_url,
-            logo: findUser.logotipo,
-            logo_url,
             adm: findUser.adm,
          },
          token,

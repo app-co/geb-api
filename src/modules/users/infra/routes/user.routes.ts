@@ -10,19 +10,19 @@ const control = new UserController();
 
 const img = multer(upload);
 
+user.post('/create-user', control.create);
 user.post('/session', control.session);
 
-user.patch('/avatar', img.single('avatar'), control.updateAvatar);
-user.patch('/logo', img.single('logo'), control.updateLogo);
-user.post('/', control.create);
-user.get('/', Auth, control.findAll);
-user.put('/update', Auth, control.update);
+// user.patch('/avatar', img.single('avatar'), control.updateAvatar);
+// user.patch('/logo', img.single('logo'), control.updateLogo);
+// user.get('/', Auth, control.findAll);
+// user.put('/update', Auth, control.update);
 
-user.get('/find', Auth, control.findUnicUser);
-user.put('/upToken', Auth, control.updateToken);
-user.put('/update-padrinho', Auth, control.updatePadrinho);
+// user.get('/find', Auth, control.findUnicUser);
+// user.put('/upToken', Auth, control.updateToken);
+// user.put('/update-padrinho', Auth, control.updatePadrinho);
 
-user.put('/update-senha', Auth, control.updateSenhaUser);
-user.delete('/delete/:user_id', Auth, control.deleteUser);
+// user.put('/update-senha', Auth, control.updateSenhaUser);
+// user.delete('/delete/:user_id', Auth, control.deleteUser);
 
 export { user };
