@@ -36,3 +36,13 @@ export interface IOrderTransaction {
    descricao: string;
    createdAt?: Date;
 }
+
+export interface IB2b {
+   send_id: string;
+   send_name: string;
+   recevid_name: string;
+   recevid_id: string;
+   appointment: string;
+   createdAt?: Date;
+   validate?: boolean;
+}

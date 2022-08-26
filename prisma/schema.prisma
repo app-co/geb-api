@@ -127,3 +127,14 @@ model Pontos {
    user_id        String
    user           User?                   @relation(references: [id], fields: [user_id])
 }
+
+model B2b {
+   id             String      @id         @default(uuid())
+   send_id        String
+   send_name      String
+   recevid_name   String
+   recevid_id     String
+   appointment     String?
+   createdAt      DateTime                @default(now())
+   validate       Boolean                 @default(false)
+}

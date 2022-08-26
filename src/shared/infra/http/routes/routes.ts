@@ -1,3 +1,4 @@
+import { b2bRoute } from '@modules/B2b/infra/routes';
 import { ConsumoRoute } from '@modules/consumo/infra/routes/index.routes';
 import { postRoute } from '@modules/posts/http/routes/routes';
 import { PresensaRoute } from '@modules/presensa/infra/routes';
@@ -12,5 +13,6 @@ routes.use(postRoute);
 routes.use(ConsumoRoute);
 routes.use(TransactionRoute);
 routes.use(PresensaRoute);
+routes.use(b2bRoute);
 
 export { routes };

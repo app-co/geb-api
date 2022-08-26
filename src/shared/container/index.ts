@@ -1,3 +1,5 @@
+import { B2bRepository } from '@modules/B2b/repositories/B2bRepository';
+import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { IPostsRepository } from '@modules/posts/repositories/IPostRepositoty';
 import { PostRepository } from '@modules/posts/repositories/PostRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
@@ -36,3 +38,5 @@ container.registerSingleton<IPresencaRespository>(
    'Presenca',
    PresencaRepository,
 );
+
+container.registerSingleton<IB2bRepository>('PrismaB2b', B2bRepository);
