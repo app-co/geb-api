@@ -24,3 +24,15 @@ export interface IPresencaDto {
    user_id: string;
    createdAt?: Date;
 }
+
+export interface IOrderTransaction {
+   id?: string;
+   consumidor_name: string;
+   prestador_name: string;
+   consumidor_id: string;
+
+   prestador_id: string;
+   valor: number;
+   descricao: string;
+   createdAt?: Date;
+}

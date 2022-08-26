@@ -1,9 +1,14 @@
+import { OrderTransaction } from '@prisma/client';
+import { IOrderTransaction } from '@shared/dtos';
+
 import { Consumo } from '.prisma/client';
 
-import { IConsumoDto } from '../Dtos/IConsumoDtos';
-
 export interface IConsumoRepository {
-   create(data: IConsumoDto): Promise<Consumo>;
-   listByConsumo(user_id: string): Promise<Consumo[]>;
+   create(data: IOrderTransaction): Promise<OrderTransaction>;
+   findOrderPrestador(prestador_id: string): Promise<OrderTransaction[]>;
+   findOrderConsumidor(consumidor_id: string): Promise<OrderTransaction[]>;
+   findAllOrder(): Promise<OrderTransaction[]>;
+   findOrderById(id: string): Promise<OrderTransaction | null>;
+   deleteOrder(id: string): Promise<OrderTransaction>;
    listAll(): Promise<Consumo[]>;
 }

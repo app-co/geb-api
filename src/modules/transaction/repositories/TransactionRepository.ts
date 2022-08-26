@@ -1,28 +1,29 @@
 import { PrismaClient } from '@prisma/client';
+import { IOrderTransaction } from '@shared/dtos';
 
 import { Transaction } from '.prisma/client';
 
-import { ITransactionDto } from '../Dtos/ITransactionDto';
 import { ITransactionRepository } from './ITransactionRespository';
 
 export class TransactionRepository implements ITransactionRepository {
    private prisma = new PrismaClient();
 
-   async create(data: ITransactionDto): Promise<Transaction> {
+   async create(data: IOrderTransaction): Promise<Transaction> {
       const create = await this.prisma.transaction.create({
          data: {
             consumidor_id: data.consumidor_id,
+            consumidor_name: data.consumidor_name,
             prestador_id: data.prestador_id,
+            prestador_name: data.prestador_name,
             descricao: data.descricao,
             valor: data.valor,
-            nome: data.nome,
          },
       });
 
       return create;
    }
 
-   async findById(id: string): Promise<Transaction | null> {
+   async findTransactionById(id: string): Promise<Transaction | null> {
       const find = await this.prisma.transaction.findUnique({
          where: { id },
       });
@@ -44,6 +45,12 @@ export class TransactionRepository implements ITransactionRepository {
       });
 
       return find;
+   }
+
+   async listAllTransaction(): Promise<Transaction[]> {
+      const list = await this.prisma.transaction.findMany();
+
+      return list;
    }
 
    async delete(id: string): Promise<void> {

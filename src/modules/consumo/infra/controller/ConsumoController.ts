@@ -1,65 +1,66 @@
-import { CreateConsumoConsumidorService } from '@modules/consumo/services/CreateConsumoConsumidor';
-import { ListValorPrestadorConsumoService } from '@modules/consumo/services/ListValorPrestadorConsumoService';
+import { CreateOrderTransaction } from '@modules/consumo/services/CreateOrderTransaction';
+import { DeleteOrderService } from '@modules/consumo/services/DeleteOrderService';
+import { FindOrderConsumidor } from '@modules/consumo/services/FindOrderConsumidor';
+import { FindOrderPrestador } from '@modules/consumo/services/FindOrderPrestador';
+import { ListAllOrderService } from '@modules/consumo/services/ListAllOrderService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import { CreateConsumoPrestadorService } from '../../services/CreateConsumoPrestadorService.service';
-import { ListConsumoService } from '../../services/ListConsumoService.service';
-import { ListValorConsumoService } from '../../services/ListValorConsumoService';
-
 export class ConsumoController {
-   async createPrestador(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(CreateConsumoPrestadorService);
+   async createOrder(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(CreateOrderTransaction);
 
-      const { descricao, type, valor } = req.body;
-      const prestador_id = req.user.id;
-
-      const consumo = await service.execute({
-         prestador_id,
-         descricao,
-         type,
-         valor,
-      });
-
-      return res.json(consumo);
-   }
-
-   async createConsumidor(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(CreateConsumoConsumidorService);
-
-      const { consumidor_id, descricao, type, valor } = req.body;
+      const { descricao, valor, prestador_id } = req.body;
+      const consumidor_id = req.user.id;
 
       const consumo = await service.execute({
          consumidor_id,
+         prestador_id,
          descricao,
-         type,
          valor,
       });
 
       return res.json(consumo);
    }
 
-   async listAll(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ListConsumoService);
+   async findOrderPrestador(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(FindOrderPrestador);
 
-      const consumo = await service.execute();
+      const prestador_id = req.user.id;
 
-      return res.json(consumo);
+      const find = await service.execute(prestador_id);
+
+      return res.json(find);
    }
 
-   async listValorP(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ListValorPrestadorConsumoService);
+   async findOrderConsumidor(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(FindOrderConsumidor);
 
-      const consumo = await service.execute();
+      const consumidor_id = req.user.id;
 
-      return res.json(consumo);
+      const find = await service.execute(consumidor_id);
+
+      return res.json(find);
    }
 
-   async listValorC(req: Request, res: Response): Promise<Response> {
-      const service = container.resolve(ListValorConsumoService);
+   async findAllOrder(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(ListAllOrderService);
 
-      const consumo = await service.execute();
+      const find = await serv.execute();
 
-      return res.json(consumo);
+      return res.json(find);
    }
+
+   async deleteOrder(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(DeleteOrderService);
+      const { id } = req.params;
+
+      const find = await serv.execute({ id: String(id) });
+
+      return res.json(find);
+   }
+
+   // async listValorP(req: Request, res: Response): Promise<Response> {}
+
+   // async listValorC(req: Request, res: Response): Promise<Response> {}
 }

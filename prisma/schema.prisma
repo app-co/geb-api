@@ -86,6 +86,17 @@ model Feed {
    created_at              DateTime   
 }
 
+model OrderTransaction {
+   id                      String         @id      @default(uuid())
+   consumidor_name         String
+   consumidor_id           String
+   prestador_id            String
+   prestador_name          String
+   valor                   Int
+   descricao               String
+   created_at              DateTime                @default(now())
+}
+
 model Consumo {
    id                      String         @id      @default(uuid())
    consumidor_id           String?
@@ -98,11 +109,13 @@ model Consumo {
 
 model Transaction {
    id                      String         @id      @default(uuid())
+   consumidor_name         String
    consumidor_id           String
    prestador_id            String
-   nome                    String
-   valor                   String
+   prestador_name          String
+   valor                   Int
    descricao               String
+   created_at              DateTime                @default(now())
 }
 
 model Pontos {
