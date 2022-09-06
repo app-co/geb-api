@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import auth from '@config/auth';
 import { Err } from '@shared/errors/AppError';
 import { NextFunction, Request, Response } from 'express';

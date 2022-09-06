@@ -1,5 +1,7 @@
 import { B2bRepository } from '@modules/B2b/repositories/B2bRepository';
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
+import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
+import { IndicationRepository } from '@modules/indication/infra/repositories/IndicationRepository';
 import { IPostsRepository } from '@modules/posts/repositories/IPostRepositoty';
 import { PostRepository } from '@modules/posts/repositories/PostRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
@@ -40,3 +42,7 @@ container.registerSingleton<IPresencaRespository>(
 );
 
 container.registerSingleton<IB2bRepository>('PrismaB2b', B2bRepository);
+container.registerSingleton<IIndicationRepository>(
+   'PrismaIndication',
+   IndicationRepository,
+);

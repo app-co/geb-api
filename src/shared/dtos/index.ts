@@ -8,6 +8,7 @@ export interface IUserDtos {
 }
 
 export interface IProfileDto {
+   user_id: string;
    whats: string;
    workName: string;
    CNPJ: string;
@@ -44,5 +45,17 @@ export interface IB2b {
    recevid_id: string;
    appointment: string;
    createdAt?: Date;
+   validate?: boolean;
+}
+
+export interface IIndicationDto {
+   id?: string;
+   indicado_id: string;
+   indicado_name: string;
+   quemIndicou_id: string;
+   quemIndicou_name: string;
+   client_name: string;
+   phone_number_client: number;
+   description: string;
    validate?: boolean;
 }

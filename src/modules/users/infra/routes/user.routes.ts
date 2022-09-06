@@ -15,8 +15,11 @@ user.post('/session', control.session);
 
 // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
 // user.patch('/logo', img.single('logo'), control.updateLogo);
-// user.get('/', Auth, control.findAll);
+user.get('/list-all-user', Auth, control.listAll);
 // user.put('/update', Auth, control.update);
+
+//* *CREATE PROFILE */
+user.post('/create-profile', Auth, control.createProfile);
 
 // user.get('/find', Auth, control.findUnicUser);
 // user.put('/upToken', Auth, control.updateToken);

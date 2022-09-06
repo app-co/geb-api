@@ -20,6 +20,8 @@
                "private $3Repository: $4,",
 
           "  ) {}",
+          "async execute(): Promise<$5> {$0}",
+         "}"
 		],
 		"description": "base class"
 	}

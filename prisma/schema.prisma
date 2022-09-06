@@ -38,7 +38,7 @@ model Profile {
    whats                   String      
    logotipo                String?     
    avatar                  String?    
-   links                   String[]    
+   links                   Json[]    
    workName                String      
    CNPJ                    String      
    CPF                     String      
@@ -137,4 +137,17 @@ model B2b {
    appointment     String?
    createdAt      DateTime                @default(now())
    validate       Boolean                 @default(false)
+}
+
+model Indication {
+   id                   String   @id      @default(uuid())
+   indicado_id          String
+   indicado_name        String
+   quemIndicou_id       String
+   quemIndicou_name     String
+   client_name          String
+   phone_number_client  Int
+   description          String
+   createdAt            DateTime          @default(now())
+   validate             Boolean           @default(false)
 }
