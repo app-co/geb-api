@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { OrderTransaction } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IOrderTransaction } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -22,6 +23,9 @@ export class CreateOrderTransaction {
 
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({
@@ -54,6 +58,10 @@ export class CreateOrderTransaction {
          descricao,
          valor,
       });
+
+      await this.cache.invalidate('orderTransaction');
+      await this.cache.invalidatePrefix('orderTransactionPres');
+      await this.cache.invalidatePrefix('orderTransactionConsu');
 
       return consumo;
    }

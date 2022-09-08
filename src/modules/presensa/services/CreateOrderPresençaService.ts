@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import { OrderPresenca } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IPresencaDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -12,6 +13,9 @@ export class CreateOrderPresencaService {
    constructor(
       @inject('Presenca')
       private presencaRepository: IPresencaRespository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({ user_id, nome }: IPresencaDto): Promise<OrderPresenca> {
@@ -32,6 +36,8 @@ export class CreateOrderPresencaService {
          nome,
          user_id,
       });
+
+      await this.cache.invalidate(`orderPresenca`);
 
       return create;
    }

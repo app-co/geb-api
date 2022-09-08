@@ -1,5 +1,6 @@
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { B2b } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -10,6 +11,9 @@ export class DeleteB2b {
    constructor(
       @inject('PrismaB2b')
       private b2bRepository: IB2bRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute(id: string): Promise<B2b> {
@@ -19,6 +23,10 @@ export class DeleteB2b {
          throw new Err('b2b nao encontrado');
       }
       const del = await this.b2bRepository.deleteB2bById(id);
+
+      await this.cache.invalidate('b2b');
+      await this.cache.invalidatePrefix('b2bSend');
+      await this.cache.invalidatePrefix('b2bReci');
 
       return del;
    }

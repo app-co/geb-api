@@ -1,5 +1,5 @@
 import { Indication } from '@prisma/client';
-import { Err } from '@shared/errors/AppError';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { inject, injectable } from 'tsyringe';
 
 import { IIndicationRepository } from '../repositories/IIndicationRepository';
@@ -9,10 +9,19 @@ export class ListAllIndication {
    constructor(
       @inject('PrismaIndication')
       private indRepo: IIndicationRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute(): Promise<Indication[]> {
-      const find = await this.indRepo.listAll();
+      let find = await this.cache.recover<Indication[]>('indication');
+
+      if (!find) {
+         find = await this.indRepo.listAll();
+
+         await this.cache.save('indication', find);
+      }
 
       return find;
    }

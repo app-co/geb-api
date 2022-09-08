@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
+import { Transaction, User } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { inject, injectable } from 'tsyringe';
 
 import { ITransactionRepository } from '../repositories/ITransactionRespository';
@@ -11,15 +14,32 @@ export class PontosTransaction {
 
       @inject('PrismaUser')
       private repoUser: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async exec(): Promise<any> {
-      const transaction = await this.repoTransaction.listAllTransaction();
-      const users = await this.repoUser.listAllUser();
+      let users = await this.cache.recover<User[]>('list-all-users');
+      let transaction = await this.cache.recover<Transaction[]>('transaction');
 
-      const relatorioConsumo = users
+      if (!users) {
+         users = await this.repoUser.listAllUser();
+         console.log('passou pelo banco');
+
+         await this.cache.save('list-all-users', users);
+      }
+
+      if (!transaction) {
+         transaction = await this.repoTransaction.listAllTransaction();
+         console.log('passou pelo banco');
+
+         await this.cache.save('transaction', transaction);
+      }
+
+      const relatorioConsumo = users!
          .map((user, index) => {
-            const cons = transaction.filter(h => h.consumidor_id === user.id);
+            const cons = transaction!.filter(h => h.consumidor_id === user.id);
 
             const consumo = {
                nome: user.nome,
@@ -45,9 +65,9 @@ export class PontosTransaction {
             };
          });
 
-      const relatorioVendas = users
+      const relatorioVendas = users!
          .map((user, index) => {
-            const cons = transaction.filter(h => h.prestador_id === user.id);
+            const cons = transaction!.filter(h => h.prestador_id === user.id);
 
             const consumo = {
                nome: user.nome,

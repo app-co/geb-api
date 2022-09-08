@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { OrderTransaction } from '@prisma/client';
-import { IOrderTransaction } from '@shared/dtos';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { inject, injectable } from 'tsyringe';
 
 import { IConsumoRepository } from '../repositories/IConsumoRepository';
@@ -14,12 +14,21 @@ export class FindOrderConsumidor {
 
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute(consumidor_id: string): Promise<OrderTransaction[]> {
-      const find = await this.consumoRepository.findOrderConsumidor(
-         consumidor_id,
+      let find = await this.cache.recover<OrderTransaction[]>(
+         `orderTransactionConsu:${consumidor_id}`,
       );
+
+      if (!find) {
+         find = await this.consumoRepository.findOrderConsumidor(consumidor_id);
+
+         await this.cache.save(`orderTransactionConsu:${consumidor_id}`, find);
+      }
 
       return find;
    }

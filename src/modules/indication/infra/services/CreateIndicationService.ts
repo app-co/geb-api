@@ -1,5 +1,6 @@
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { Indication } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -21,6 +22,9 @@ export class CreateIndicationService {
 
       @inject('PrismaUser')
       private userRepo: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({
@@ -54,6 +58,9 @@ export class CreateIndicationService {
          description,
          phone_number_client,
       });
+
+      await this.cache.invalidate(`indication`);
+      await this.cache.invalidatePrefix(`indication`);
       return crete;
    }
 }

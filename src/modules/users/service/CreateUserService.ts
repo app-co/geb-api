@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { inject, injectable } from 'tsyringe';
@@ -17,6 +18,9 @@ export class CreateUserService {
    constructor(
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({ nome, membro, senha, adm }: Props): Promise<User> {
@@ -34,6 +38,8 @@ export class CreateUserService {
          senha: has,
          adm,
       });
+
+      await this.cache.invalidate('list-all-users');
 
       return user;
    }

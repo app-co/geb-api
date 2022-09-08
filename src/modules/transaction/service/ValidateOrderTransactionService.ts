@@ -1,5 +1,6 @@
 import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IOrderTransaction } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -24,6 +25,9 @@ export class ValidateOrderTransactionService {
 
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({ order_id, user_id }: Props): Promise<Transaction> {
@@ -61,6 +65,9 @@ export class ValidateOrderTransactionService {
          valor,
          descricao,
       });
+
+      await this.cache.invalidate('transaction');
+      await this.cache.invalidatePrefix(`transaction:${user_id}`);
 
       return create;
    }

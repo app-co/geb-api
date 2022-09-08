@@ -1,5 +1,6 @@
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { B2b } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -10,6 +11,9 @@ export class ValidateB2b {
    constructor(
       @inject('PrismaB2b')
       private b2bRepository: IB2bRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute(id: string, user_id: string): Promise<B2b> {
@@ -27,6 +31,10 @@ export class ValidateB2b {
       }
 
       const up = await this.b2bRepository.validate(id);
+
+      await this.cache.invalidate('b2b');
+      await this.cache.invalidatePrefix('b2bSend');
+      await this.cache.invalidatePrefix('b2bReci');
 
       return up;
    }

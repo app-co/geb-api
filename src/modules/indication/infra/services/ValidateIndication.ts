@@ -1,6 +1,7 @@
 import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { Indication } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IOrderTransaction } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -22,6 +23,9 @@ export class ValidateIndicationService {
 
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({ indicado_id, indication_id }: Props): Promise<Indication> {
@@ -40,6 +44,9 @@ export class ValidateIndicationService {
       }
 
       const up = await this.indicationRepo.validate(find.id);
+
+      await this.cache.invalidate(`indication`);
+      await this.cache.invalidatePrefix(`indication`);
 
       return up;
    }

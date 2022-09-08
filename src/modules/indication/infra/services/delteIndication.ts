@@ -1,4 +1,5 @@
 import { Indication } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -9,6 +10,9 @@ export class DeleteIndicationService {
    constructor(
       @inject('PrismaIndication')
       private indRepository: IIndicationRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute(id: string): Promise<Indication> {
@@ -19,6 +23,9 @@ export class DeleteIndicationService {
       }
 
       const del = await this.indRepository.delete(id);
+
+      await this.cache.invalidate(`indication`);
+      await this.cache.invalidatePrefix(`indication`);
 
       return del;
    }

@@ -17,11 +17,19 @@ import { IPresencaRespository } from '../../modules/presensa/repositories/IPrese
 import { PresencaRepository } from '../../modules/presensa/repositories/PresençaRepository';
 import { ITransactionRepository } from '../../modules/transaction/repositories/ITransactionRespository';
 import { TransactionRepository } from '../../modules/transaction/repositories/TransactionRepository';
+import RedisCacheProvider from './providers/implementations/RedisCachProvider';
+import ICacheProvider from './providers/model/ICacheProvider';
 
 // const providers = {
 //    disk: DiskStorageProvider,
 //    s3: S3StoreageProvider,
 // };
+
+const prividers = {
+   redis: RedisCacheProvider,
+};
+
+container.registerSingleton<ICacheProvider>('Cache', prividers.redis);
 
 container.registerSingleton<IUsersRepository>('PrismaUser', UsersRespository);
 container.registerSingleton<IPostsRepository>('PrismaPost', PostRepository);
