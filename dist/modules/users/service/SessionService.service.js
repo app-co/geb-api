@@ -51,20 +51,15 @@ let SessionService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (targ
     const token = (0, _jsonwebtoken.sign)({}, secret, {
       subject: findUser.id,
       expiresIn
-    });
-    const awsUrl = process.env.AWS_URL;
-    const avatar_url = `${awsUrl}avatar/${findUser.avatar}`;
-    const logo_url = `${awsUrl}logo/${findUser.logotipo}`;
+    }); // const awsUrl = process.env.AWS_URL;
+    // const avatar_url = `${awsUrl}avatar/${findUser.avatar}`;
+    // const logo_url = `${awsUrl}logo/${findUser.logotipo}`;
+
     const [nome, sobrenome] = findUser.nome.split(' ').map(String);
     const user = {
       user: {
         id: findUser.id,
         nome,
-        workName: findUser.workName,
-        avatar: findUser.avatar,
-        avatar_url,
-        logo: findUser.logotipo,
-        logo_url,
         adm: findUser.adm
       },
       token

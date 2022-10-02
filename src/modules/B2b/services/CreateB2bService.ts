@@ -8,8 +8,12 @@ import { IB2bRepository } from '../repositories/IB2bRepository';
 
 interface Props {
    send_id: string;
+   send_name: string;
+   recevid_name: string;
    recevid_id: string;
    appointment: string;
+   assunto: string;
+   validate: boolean;
 }
 
 @injectable()
@@ -25,29 +29,38 @@ export class CreateB2b {
       private cache: ICacheProvider,
    ) {}
 
-   async execute({ send_id, recevid_id, appointment }: Props): Promise<B2b> {
+   async execute({
+      send_id,
+      recevid_id,
+      send_name,
+      recevid_name,
+      appointment,
+      assunto,
+      validate,
+   }: Props): Promise<B2b> {
       const sendUser = await this.userRepository.findById(send_id);
       const recevidUser = await this.userRepository.findById(recevid_id);
 
-      if (!sendUser) {
-         throw new Err('usuário não encontrado');
-      }
+      // if (!sendUser) {
+      //    throw new Err('usuário não encontrado');
+      // }
 
-      if (!recevidUser) {
-         throw new Err('usuário não encontrado');
-      }
+      // if (!recevidUser) {
+      //    throw new Err('usuário não encontrado');
+      // }
 
-      if (sendUser.id === recevid_id) {
-         throw new Err('você não pode fazer b2b com você mesmo');
-      }
+      // if (sendUser.id === recevid_id) {
+      //    throw new Err('você não pode fazer b2b com você mesmo');
+      // }
 
       const create = await this.b2bRepository.create({
          send_id,
-         send_name: sendUser.nome,
+         send_name,
          recevid_id,
-         recevid_name: recevidUser.nome,
+         recevid_name,
          appointment,
-         validate: false,
+         validate,
+         assunto,
       });
 
       await this.cache.invalidate('b2b');

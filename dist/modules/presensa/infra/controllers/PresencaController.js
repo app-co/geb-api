@@ -5,66 +5,90 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PresensaController = void 0;
 
-var _ClassificationPresensa = require("../../services/ClassificationPresensa");
+var _CreateOrderPresençaService = require("../../services/CreateOrderPresen\xE7aService");
 
 var _CreatePresensaService = require("../../services/CreatePresensaService");
 
-var _ListAllPresensaService = require("../../services/ListAllPresensaService");
+var _DeletePresenca = require("../../services/DeletePresenca");
 
-var _UdatePresensaService = require("../../services/UdatePresensaService");
+var _GlobalPontsPresencaService = require("../../services/GlobalPontsPresencaService");
+
+var _ListAllOrderPresencaService = require("../../services/ListAllOrderPresencaService");
+
+var _ListPresencaUserService = require("../../services/ListPresencaUserService");
 
 var _tsyringe = require("tsyringe");
-
-var _ListPresensaService = require("../../services/ListPresensaService");
 
 class PresensaController {
   async create(req, res) {
     const service = _tsyringe.container.resolve(_CreatePresensaService.CreatePresencaService);
 
     const {
-      user_id
+      user_id,
+      nome,
+      presenca
     } = req.body;
     const create = await service.execute({
-      user_id
+      user_id,
+      nome,
+      presenca
     });
     return res.json(create);
   }
 
-  async update(req, res) {
-    const service = _tsyringe.container.resolve(_UdatePresensaService.UpdatePresensaService);
+  async createOrder(req, res) {
+    const service = _tsyringe.container.resolve(_CreateOrderPresençaService.CreateOrderPresencaService);
 
     const {
-      id,
-      presenca
+      user_id,
+      nome
     } = req.body;
     const create = await service.execute({
-      id,
-      presenca
+      user_id,
+      nome
     });
     return res.json(create);
   }
 
-  async list(req, res) {
-    const service = _tsyringe.container.resolve(_ListPresensaService.ListPresensaService);
+  async delte(req, res) {
+    const service = _tsyringe.container.resolve(_DeletePresenca.DeletePresensa);
 
-    const user_id = req.user.id;
-    const list = await service.execute(user_id);
+    const {
+      id
+    } = req.params;
+    const create = await service.execute({
+      id: String(id)
+    });
+    return res.json(create);
+  } // async update(req: Request, res: Response): Promise<Response> {}
+
+
+  async listAllOrder(req, res) {
+    const service = _tsyringe.container.resolve(_ListAllOrderPresencaService.ListAllOrderPresensaService);
+
+    const list = await service.execute();
     return res.json(list);
   }
 
-  async listAll(req, res) {
-    const service = _tsyringe.container.resolve(_ListAllPresensaService.ListAllPresensaService);
+  async listAllPresecaUser(req, res) {
+    const service = _tsyringe.container.resolve(_ListPresencaUserService.ListPresencaUseraService);
 
-    const list = await service.execute();
+    const user_id = req.user.id;
+    const list = await service.execute({
+      user_id
+    });
     return res.json(list);
   }
 
   async rank(req, res) {
-    const service = _tsyringe.container.resolve(_ClassificationPresensa.ClassificationPresensa);
+    const service = _tsyringe.container.resolve(_GlobalPontsPresencaService.GlobalPontsPresencaService);
 
     const list = await service.execute();
     return res.json(list);
-  }
+  } // async rank(req: Request, res: Response): Promise<Response> {}
+  // async rank(req: Request, res: Response): Promise<Response> {}
+  // async rank(req: Request, res: Response): Promise<Response> {}
+
 
 }
 

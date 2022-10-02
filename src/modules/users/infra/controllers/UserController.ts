@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { CreateLink } from '@modules/users/service/createLink';
 import { CreateProfi } from '@modules/users/service/CreateProfile';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
 import { DeleteUserService } from '@modules/users/service/DeleteUserService';
+import { findUserByIdService } from '@modules/users/service/findUserByIdService';
+import { GlobalPontsService } from '@modules/users/service/GlobalPontsService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { Request, Response } from 'express';
@@ -11,15 +14,21 @@ export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateUserService);
 
-      const { nome, membro, senha, adm } = req.body;
+      const { nome, membro, senha, adm, id, apadrinhado, firstLogin, inativo } =
+         req.body;
 
       const user = await service.execute({
          nome,
          membro,
          senha,
          adm,
+         id,
+         apadrinhado,
+         firstLogin,
+         inativo,
       });
 
+      console.log(firstLogin);
       return res.json(user);
    }
 
@@ -36,6 +45,24 @@ export class UserController {
       return res.json(sess);
    }
 
+   async deleteUser(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(DeleteUserService);
+      const { membro } = req.params;
+
+      const rs = await serv.execute({ membro });
+
+      return res.json(rs);
+   }
+
+   async findUserById(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(findUserByIdService);
+      const { id } = req.user;
+
+      const rs = await serv.execute({ user_id: id });
+
+      return res.json(rs);
+   }
+
    // async update(req: Request, res: Response): Promise<Response> {}
 
    // async updateAvatar(req: Request, res: Response): Promise<Response> {}
@@ -50,7 +77,7 @@ export class UserController {
       return res.json(list);
    }
 
-   //* *PROFILE */
+   // ! PROFILE */
    async createProfile(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(CreateProfi);
       const {
@@ -61,10 +88,8 @@ export class UserController {
          email,
          enquadramento,
          ramo,
-         whatsApp,
-         insta,
-         face,
-         web,
+         logo,
+         avatar,
       } = req.body;
 
       const user_id = req.user.id;
@@ -77,14 +102,38 @@ export class UserController {
          email,
          enquadramento,
          ramo,
-         user_id,
-         whatsApp,
-         insta,
-         face,
-         web,
+         fk_id_user: user_id,
+         logo,
+         avatar,
       });
 
       return res.json(create);
+   }
+
+   // !! LINKS
+
+   async createLink(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(CreateLink);
+
+      const { nome, user_id, link } = req.body;
+
+      const user = await service.execute({
+         nome,
+         user_id,
+         link,
+      });
+
+      return res.json(user);
+   }
+
+   //! RANK GERAL
+
+   async rank(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(GlobalPontsService);
+
+      const ex = await serv.execute();
+
+      return res.json(ex);
    }
 
    // async findUnicUser(req: Request, res: Response): Promise<Response> {}
@@ -94,6 +143,4 @@ export class UserController {
    // async updatePadrinho(req: Request, res: Response): Promise<Response> {}
 
    // async updateSenhaUser(req: Request, res: Response): Promise<Response> {}
-
-   // async deleteUser(req: Request, res: Response): Promise<Response> {}
 }

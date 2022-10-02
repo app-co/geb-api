@@ -9,6 +9,6 @@ export interface IConsumoRepository {
    findOrderConsumidor(consumidor_id: string): Promise<OrderTransaction[]>;
    findAllOrder(): Promise<OrderTransaction[]>;
    findOrderById(id: string): Promise<OrderTransaction | null>;
-   deleteOrder(id: string): Promise<OrderTransaction>;
+   deleteOrder(id: string): Promise<void>;
    listAll(): Promise<Consumo[]>;
 }

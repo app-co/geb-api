@@ -1,19 +1,43 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Prisma, prisma, PrismaClient, Profile, User } from '@prisma/client';
-import { IProfileDto, IUserDtos } from '@shared/dtos';
+import {
+   Links,
+   PrismaClient,
+   Profile,
+   SituationUser,
+   User,
+} from '@prisma/client';
+import { ILinkDto, IProfileDto, IUserDtos, ISituationUser } from '@shared/dtos';
 
 import { IUsersRepository } from './IUsersRespository';
 
 export class UsersRespository implements IUsersRepository {
    private prisma = new PrismaClient();
 
-   public async create(data: IUserDtos): Promise<User> {
+   public async create(
+      data: IUserDtos,
+      apadrinhado: boolean,
+      firstLogin: boolean,
+      inativo: boolean,
+   ): Promise<User> {
       const user = await this.prisma.user.create({
          data: {
             nome: data.nome,
             membro: data.membro,
             adm: data.adm,
             senha: data.senha!,
+            id: data.id,
+            situation: {
+               create: {
+                  apadrinhado,
+                  firstLogin,
+                  inativo,
+               },
+            },
+            region: {
+               create: {
+                  city: 'BOTUCATU',
+               },
+            },
          },
       });
 
@@ -31,6 +55,11 @@ export class UsersRespository implements IUsersRepository {
    async findById(user_id: string): Promise<User | null> {
       const find = await this.prisma.user.findUnique({
          where: { id: user_id },
+         include: {
+            profile: true,
+            region: true,
+            situation: true,
+         },
       });
 
       return find;
@@ -38,18 +67,78 @@ export class UsersRespository implements IUsersRepository {
 
    async listAllUser(): Promise<User[]> {
       const find = await this.prisma.user.findMany({
-         include: { presenca: true },
+         include: {
+            situation: true,
+            profile: true,
+         },
       });
       return find;
    }
 
-   //* *PROFILE  */
+   async updateToken(id: string, token: string): Promise<User> {
+      const up = await this.prisma.user.update({
+         where: { id },
+         data: {
+            token,
+         },
+      });
+
+      return up;
+   }
+
+   async deleteUser(membro: string): Promise<User> {
+      // await this.prisma.situationUser.delete({
+      //    where: { membro },
+      // });
+      const user = await this.prisma.user.delete({
+         where: { membro },
+      });
+
+      return user;
+   }
+
+   //! !  LINKS
+
+   async createLink(data: ILinkDto): Promise<Links> {
+      const cr = await this.prisma.links.create({
+         data: {
+            user_id: data.user_id,
+            link: data.link,
+            nome: data.nome,
+         },
+      });
+      return cr;
+   }
+
+   async findLinkByUserId(user_id: string): Promise<Links[]> {
+      const fin = await this.prisma.links.findMany({
+         where: { user_id },
+      });
+
+      return fin;
+   }
+
+   async updateLink(id: string, link: string): Promise<Links> {
+      const up = await this.prisma.links.update({
+         where: { id },
+         data: { link },
+      });
+
+      return up;
+   }
+
+   async deleteLink(id: string): Promise<void> {
+      await this.prisma.links.delete({
+         where: { id },
+      });
+   }
+
+   // !!PROFILE  */
 
    async updateProfile(data: IProfileDto, id: string): Promise<Profile> {
       const up = await this.prisma.profile.update({
          where: { id },
          data: {
-            user_id: data.user_id,
             whats: data.whats,
             workName: data.workName,
             CNPJ: data.CNPJ,
@@ -57,7 +146,6 @@ export class UsersRespository implements IUsersRepository {
             ramo: data.ramo,
             enquadramento: data.enquadramento,
             email: data.email,
-            links: [],
          },
       });
 
@@ -66,23 +154,15 @@ export class UsersRespository implements IUsersRepository {
 
    async findByIdProfile(id: string): Promise<Profile | null> {
       const find = await this.prisma.profile.findFirst({
-         where: { user_id: id },
+         where: { fk_id_user: id },
       });
 
       return find;
    }
 
-   async createProfile(
-      data: IProfileDto,
-      whatsApp: string,
-      insta: string,
-      web: string,
-      face: string,
-   ): Promise<Profile> {
-      const links = [{ whatsApp, insta, web, face }] as Prisma.JsonArray;
+   async createProfile(data: IProfileDto): Promise<Profile> {
       const create = await this.prisma.profile.create({
          data: {
-            user_id: data.user_id,
             whats: data.whats,
             workName: data.workName,
             CNPJ: data.CNPJ,
@@ -90,11 +170,26 @@ export class UsersRespository implements IUsersRepository {
             ramo: data.ramo,
             enquadramento: data.enquadramento,
             email: data.email,
-            links,
+            logotipo: data.logo,
+            avatar: data.avatar,
+            fk_id_user: data.fk_id_user,
          },
       });
 
       return create;
+   }
+
+   async findProfileByUserId(fk_id_user: string): Promise<Profile | null> {
+      const find = await this.prisma.profile.findFirst({
+         where: { fk_id_user },
+      });
+
+      return find;
+   }
+
+   async findAllProfile(): Promise<Profile[]> {
+      const fi = await this.prisma.profile.findMany();
+      return fi;
    }
 
    async updateSenha(senha: string, id: string): Promise<User> {
@@ -122,22 +217,18 @@ export class UsersRespository implements IUsersRepository {
       return up;
    }
 
-   async updateToken(id: string, token: string): Promise<User> {
-      const up = await this.prisma.user.update({
-         where: { id },
+   // !! SITUATION
+
+   async updateSituation(data: ISituationUser): Promise<SituationUser> {
+      const up = await this.prisma.situationUser.update({
+         where: { id: data.id },
          data: {
-            token,
+            apadrinhado: data.apadrinhado,
+            firstLogin: data.firstLogin,
+            inativo: data.inativo,
          },
       });
 
       return up;
-   }
-
-   async deleteUser(user_id: string): Promise<User> {
-      const user = await this.prisma.user.delete({
-         where: { id: user_id },
-      });
-
-      return user;
    }
 }

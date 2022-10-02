@@ -12,9 +12,15 @@ import { ValidateIndicationService } from '../services/ValidateIndication';
 export class IndicationController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateIndicationService);
-      const { indicado_id, client_name, description, phone_number_client } =
-         req.body;
-      const quemIndicou_id = req.user.id;
+      const {
+         indicado_id,
+         quemIndicou_name,
+         indicado_name,
+         quemIndicou_id,
+         client_name,
+         description,
+         phone_number_client,
+      } = req.body;
 
       const create = await service.execute({
          indicado_id,
@@ -22,6 +28,8 @@ export class IndicationController {
          description,
          phone_number_client,
          quemIndicou_id,
+         indicado_name,
+         quemIndicou_name,
       });
 
       return res.json(create);

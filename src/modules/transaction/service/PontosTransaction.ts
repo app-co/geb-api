@@ -6,6 +6,21 @@ import { inject, injectable } from 'tsyringe';
 
 import { ITransactionRepository } from '../repositories/ITransactionRespository';
 
+type Props = {
+   compras: {
+      id: string;
+      nome: string;
+      pontos: number;
+      rank: number;
+   }[];
+   vendas: {
+      id: string;
+      nome: string;
+      pontos: number;
+      rank: number;
+   }[];
+};
+
 @injectable()
 export class PontosTransaction {
    constructor(
@@ -19,7 +34,7 @@ export class PontosTransaction {
       private cache: ICacheProvider,
    ) {}
 
-   async exec(): Promise<any> {
+   async exec(): Promise<Props> {
       let users = await this.cache.recover<User[]>('list-all-users');
       let transaction = await this.cache.recover<Transaction[]>('transaction');
 
@@ -42,6 +57,7 @@ export class PontosTransaction {
             const cons = transaction!.filter(h => h.consumidor_id === user.id);
 
             const consumo = {
+               id: user.id,
                nome: user.nome,
                pontos: cons.length * 10,
             };
@@ -70,6 +86,7 @@ export class PontosTransaction {
             const cons = transaction!.filter(h => h.prestador_id === user.id);
 
             const consumo = {
+               id: user.id,
                nome: user.nome,
                pontos: cons.length * 10,
             };

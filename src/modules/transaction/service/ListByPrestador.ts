@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { inject, injectable } from 'tsyringe';
 
@@ -20,12 +22,14 @@ export class ListByPrestador {
    ) {}
 
    async execute({ id }: Props): Promise<Transaction[]> {
-      let find = await this.cache.recover<Transaction[]>(`transaction:${id}`);
+      let find = await this.cache.recover<Transaction[]>(
+         `transaction-prestador:${id}`,
+      );
 
       if (!find) {
          find = await this.transactionRepository.findByPrestador(id);
-         await this.cache.save(`transaction:${id}`, find);
-         console.log('listprestador: passou pelo banco');
+         await this.cache.save(`transaction-prestador:${id}`, find);
+         console.log('list transaction by prestador: passou pelo banco');
       }
 
       return find;

@@ -18,8 +18,6 @@ export class FindB2bByRecevid {
 
    async execute(id: string): Promise<B2b[]> {
       let find = await this.cache.recover<B2b[]>(`b2bReci:${id}`);
-      const fin = await this.b2bRepository.findB2bByRecevidId(id);
-      console.log(id);
 
       if (!find) {
          find = await this.b2bRepository.findB2bByRecevidId(id);

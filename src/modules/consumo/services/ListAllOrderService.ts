@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { OrderTransaction } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';

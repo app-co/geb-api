@@ -12,16 +12,27 @@ import { FindB2bByRecevid } from '../../services/FindB2bByRecevid';
 export class B2bController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateB2b);
-      const { recevid_id, appointment } = req.body;
-      const user_id = req.user.id;
+      const {
+         recevid_id,
+         assunto,
+         appointment,
+         send_id,
+         send_name,
+         recevid_name,
+         validate,
+      } = req.body;
 
       const create = await service.execute({
-         send_id: user_id,
+         send_id,
          recevid_id,
          appointment,
+         send_name,
+         recevid_name,
+         assunto,
+         validate,
       });
 
-      req.io.emit('trans', create);
+      // req.io.emit('trans', create);
 
       return res.json(create);
    }

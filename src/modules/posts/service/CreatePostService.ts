@@ -1,13 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable import/no-extraneous-dependencies */
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
+import { IPostsDtos } from '@shared/dtos';
 import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { inject, injectable } from 'tsyringe';
 
 import { Post } from '.prisma/client';
 
-import { IPostsDtos } from '../Dtos/IPostsDtos';
 import { IPostsRepository } from '../repositories/IPostRepositoty';
 
-interface IProps {
-   post: string;
+interface Props {
+   description: string;
+   image: string;
+   fk_id_user: string;
+   like: number;
 }
 
 @injectable()
@@ -16,14 +22,27 @@ export class CreatePostService {
       @inject('PrismaPost')
       private postRepository: IPostsRepository,
 
-      @inject('Storage')
-      private storage: IStorageProvider,
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
-   async execute({ post }: IProps): Promise<string> {
-      await this.storage.deleteFile(post, 'post');
-      const res = await this.storage.saveFile(post, 'post');
-      const url = `https://geb-app.s3.us-east-2.amazonaws.com/post/${res}`;
-      return url;
+   async execute({
+      description,
+      image,
+      fk_id_user,
+      like,
+   }: Props): Promise<Post> {
+      const create = await this.postRepository.create(
+         {
+            description,
+            image,
+            fk_id_user,
+         },
+         like,
+      );
+
+      await this.cache.invalidate('post');
+
+      return create;
    }
 }

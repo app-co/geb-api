@@ -10,6 +10,7 @@ import socket from 'socket.io';
 
 import path from 'path';
 
+import rateLimiter from '@shared/midle/rateLimit';
 import { Route } from './routes/index.routes';
 
 import '@shared/container';
@@ -28,15 +29,17 @@ io.off('dis', h => {
    console.log(`disconectado ${h.id}`);
 });
 
+// app.use(rateLimiter);
+app.use(cors());
+app.use(express.json());
+
+app.use(Route);
+app.use(errors());
+
 app.use((req: Request, res: Response, nex: NextFunction) => {
    req.io = io;
    nex();
 });
-
-app.use(cors());
-app.use(express.json());
-app.use(Route);
-app.use(errors());
 
 app.use(
    '/file/post',

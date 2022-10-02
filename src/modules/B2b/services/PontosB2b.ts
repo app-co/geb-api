@@ -42,6 +42,7 @@ export class PontosB2b {
             );
 
             const send = {
+               id: user.id,
                nome: user.nome,
                pontos: cons.length * 10,
             };

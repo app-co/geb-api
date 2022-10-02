@@ -1,5 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
+import { OrderTransaction } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IOrderTransaction } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
@@ -10,7 +13,13 @@ import { Transaction } from '.prisma/client';
 import { ITransactionRepository } from '../repositories/ITransactionRespository';
 
 interface Props {
-   order_id: string;
+   consumidor_id: string;
+   consumidor_name: string;
+   prestador_name: string;
+   prestador_id: string;
+   descricao: string;
+   valor: number;
+   order_id?: string;
    user_id: string;
 }
 
@@ -30,32 +39,35 @@ export class ValidateOrderTransactionService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute({ order_id, user_id }: Props): Promise<Transaction> {
-      const find = await this.orderRepository.findOrderById(order_id);
+   async execute({
+      consumidor_id,
+      consumidor_name,
+      descricao,
+      prestador_id,
+      prestador_name,
+      valor,
+      order_id,
+      user_id,
+   }: Props): Promise<Transaction> {
       const user = await this.userRepository.findById(user_id);
 
       if (!user) {
          throw new Err('Prestador não encontrado');
       }
 
-      if (!find) {
-         throw new Err('Ordem não encontrada');
+      if (order_id) {
+         const findP = await this.orderRepository.findOrderById(order_id);
+
+         if (!findP) {
+            throw new Err('Ordem não encontrada');
+         }
+
+         if (user.id !== findP.prestador_id) {
+            throw new Err('Você não tem acesso a essa order', 401);
+         }
+
+         await this.orderRepository.deleteOrder(findP.id);
       }
-
-      if (user.id !== find.prestador_id) {
-         throw new Err('Você não tem acesso a essa order', 401);
-      }
-
-      const order = await this.orderRepository.deleteOrder(order_id);
-
-      const {
-         consumidor_id,
-         consumidor_name,
-         prestador_name,
-         prestador_id,
-         descricao,
-         valor,
-      } = order;
 
       const create = this.transactionRepository.create({
          consumidor_id,
@@ -67,7 +79,12 @@ export class ValidateOrderTransactionService {
       });
 
       await this.cache.invalidate('transaction');
-      await this.cache.invalidatePrefix(`transaction:${user_id}`);
+      await this.cache.invalidatePrefix('transaction-prestador');
+      await this.cache.invalidatePrefix('transaction-consumidor');
+
+      await this.cache.invalidate('orderTransaction');
+      await this.cache.invalidatePrefix(`order-transaction-consumidor`);
+      await this.cache.invalidatePrefix('order-transaction-prestador');
 
       return create;
    }

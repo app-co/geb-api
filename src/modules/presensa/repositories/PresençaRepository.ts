@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { Presenca } from '@prisma/client';
 import { IPresencaDto } from '@shared/dtos';
 
@@ -12,6 +13,8 @@ export class PresencaRepository implements IPresencaRespository {
       const create = await this.prisma.presenca.create({
          data: {
             user_id: data.user_id,
+            nome: data.nome,
+            presenca: data.presenca,
          },
       });
 
@@ -29,7 +32,15 @@ export class PresencaRepository implements IPresencaRespository {
       return create;
    }
 
-   async listOrderWithId(user_id: string): Promise<null | OrderPresenca> {
+   async listOrderWithId(id: string): Promise<null | OrderPresenca> {
+      const list = await this.prisma.orderPresenca.findUnique({
+         where: { id },
+      });
+
+      return list;
+   }
+
+   async listOrderWithUserId(user_id: string): Promise<null | OrderPresenca> {
       const list = await this.prisma.orderPresenca.findFirst({
          where: { user_id },
       });

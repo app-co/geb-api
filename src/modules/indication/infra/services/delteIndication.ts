@@ -25,7 +25,8 @@ export class DeleteIndicationService {
       const del = await this.indRepository.delete(id);
 
       await this.cache.invalidate(`indication`);
-      await this.cache.invalidatePrefix(`indication`);
+      await this.cache.invalidatePrefix(`indication-indicado`);
+      await this.cache.invalidatePrefix('indiQuem');
 
       return del;
    }

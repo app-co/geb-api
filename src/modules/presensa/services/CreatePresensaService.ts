@@ -10,6 +10,7 @@ import { IPresencaRespository } from '../repositories/IPresençaRepository';
 interface IProps {
    user_id: string;
    nome: string;
+   presenca: boolean;
 }
 
 @injectable()
@@ -22,20 +23,21 @@ export class CreatePresencaService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute({ user_id, nome }: IProps): Promise<Presenca> {
-      const find = await this.presencaRepository.listOrderWithId(user_id);
+   async execute({ user_id, nome, presenca }: IProps): Promise<Presenca> {
+      const find = await this.presencaRepository.listOrderWithUserId(user_id);
 
       if (!find) {
          throw new Err('Não há orderm de presença para validar');
       }
 
       if (find) {
-         const del = await this.presencaRepository.deleteOrderPresenca(find.id);
-         console.log(del);
+         await this.presencaRepository.deleteOrderPresenca(find.id);
       }
+
       const create = await this.presencaRepository.create({
          user_id,
          nome,
+         presenca,
       });
 
       await this.cache.invalidate('orderPresenca');

@@ -10,14 +10,22 @@ export class ConsumoController {
    async createOrder(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateOrderTransaction);
 
-      const { descricao, valor, prestador_id } = req.body;
-      const consumidor_id = req.user.id;
+      const {
+         descricao,
+         consumidor_id,
+         consumidor_name,
+         prestador_name,
+         valor,
+         prestador_id,
+      } = req.body;
 
       const consumo = await service.execute({
          consumidor_id,
          prestador_id,
          descricao,
          valor,
+         consumidor_name,
+         prestador_name,
       });
 
       return res.json(consumo);

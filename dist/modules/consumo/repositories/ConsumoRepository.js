@@ -12,12 +12,14 @@ class ConsumoRepository {
     this.prisma = new _client.PrismaClient();
   }
 
+  //* * Orders */
   async create(data) {
-    const consumo = await this.prisma.consumo.create({
+    const consumo = await this.prisma.orderTransaction.create({
       data: {
-        presstador_id: data.prestador_id,
+        prestador_id: data.prestador_id,
         consumidor_id: data.consumidor_id,
-        type: data.type,
+        consumidor_name: data.consumidor_name,
+        prestador_name: data.prestador_name,
         valor: data.valor,
         descricao: data.descricao
       }
@@ -25,18 +27,49 @@ class ConsumoRepository {
     return consumo;
   }
 
-  async listByConsumo(user_id) {
-    const consumo = await this.prisma.consumo.findMany({
+  async findOrderPrestador(user_id) {
+    const consumo = await this.prisma.orderTransaction.findMany({
       where: {
-        consumidor_id: user_id
+        prestador_id: user_id
       }
     });
     return consumo;
   }
 
+  async findAllOrder() {
+    const list = await this.prisma.orderTransaction.findMany();
+    return list;
+  }
+
+  async findOrderById(id) {
+    const find = await this.prisma.orderTransaction.findUnique({
+      where: {
+        id
+      }
+    });
+    return find;
+  }
+
+  async deleteOrder(id) {
+    await this.prisma.orderTransaction.delete({
+      where: {
+        id
+      }
+    });
+  }
+
   async listAll() {
     const find = await this.prisma.consumo.findMany();
     return find;
+  }
+
+  async findOrderConsumidor(consumidor_id) {
+    const consumo = await this.prisma.orderTransaction.findMany({
+      where: {
+        consumidor_id
+      }
+    });
+    return consumo;
   }
 
 }

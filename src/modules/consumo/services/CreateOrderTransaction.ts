@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { OrderTransaction } from '@prisma/client';
@@ -12,6 +13,8 @@ interface Props {
    valor: number;
    descricao: string;
    prestador_id: string;
+   prestador_name: string;
+   consumidor_name: string;
    consumidor_id: string;
 }
 
@@ -33,35 +36,37 @@ export class CreateOrderTransaction {
       valor,
       descricao,
       consumidor_id,
+      prestador_name,
+      consumidor_name,
    }: Props): Promise<OrderTransaction> {
       const findUser = await this.userRepository.findById(consumidor_id);
 
       const findPrestaor = await this.userRepository.findById(prestador_id);
 
-      if (!findPrestaor) {
-         throw new Err('Prestador não encontrado');
-      }
+      // if (!findPrestaor) {
+      //    throw new Err('Prestador não encontrado');
+      // }
 
-      if (!findUser) {
-         throw new Err('Consumidor não encontrado');
-      }
+      // if (!findUser) {
+      //    throw new Err('Consumidor não encontrado');
+      // }
 
-      if (findUser.id === prestador_id) {
-         throw new Err('Você nao pode realizar uma orderm para você mesmo');
-      }
+      // if (findUser.id === prestador_id) {
+      //    throw new Err('Você nao pode realizar uma orderm para você mesmo');
+      // }
 
       const consumo = await this.consumoRepository.create({
-         consumidor_name: findUser.nome,
+         consumidor_name,
          consumidor_id,
-         prestador_name: findPrestaor.nome,
+         prestador_name,
          prestador_id,
          descricao,
          valor,
       });
 
       await this.cache.invalidate('orderTransaction');
-      await this.cache.invalidatePrefix('orderTransactionPres');
-      await this.cache.invalidatePrefix('orderTransactionConsu');
+      await this.cache.invalidatePrefix(`order-transaction-consumidor`);
+      await this.cache.invalidatePrefix('order-transaction-prestador');
 
       return consumo;
    }

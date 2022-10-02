@@ -22,14 +22,19 @@ export class FindOrderPrestador {
 
    async execute(prestador_id: string): Promise<OrderTransaction[]> {
       let find = await this.cache.recover<OrderTransaction[]>(
-         `orderTransactionPres:${prestador_id}`,
+         `order-transaction-prestador${prestador_id}`,
       );
 
       if (!find) {
          find = await this.consumoRepository.findOrderPrestador(prestador_id);
 
-         await this.cache.save(`orderTransactionPres:${prestador_id}`, find);
+         await this.cache.save(
+            `order-transaction-prestador:${prestador_id}`,
+            find,
+         );
       }
+
+      // await this.cache.invalidatePrefix(`orderTransactionPres:${prestador_id}`);
 
       return find;
    }

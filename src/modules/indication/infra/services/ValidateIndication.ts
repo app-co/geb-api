@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
-import { Indication } from '@prisma/client';
+import { Indication, Transaction } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IOrderTransaction } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-
-import { Transaction } from '.prisma/client';
 
 import { IIndicationRepository } from '../repositories/IIndicationRepository';
 
@@ -46,7 +45,8 @@ export class ValidateIndicationService {
       const up = await this.indicationRepo.validate(find.id);
 
       await this.cache.invalidate(`indication`);
-      await this.cache.invalidatePrefix(`indication`);
+      await this.cache.invalidatePrefix(`indication-indicado`);
+      await this.cache.invalidatePrefix('indiQuem');
 
       return up;
    }

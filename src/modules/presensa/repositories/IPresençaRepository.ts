@@ -8,7 +8,8 @@ export interface IPresencaRespository {
    listAllPresenseWithUserId(user_id: string): Promise<Presenca[]>;
    listAllPresenca(): Promise<Presenca[]>;
 
-   listOrderWithId(user_id: string): Promise<OrderPresenca | null>;
+   listOrderWithUserId(user_id: string): Promise<OrderPresenca | null>;
+   listOrderWithId(id: string): Promise<OrderPresenca | null>;
    listAllOrder(): Promise<OrderPresenca[]>;
 
    deleteOrderPresenca(id: string): Promise<OrderPresenca>;

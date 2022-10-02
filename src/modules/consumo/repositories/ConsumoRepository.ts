@@ -46,9 +46,8 @@ export class ConsumoRepository implements IConsumoRepository {
       return find;
    }
 
-   async deleteOrder(id: string): Promise<OrderTransaction> {
-      const del = await this.prisma.orderTransaction.delete({ where: { id } });
-      return del;
+   async deleteOrder(id: string): Promise<void> {
+      await this.prisma.orderTransaction.delete({ where: { id } });
    }
 
    async listAll(): Promise<Consumo[]> {

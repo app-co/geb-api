@@ -19,6 +19,6 @@ const post = (0, _express.Router)();
 exports.post = post;
 const controller = new _PostController.PostController();
 const postUpload = (0, _multer.default)(_upload.default);
-post.patch('/', postUpload.single('post'), controller.create);
+post.post('/', controller.create);
 post.patch('/like/:image_id', controller.like);
 post.get('/', controller.listAllPosts);

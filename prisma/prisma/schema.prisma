@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+generator client {
+   provider = "prisma-client-js"
+}
+
+model User {
+   id                      String        @id       @default(uuid())
+   nome                    String      
+   membro                  String        @unique
+   token                   String?     
+   senha                   String      
+   adm                     Boolean           
+   created_at              DateTime                @default(now())
+   padrinho                Padrinho[]                  
+   post                    Post[]      
+   feed                    Feed[]      
+   presenca                Presenca[]
+   profile                 Profile[]
+   pontos                  Pontos[]
+}
+
+model Padrinho {
+   id                      String         @id      @default(uuid())
+   user_id                 String 
+   qnt                     Int                     @default(autoincrement())        
+   user                    User?                   @relation(references: [id], fields: [user_id])
+}
+
+model Profile {
+   id                      String        @id       @default(uuid())
+   whats                   String      
+   logotipo                String?     
+   avatar                  String?    
+   links                   Json[]    
+   workName                String      
+   CNPJ                    String      
+   CPF                     String      
+   ramo                    String      
+   enquadramento           String      
+   email                   String
+   user_id                 String
+   user                    User?                   @relation(references: [id], fields: [user_id])    
+}
+
+model Presenca {
+   id                      String        @id       @default(uuid())
+   user_id                 String
+   user                    User?                   @relation(references: [id], fields: [user_id])
+   presenca                Boolean                 @default(false)
+   qnt                     Int                     @default(autoincrement())
+   createdAt               DateTime                @default(now())
+}
+
+model OrderPresenca{
+   id                      String        @id       @default(uuid())
+   user_id                 String
+   nome                    String
+   createdAt               DateTime                @default(now())
+}
+
+model Post {
+   id                      String        @id       @default(uuid())
+   image                   String
+   like                    Int                     @default(0)
+   description             String
+   user_id                 String
+   user                    User                    @relation(fields: [user_id], references: [id])
+   created_at              DateTime                @default(now())
+}
+
+model Feed {
+   id String               @id                     @default(uuid())
+   image                   String
+   title                   String
+   subTitle                String
+   texto                   String
+   user_id                 String
+   user                    User                    @relation(fields: [user_id], references: [id])   
+   created_at              DateTime   
+}
+
+model OrderTransaction {
+   id                      String         @id      @default(uuid())
+   consumidor_name         String
+   consumidor_id           String
+   prestador_id            String
+   prestador_name          String
+   valor                   Int
+   descricao               String
+   created_at              DateTime                @default(now())
+}
+
+model Consumo {
+   id                      String         @id      @default(uuid())
+   consumidor_id           String?
+   presstador_id           String?
+   type                    String
+   valor                   String
+   descricao               String
+   created_at              DateTime                @default(now())
+}
+
+model Transaction {
+   id                      String         @id      @default(uuid())
+   consumidor_name         String
+   consumidor_id           String
+   prestador_id            String
+   prestador_name          String
+   valor                   Int
+   descricao               String
+   created_at              DateTime                @default(now())
+}
+
+model Pontos {
+   id             String      @id         @default(uuid())
+   presenca       Int                     @default(0)
+   padrinho       Int                     @default(0)
+   compra         Int                     @default(0)
+   venda          Int                     @default(0)
+   user_id        String
+   user           User?                   @relation(references: [id], fields: [user_id])
+}
+
+model B2b {
+   id             String      @id         @default(uuid())
+   send_id        String
+   send_name      String
+   recevid_name   String
+   recevid_id     String
+   appointment     String?
+   createdAt      DateTime                @default(now())
+   validate       Boolean                 @default(false)
+}
+
+model Indication {
+   id                   String   @id      @default(uuid())
+   indicado_id          String
+   indicado_name        String
+   quemIndicou_id       String
+   quemIndicou_name     String
+   client_name          String
+   phone_number_client  Int
+   description          String
+   createdAt            DateTime          @default(now())
+   validate             Boolean           @default(false)
+}

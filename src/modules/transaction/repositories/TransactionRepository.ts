@@ -1,5 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { PrismaClient } from '@prisma/client';
-import { IOrderTransaction } from '@shared/dtos';
+import { IOrderTransaction, ITransaction } from '@shared/dtos';
 
 import { Transaction } from '.prisma/client';
 
@@ -8,7 +9,7 @@ import { ITransactionRepository } from './ITransactionRespository';
 export class TransactionRepository implements ITransactionRepository {
    private prisma = new PrismaClient();
 
-   async create(data: IOrderTransaction): Promise<Transaction> {
+   async create(data: ITransaction): Promise<Transaction> {
       const create = await this.prisma.transaction.create({
          data: {
             consumidor_id: data.consumidor_id,

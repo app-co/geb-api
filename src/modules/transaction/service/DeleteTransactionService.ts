@@ -1,3 +1,4 @@
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -12,6 +13,9 @@ export class DeleteTransactionService {
    constructor(
       @inject('PrismaTransaction')
       private transactionRepository: ITransactionRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({ id }: Props): Promise<void> {
@@ -24,5 +28,6 @@ export class DeleteTransactionService {
       }
 
       await this.transactionRepository.delete(transaction.id);
+      await this.cache.invalidate('transaction');
    }
 }

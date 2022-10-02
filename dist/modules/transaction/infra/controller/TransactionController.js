@@ -5,38 +5,83 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TransactionControler = void 0;
 
-var _tsyringe = require("tsyringe");
+var _FindTransactionById = require("../../service/FindTransactionById");
 
-var _CreateTransactionService = require("../../service/CreateTransactionService");
+var _ListAllTransaction = require("../../service/ListAllTransaction");
+
+var _ListByPrestador = require("../../service/ListByPrestador");
+
+var _LitByConsumidor = require("../../service/LitByConsumidor");
+
+var _PontosTransaction = require("../../service/PontosTransaction");
+
+var _tsyringe = require("tsyringe");
 
 var _DeleteTransactionService = require("../../service/DeleteTransactionService");
 
-var _LIstTransactionService = require("../../service/LIstTransactionService");
+var _ValidateOrderTransactionService = require("../../service/ValidateOrderTransactionService");
 
 class TransactionControler {
   async create(req, res) {
-    const service = _tsyringe.container.resolve(_CreateTransactionService.CreateTransactionService);
+    const service = _tsyringe.container.resolve(_ValidateOrderTransactionService.ValidateOrderTransactionService);
 
     const {
-      prestador_id,
       consumidor_id,
+      consumidor_name,
+      prestador_name,
+      prestador_id,
       valor,
       descricao,
-      nome
+      order_id
     } = req.body;
+    const user_id = req.user.id;
     const create = await service.execute({
-      prestador_id,
       consumidor_id,
+      consumidor_name,
+      prestador_name,
+      prestador_id,
       valor,
       descricao,
-      nome
-    });
-    req.io.emit('trans', create);
+      user_id,
+      order_id
+    }); // req.io.emit('trans', create);
+
     return res.json(create);
   }
 
-  async find(req, res) {
-    const service = _tsyringe.container.resolve(_LIstTransactionService.ListTransactionService);
+  async findById(req, res) {
+    const service = _tsyringe.container.resolve(_FindTransactionById.FindTransactionById);
+
+    const {
+      id
+    } = req.params;
+    const find = await service.execute({
+      id
+    });
+    return res.json(find);
+  }
+
+  async listAll(req, res) {
+    const service = _tsyringe.container.resolve(_ListAllTransaction.ListAllTransaction);
+
+    const find = await service.execute();
+    return res.json(find);
+  }
+
+  async findByPrestador(req, res) {
+    const service = _tsyringe.container.resolve(_ListByPrestador.ListByPrestador);
+
+    const {
+      id
+    } = req.user;
+    const find = await service.execute({
+      id
+    });
+    return res.json(find);
+  }
+
+  async findByConsumidor(req, res) {
+    const service = _tsyringe.container.resolve(_LitByConsumidor.ListByConsumidor);
 
     const {
       id
@@ -53,7 +98,16 @@ class TransactionControler {
     const {
       id
     } = req.params;
-    const find = await service.execute(String(id));
+    const find = await service.execute({
+      id: String(id)
+    });
+    return res.json(find);
+  }
+
+  async pontos(req, res) {
+    const service = _tsyringe.container.resolve(_PontosTransaction.PontosTransaction);
+
+    const find = await service.exec();
     return res.json(find);
   }
 

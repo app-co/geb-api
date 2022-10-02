@@ -1,9 +1,10 @@
-import { IOrderTransaction } from '@shared/dtos';
+/* eslint-disable import/no-extraneous-dependencies */
+import { IOrderTransaction, ITransaction } from '@shared/dtos';
 
 import { Transaction } from '.prisma/client';
 
 export interface ITransactionRepository {
-   create(data: IOrderTransaction): Promise<Transaction>;
+   create(data: ITransaction): Promise<Transaction>;
    findByConsumidor(id: string): Promise<Transaction[]>;
    findByPrestador(id: string): Promise<Transaction[]>;
    listAllTransaction(): Promise<Transaction[]>;

@@ -1,17 +1,20 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { OrderPresenca, Presenca, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IUserDtos } from '@shared/dtos';
 import { inject, injectable } from 'tsyringe';
-import { pontos } from 'utils/pontos';
 
+import { pontos } from '../../../utils';
 import { IPresencaRespository } from '../repositories/IPresençaRepository';
 
 interface Props {
    nome: string;
-   pontuacao: number;
+   pontos: number;
    quantidade: number;
+   rank: number;
 }
 
 @injectable()
@@ -46,19 +49,36 @@ export class GlobalPontsPresencaService {
          console.log('pontospresenca: passou pelo banco');
       }
 
-      const global = listAllUser!.map(user => {
-         const userPresenca = listAllPresenca!.filter(
-            h => h.user_id === user.id,
-         );
+      const global = listAllUser!
+         .map(user => {
+            const userPresenca = listAllPresenca!.filter(
+               h => h.user_id === user.id,
+            );
 
-         const qnt = userPresenca.length;
+            const qnt = userPresenca.length;
 
-         return {
-            nome: user.nome,
-            pontuacao: qnt * pontos.presenca,
-            quantidade: qnt,
-         };
-      });
+            return {
+               id: user.id,
+               nome: user.nome,
+               pontos: qnt * pontos.presenca,
+               quantidade: qnt,
+            };
+         })
+         .sort((h, b) => {
+            if (h.nome > b.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.pontos - a.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h,
+               rank: i + 1,
+            };
+         });
 
       return global;
    }

@@ -5,29 +5,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UserController = void 0;
 
+var _createLink = require("../../service/createLink");
+
+var _CreateProfile = require("../../service/CreateProfile");
+
 var _CreateUserService = require("../../service/CreateUserService");
 
 var _DeleteUserService = require("../../service/DeleteUserService");
 
-var _FindUniqUser = require("../../service/FindUniqUser.service");
+var _findUserByIdService = require("../../service/findUserByIdService");
 
-var _ListAllUsersService = require("../../service/ListAllUsersService.service");
+var _GlobalPontsService = require("../../service/GlobalPontsService");
+
+var _ListAllUsers = require("../../service/ListAllUsers");
 
 var _SessionService = require("../../service/SessionService.service");
 
-var _UdateSenhaUserService = require("../../service/UdateSenhaUserService");
-
-var _UpdateLogoService = require("../../service/UpdateLogoService.service");
-
-var _UpdatePadrinhoService = require("../../service/UpdatePadrinhoService");
-
-var _UpdateProfileService = require("../../service/UpdateProfileService.service");
-
-var _UpdateUserAvatarService = require("../../service/UpdateUserAvatarService.service");
-
 var _tsyringe = require("tsyringe");
-
-var _UpdateUserTokenService = require("../../service/UpdateUserTokenService.service");
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 class UserController {
@@ -38,92 +32,23 @@ class UserController {
       nome,
       membro,
       senha,
-      whats,
-      workName,
-      CNPJ,
-      CPF,
-      email,
-      ramo,
-      enquadramento,
-      adm
+      adm,
+      id,
+      apadrinhado,
+      firstLogin,
+      inativo
     } = req.body;
     const user = await service.execute({
       nome,
       membro,
       senha,
-      whats,
-      workName,
-      CNPJ,
-      CPF,
-      email,
-      ramo,
-      enquadramento,
-      adm
-    });
-    return res.json(user);
-  }
-
-  async update(req, res) {
-    const service = _tsyringe.container.resolve(_UpdateProfileService.UpdateProfileService);
-
-    const {
-      nome,
-      membro,
-      whats,
-      workName,
-      CNPJ,
-      CPF,
-      email,
-      links,
-      ramo,
-      enquadramento,
-      adm
-    } = req.body;
-    const {
-      id
-    } = req.user;
-    const user = await service.execute({
-      nome,
-      membro,
-      whats,
-      workName,
-      CNPJ,
-      CPF,
-      ramo,
-      email,
-      links,
-      enquadramento,
       adm,
-      id
+      id,
+      apadrinhado,
+      firstLogin,
+      inativo
     });
-    return res.json(user);
-  }
-
-  async updateAvatar(req, res) {
-    const service = _tsyringe.container.resolve(_UpdateUserAvatarService.UpdateUserAvatarService);
-
-    const avatar = req.file.filename;
-    const update = await service.execute({
-      avatar
-    });
-    return res.json(update);
-  }
-
-  async updateLogo(req, res) {
-    const service = _tsyringe.container.resolve(_UpdateLogoService.UpdateLogoService);
-
-    const logo = req.file.filename; // fs.unlinkSync(req.file!.path);
-
-    const update = await service.execute({
-      logo
-    });
-    return res.json(update);
-  }
-
-  async findAll(req, res) {
-    const service = _tsyringe.container.resolve(_ListAllUsersService.ListAllUserService);
-
-    const user = await service.execute();
+    console.log(firstLogin);
     return res.json(user);
   }
 
@@ -134,78 +59,106 @@ class UserController {
       membro,
       senha
     } = req.body;
-    const user = await service.execute({
+    const sess = await service.execute({
       membro,
       senha
     });
-    return res.json(user);
-  }
-
-  async findUnicUser(req, res) {
-    const service = _tsyringe.container.resolve(_FindUniqUser.FindUniqUser);
-
-    const {
-      id
-    } = req.query;
-    const user = await service.execute({
-      id: String(id)
-    });
-    return res.json(user);
-  }
-
-  async updateToken(req, res) {
-    const service = _tsyringe.container.resolve(_UpdateUserTokenService.UpdateUserTokenService);
-
-    const {
-      token
-    } = req.body;
-    const {
-      id
-    } = req.user;
-    const up = await service.execute({
-      token,
-      id
-    });
-    return res.json(up);
-  }
-
-  async updatePadrinho(req, res) {
-    const service = _tsyringe.container.resolve(_UpdatePadrinhoService.UpdatePadrinhoService);
-
-    const {
-      user_id
-    } = req.body;
-    const user = await service.execute({
-      user_id
-    });
-    return res.json(user);
-  }
-
-  async updateSenhaUser(req, res) {
-    const service = _tsyringe.container.resolve(_UdateSenhaUserService.UpdateSenhaUserService);
-
-    const {
-      senha,
-      id
-    } = req.body;
-    const up = await service.execute({
-      senha,
-      id
-    });
-    return res.json(up);
+    return res.json(sess);
   }
 
   async deleteUser(req, res) {
-    const service = _tsyringe.container.resolve(_DeleteUserService.DeleteUserService);
+    const serv = _tsyringe.container.resolve(_DeleteUserService.DeleteUserService);
 
     const {
-      user_id
+      membro
     } = req.params;
-    const up = await service.execute({
-      user_id
+    const rs = await serv.execute({
+      membro
     });
-    return res.json(up);
+    return res.json(rs);
   }
+
+  async findUserById(req, res) {
+    const serv = _tsyringe.container.resolve(_findUserByIdService.findUserByIdService);
+
+    const {
+      id
+    } = req.user;
+    const rs = await serv.execute({
+      user_id: id
+    });
+    return res.json(rs);
+  } // async update(req: Request, res: Response): Promise<Response> {}
+  // async updateAvatar(req: Request, res: Response): Promise<Response> {}
+  // async updateLogo(req: Request, res: Response): Promise<Response> {}
+
+
+  async listAll(req, res) {
+    const service = _tsyringe.container.resolve(_ListAllUsers.ListAllUser);
+
+    const list = await service.execute();
+    return res.json(list);
+  } // ! PROFILE */
+
+
+  async createProfile(req, res) {
+    const serv = _tsyringe.container.resolve(_CreateProfile.CreateProfi);
+
+    const {
+      whats,
+      workName,
+      CNPJ,
+      CPF,
+      email,
+      enquadramento,
+      ramo,
+      logo,
+      avatar
+    } = req.body;
+    const user_id = req.user.id;
+    const create = await serv.execute({
+      whats,
+      workName,
+      CNPJ,
+      CPF,
+      email,
+      enquadramento,
+      ramo,
+      fk_id_user: user_id,
+      logo,
+      avatar
+    });
+    return res.json(create);
+  } // !! LINKS
+
+
+  async createLink(req, res) {
+    const service = _tsyringe.container.resolve(_createLink.CreateLink);
+
+    const {
+      nome,
+      user_id,
+      link
+    } = req.body;
+    const user = await service.execute({
+      nome,
+      user_id,
+      link
+    });
+    return res.json(user);
+  } //! RANK GERAL
+
+
+  async rank(req, res) {
+    const serv = _tsyringe.container.resolve(_GlobalPontsService.GlobalPontsService);
+
+    const ex = await serv.execute();
+    return res.json(ex);
+  } // async findUnicUser(req: Request, res: Response): Promise<Response> {}
+  // async updateToken(req: Request, res: Response): Promise<Response> {}
+  // async updatePadrinho(req: Request, res: Response): Promise<Response> {}
+  // async updateSenhaUser(req: Request, res: Response): Promise<Response> {}
+
 
 }
 

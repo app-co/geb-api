@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { IB2b } from '@shared/dtos';
 
 import { B2b, PrismaClient } from '.prisma/client';
@@ -13,6 +14,8 @@ export class B2bRepository implements IB2bRepository {
       recevid_name,
       send_id,
       send_name,
+      assunto,
+      validate,
    }: IB2b): Promise<B2b> {
       const create = this.prisma.b2b.create({
          data: {
@@ -21,6 +24,8 @@ export class B2bRepository implements IB2bRepository {
             send_name,
             send_id,
             appointment,
+            assunto,
+            validate,
          },
       });
 

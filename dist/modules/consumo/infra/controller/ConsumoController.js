@@ -5,75 +5,77 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConsumoController = void 0;
 
-var _CreateConsumoConsumidor = require("../../services/CreateConsumoConsumidor");
+var _CreateOrderTransaction = require("../../services/CreateOrderTransaction");
 
-var _ListValorPrestadorConsumoService = require("../../services/ListValorPrestadorConsumoService");
+var _DeleteOrderService = require("../../services/DeleteOrderService");
+
+var _FindOrderConsumidor = require("../../services/FindOrderConsumidor");
+
+var _FindOrderPrestador = require("../../services/FindOrderPrestador");
+
+var _ListAllOrderService = require("../../services/ListAllOrderService");
 
 var _tsyringe = require("tsyringe");
 
-var _CreateConsumoPrestadorService = require("../../services/CreateConsumoPrestadorService.service");
-
-var _ListConsumoService = require("../../services/ListConsumoService.service");
-
-var _ListValorConsumoService = require("../../services/ListValorConsumoService");
-
 class ConsumoController {
-  async createPrestador(req, res) {
-    const service = _tsyringe.container.resolve(_CreateConsumoPrestadorService.CreateConsumoPrestadorService);
+  async createOrder(req, res) {
+    const service = _tsyringe.container.resolve(_CreateOrderTransaction.CreateOrderTransaction);
 
     const {
       descricao,
-      type,
-      valor
+      consumidor_id,
+      consumidor_name,
+      prestador_name,
+      valor,
+      prestador_id
     } = req.body;
-    const prestador_id = req.user.id;
     const consumo = await service.execute({
+      consumidor_id,
       prestador_id,
       descricao,
-      type,
-      valor
+      valor,
+      consumidor_name,
+      prestador_name
     });
     return res.json(consumo);
   }
 
-  async createConsumidor(req, res) {
-    const service = _tsyringe.container.resolve(_CreateConsumoConsumidor.CreateConsumoConsumidorService);
+  async findOrderPrestador(req, res) {
+    const service = _tsyringe.container.resolve(_FindOrderPrestador.FindOrderPrestador);
+
+    const prestador_id = req.user.id;
+    const find = await service.execute(prestador_id);
+    return res.json(find);
+  }
+
+  async findOrderConsumidor(req, res) {
+    const service = _tsyringe.container.resolve(_FindOrderConsumidor.FindOrderConsumidor);
+
+    const consumidor_id = req.user.id;
+    const find = await service.execute(consumidor_id);
+    return res.json(find);
+  }
+
+  async findAllOrder(req, res) {
+    const serv = _tsyringe.container.resolve(_ListAllOrderService.ListAllOrderService);
+
+    const find = await serv.execute();
+    return res.json(find);
+  }
+
+  async deleteOrder(req, res) {
+    const serv = _tsyringe.container.resolve(_DeleteOrderService.DeleteOrderService);
 
     const {
-      consumidor_id,
-      descricao,
-      type,
-      valor
-    } = req.body;
-    const consumo = await service.execute({
-      consumidor_id,
-      descricao,
-      type,
-      valor
+      id
+    } = req.params;
+    const find = await serv.execute({
+      id: String(id)
     });
-    return res.json(consumo);
-  }
+    return res.json(find);
+  } // async listValorP(req: Request, res: Response): Promise<Response> {}
+  // async listValorC(req: Request, res: Response): Promise<Response> {}
 
-  async listAll(req, res) {
-    const service = _tsyringe.container.resolve(_ListConsumoService.ListConsumoService);
-
-    const consumo = await service.execute();
-    return res.json(consumo);
-  }
-
-  async listValorP(req, res) {
-    const service = _tsyringe.container.resolve(_ListValorPrestadorConsumoService.ListValorPrestadorConsumoService);
-
-    const consumo = await service.execute();
-    return res.json(consumo);
-  }
-
-  async listValorC(req, res) {
-    const service = _tsyringe.container.resolve(_ListValorConsumoService.ListValorConsumoService);
-
-    const consumo = await service.execute();
-    return res.json(consumo);
-  }
 
 }
 

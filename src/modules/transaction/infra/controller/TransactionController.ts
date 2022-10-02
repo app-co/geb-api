@@ -12,15 +12,29 @@ import { ValidateOrderTransactionService } from '../../service/ValidateOrderTran
 export class TransactionControler {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(ValidateOrderTransactionService);
-      const { order_id } = req.body;
+      const {
+         consumidor_id,
+         consumidor_name,
+         prestador_name,
+         prestador_id,
+         valor,
+         descricao,
+         order_id,
+      } = req.body;
       const user_id = req.user.id;
 
       const create = await service.execute({
-         order_id,
+         consumidor_id,
+         consumidor_name,
+         prestador_name,
+         prestador_id,
+         valor,
+         descricao,
          user_id,
+         order_id,
       });
 
-      req.io.emit('trans', create);
+      // req.io.emit('trans', create);
 
       return res.json(create);
    }

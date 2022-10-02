@@ -1,10 +1,16 @@
-import { User } from '@prisma/client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Profile, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
+import { IUserDtos, IProfileDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
+interface Props {
+   user: IUserDtos;
+   profile: IProfileDto | 'null';
+}
 @injectable()
 export class ListAllUser {
    constructor(
@@ -16,22 +22,16 @@ export class ListAllUser {
    ) {}
 
    async execute(): Promise<User[]> {
-      let users = await this.cache.recover<User[]>('list-all-users');
+      let users = await this.cache.recover<User[]>('users');
 
       if (!users) {
          users = await this.userRepository.listAllUser();
-         console.log('banco');
 
-         await this.cache.save(`list-all-users`, users);
+         await this.cache.save(`users`, users);
+
+         console.log('banco list all users');
       }
 
-      const lis = users.sort((a, b) => {
-         if (a.nome > b.nome) {
-            return -0;
-         }
-         return -1;
-      });
-
-      return lis;
+      return users;
    }
 }

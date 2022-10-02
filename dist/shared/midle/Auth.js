@@ -13,6 +13,7 @@ var _jsonwebtoken = require("jsonwebtoken");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 function Auth(req, res, next) {
   const authHeader = req.headers.authorization;
 

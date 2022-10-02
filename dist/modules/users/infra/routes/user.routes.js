@@ -21,14 +21,21 @@ const user = (0, _express.Router)();
 exports.user = user;
 const control = new _UserController.UserController();
 const img = (0, _multer.default)(_upload.default);
+user.post('/create-user', control.create);
 user.post('/session', control.session);
-user.patch('/avatar', img.single('avatar'), control.updateAvatar);
-user.patch('/logo', img.single('logo'), control.updateLogo);
-user.post('/', control.create);
-user.get('/', _Auth.Auth, control.findAll);
-user.put('/update', _Auth.Auth, control.update);
-user.get('/find', _Auth.Auth, control.findUnicUser);
-user.put('/upToken', _Auth.Auth, control.updateToken);
-user.put('/update-padrinho', _Auth.Auth, control.updatePadrinho);
-user.put('/update-senha', _Auth.Auth, control.updateSenhaUser);
-user.delete('/delete/:user_id', _Auth.Auth, control.deleteUser);
+user.use(_Auth.Auth); // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
+// user.patch('/logo', img.single('logo'), control.updateLogo);
+
+user.get('/list-all-user', control.listAll);
+user.delete('/delete/:membro', control.deleteUser);
+user.get('/find-user-by-id', control.findUserById); // user.put('/update', Auth, control.update);
+// !! CREATE PROFILE */
+
+user.post('/create-profile', control.createProfile); //! ! LINKS
+
+user.post('/link/create', control.createLink); //! ! RANK GLOBAL
+
+user.get('/global-rank', control.rank); // user.get('/find', Auth, control.findUnicUser);
+// user.put('/upToken', Auth, control.updateToken);
+// user.put('/update-padrinho', Auth, control.updatePadrinho);
+// user.put('/update-senha', Auth, control.updateSenhaUser);

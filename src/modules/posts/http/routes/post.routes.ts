@@ -9,7 +9,7 @@ const post = Router();
 const controller = new PostController();
 const postUpload = multer(upload);
 
-post.patch('/', postUpload.single('post'), controller.create);
+post.post('/', controller.create);
 post.patch('/like/:image_id', controller.like);
 post.get('/', controller.listAllPosts);
 

@@ -21,13 +21,18 @@ export class FindOrderConsumidor {
 
    async execute(consumidor_id: string): Promise<OrderTransaction[]> {
       let find = await this.cache.recover<OrderTransaction[]>(
-         `orderTransactionConsu:${consumidor_id}`,
+         `order-transaction-consumidor:${consumidor_id}`,
       );
 
       if (!find) {
          find = await this.consumoRepository.findOrderConsumidor(consumidor_id);
 
-         await this.cache.save(`orderTransactionConsu:${consumidor_id}`, find);
+         console.log('banco: find by consumido', consumidor_id);
+
+         await this.cache.save(
+            `order-transaction-consumidor:${consumidor_id}`,
+            find,
+         );
       }
 
       return find;

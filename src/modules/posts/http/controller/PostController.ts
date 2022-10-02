@@ -3,16 +3,18 @@ import { CreatePostService } from '@modules/posts/service/CreatePostService';
 import { LikeService } from '@modules/posts/service/LikeService';
 import { ListAllPost } from '@modules/posts/service/ListAllPostService.service';
 import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import sharp from 'sharp';
+// import fs from 'fs';
+// import path from 'path';
+// import sharp from 'sharp';
 import { container } from 'tsyringe';
 
 export class PostController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreatePostService);
 
-      const post = req.file!.filename;
+      const { description, fk_id_user, image, like } = req.body;
+
+      // const post = req.file!.filename;
       // return res.json(req.file);
 
       // await sharp(req.file?.path)
@@ -20,7 +22,12 @@ export class PostController {
       //    .jpeg({ quality: 70 })
       //    .toFile(path.resolve(req.file!.destination, 'post', post));
 
-      const po = await service.execute({ post });
+      const po = await service.execute({
+         description,
+         fk_id_user,
+         image,
+         like,
+      });
 
       return res.json(po);
    }
@@ -32,7 +39,7 @@ export class PostController {
 
       const like = await service.execute(image_id);
 
-      req.io.emit('like', like);
+      // req.io.emit('like', like);
 
       return res.json(like);
    }

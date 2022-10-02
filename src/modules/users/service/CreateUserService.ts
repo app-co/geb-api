@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
@@ -11,6 +11,10 @@ interface Props {
    membro: string;
    senha: string;
    adm: boolean;
+   id: string;
+   apadrinhado?: boolean;
+   firstLogin?: boolean;
+   inativo?: boolean;
 }
 
 @injectable()
@@ -23,7 +27,17 @@ export class CreateUserService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute({ nome, membro, senha, adm }: Props): Promise<User> {
+   async execute({
+      nome,
+      membro,
+      senha,
+      adm,
+      id,
+      apadrinhado,
+      firstLogin,
+      inativo,
+   }: Props): Promise<User> {
+      const prisma = new PrismaClient();
       const find = await this.userRepository.findByMembro(membro);
 
       if (find) {
@@ -31,15 +45,16 @@ export class CreateUserService {
       }
 
       const has = await hash(senha, 8);
+      const data = { nome, membro, senha: has, adm, id };
 
-      const user = await this.userRepository.create({
-         nome,
-         membro,
-         senha: has,
-         adm,
-      });
+      const user = await this.userRepository.create(
+         data,
+         apadrinhado,
+         firstLogin,
+         inativo,
+      );
 
-      await this.cache.invalidate('list-all-users');
+      await this.cache.invalidate('users');
 
       return user;
    }

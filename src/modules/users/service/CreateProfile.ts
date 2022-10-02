@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Profile } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IProfileDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
@@ -13,11 +15,9 @@ interface Props {
    email: string;
    enquadramento: string;
    ramo: string;
-   user_id: string;
-   whatsApp: string;
-   insta: string;
-   web: string;
-   face: string;
+   logo: string;
+   avatar: string;
+   fk_id_user: string;
 }
 
 @injectable()
@@ -25,10 +25,13 @@ export class CreateProfi {
    constructor(
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
+
+      @inject('Cache')
+      private cache: ICacheProvider,
    ) {}
 
    async execute({
-      user_id,
+      fk_id_user,
       whats,
       workName,
       CNPJ,
@@ -36,40 +39,34 @@ export class CreateProfi {
       email,
       ramo,
       enquadramento,
-      whatsApp,
-      web,
-      insta,
-      face,
+      logo,
+      avatar,
    }: Props): Promise<Profile> {
-      const user = await this.userRepository.findById(user_id);
-      const profile = await this.userRepository.findByIdProfile(user_id);
+      const user = await this.userRepository.findById(fk_id_user);
+      const profile = await this.userRepository.findByIdProfile(fk_id_user);
 
-      console.log(insta);
-
-      // if (profile) {
-      //    throw new Err('profile ja criado');
-      // }
+      if (profile) {
+         throw new Err('profile ja criado');
+      }
 
       if (!user) {
          throw new Err('Usuário não encontrado');
       }
 
-      const create = await this.userRepository.createProfile(
-         {
-            whats,
-            workName,
-            CNPJ,
-            CPF,
-            email,
-            enquadramento,
-            ramo,
-            user_id,
-         },
-         whatsApp,
-         insta,
-         web,
-         face,
-      );
+      const create = await this.userRepository.createProfile({
+         whats,
+         workName,
+         CNPJ,
+         CPF,
+         email,
+         enquadramento,
+         ramo,
+         fk_id_user,
+         logo,
+         avatar,
+      });
+
+      await this.cache.invalidate('profile');
 
       return create;
    }
