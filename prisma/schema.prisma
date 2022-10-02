@@ -8,53 +8,117 @@ datasource db {
 
 generator client {
    provider = "prisma-client-js"
+   previewFeatures = ["referentialActions"]
 }
+
+// !! INFO USER
 
 model User {
-   id                      String        @id       @default(uuid())
+   id                      String        @id                @default(uuid())
    nome                    String      
-   membro                  String        @unique
+   membro                  String         @unique   
    token                   String?     
-   senha                   String      
+   senha                   String
    adm                     Boolean           
-   created_at              DateTime                @default(now())
-   padrinho                Padrinho[]                  
-   post                    Post[]      
-   feed                    Feed[]      
-   presenca                Presenca[]
-   profile                 Profile[]
-   pontos                  Pontos[]
+   created_at              DateTime                         @default(now())
+   profile                 Profile?
+   situation               SituationUser?
+   region                  Region?
+
+   // post                    Post           @relation(fields: [fk_id_post], references: [id])
+   // fk_id_post              String         @unique
+
+   // links                   Links[]
+   // padrinho                Padrinho[]                  
+   // post                    Post[]      
+   // feed                    Feed[]      
+   // presenca                Presenca[]
+   // pontos                  Pontos[]
 }
 
-model Padrinho {
-   id                      String         @id      @default(uuid())
-   user_id                 String 
-   qnt                     Int                     @default(autoincrement())        
-   user                    User?                   @relation(references: [id], fields: [user_id])
-}
 
 model Profile {
-   id                      String        @id       @default(uuid())
+   id                      String         @id       @default(uuid())
    whats                   String      
    logotipo                String?     
    avatar                  String?    
-   links                   Json[]    
    workName                String      
    CNPJ                    String      
    CPF                     String      
    ramo                    String      
-   enquadramento           String      
+   enquadramento           String
    email                   String
+
+   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user              String         @unique
+   // post                    Post           @relation(fields: [fk_id_post], references: [id])
+   // fk_id_post              String         @unique
+
+}
+
+model SituationUser {
+   id                      String         @id         @default(uuid())
+   inativo                 Boolean                    @default(false)
+   firstLogin              Boolean                    @default(false)
+   apadrinhado             Boolean                    @default(false)
+   logado                  Boolean                    @default(false)
+   user                    User           @relation(fields: [fk_id_user], references: [id])
+   fk_id_user              String         @unique
+
+}
+
+model Region {
+   id                      String         @id         @default(uuid())
+   city                    String?                    @default("BOTUCATU")
+   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user              String         @unique
+
+}
+
+model Post {
+   id                      String         @id       @default(uuid())
+   image                   String
+   description             String
+   created_at              DateTime                @default(now())
+   like                    Like?
+   fk_id_user              String
+   // user                    User?
+   // profile                 Profile?       
+}
+
+model Like {
+   id                      String         @id         @default(uuid())
+   like                    Int                       @default(0)
    user_id                 String
-   user                    User?                   @relation(references: [id], fields: [user_id])    
+   post                    Post           @relation(fields: [fk_id_post], references: [id])
+   fk_id_post              String         @unique
+}
+
+
+model Padrinho {
+   id                      String         @id      @default(uuid())
+   user_id                 String 
+   apadrinhado_name        String
+   apadrinhado_id          String         @unique
+   qnt                     Int                     @default(autoincrement())        
+   // user                    User?                   @relation(references: [id], fields: [user_id])
+}
+
+model Links {
+   id                      String         @id       @default(uuid())
+   nome                    String
+   link                    String
+   user_id                 String         @unique
+   // user                    User           @relation(references: [id], fields: [user_id])    
+
 }
 
 model Presenca {
    id                      String        @id       @default(uuid())
    user_id                 String
-   user                    User?                   @relation(references: [id], fields: [user_id])
+   // user                    User?                   @relation(references: [id], fields: [user_id])
    presenca                Boolean                 @default(false)
-   qnt                     Int                     @default(autoincrement())
+   nome                    String
    createdAt               DateTime                @default(now())
 }
 
@@ -65,16 +129,6 @@ model OrderPresenca{
    createdAt               DateTime                @default(now())
 }
 
-model Post {
-   id                      String        @id       @default(uuid())
-   image                   String
-   like                    Int                     @default(0)
-   description             String
-   user_id                 String
-   user                    User                    @relation(fields: [user_id], references: [id])
-   created_at              DateTime                @default(now())
-}
-
 model Feed {
    id String               @id                     @default(uuid())
    image                   String
@@ -82,7 +136,7 @@ model Feed {
    subTitle                String
    texto                   String
    user_id                 String
-   user                    User                    @relation(fields: [user_id], references: [id])   
+   // user                    User                    @relation(fields: [user_id], references: [id])   
    created_at              DateTime   
 }
 
@@ -109,10 +163,10 @@ model Consumo {
 
 model Transaction {
    id                      String         @id      @default(uuid())
-   consumidor_name         String
-   consumidor_id           String
-   prestador_id            String
-   prestador_name          String
+   consumidor_name         String?
+   consumidor_id           String?
+   prestador_id            String?
+   prestador_name          String?
    valor                   Int
    descricao               String
    created_at              DateTime                @default(now())
@@ -125,7 +179,7 @@ model Pontos {
    compra         Int                     @default(0)
    venda          Int                     @default(0)
    user_id        String
-   user           User?                   @relation(references: [id], fields: [user_id])
+   // user           User?                   @relation(references: [id], fields: [user_id])
 }
 
 model B2b {
@@ -134,6 +188,7 @@ model B2b {
    send_name      String
    recevid_name   String
    recevid_id     String
+   assunto        String
    appointment     String?
    createdAt      DateTime                @default(now())
    validate       Boolean                 @default(false)

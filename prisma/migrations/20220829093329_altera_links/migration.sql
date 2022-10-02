@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Profile" ALTER COLUMN "links" SET NOT NULL,
-ALTER COLUMN "links" SET DATA TYPE TEXT;
