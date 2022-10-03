@@ -19,10 +19,9 @@ export class CreateOrderPresencaService {
    ) {}
 
    async execute({ user_id, nome }: IPresencaDto): Promise<OrderPresenca> {
-      const find = await this.presencaRepository.listOrderWithId(user_id);
+      const find = await this.presencaRepository.listOrderWithUserId(user_id);
 
       const dataN = new Date().getHours();
-      const dataFind = find?.createdAt.getHours();
 
       if (find) {
          throw new Err('Você ja enviou uma solicitação de presença');

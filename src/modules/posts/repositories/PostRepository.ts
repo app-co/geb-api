@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { Like, Post, PrismaClient } from '.prisma/client';
-
 import { IPostsDtos } from '@shared/dtos';
+
+import { Like, Post, PrismaClient } from '.prisma/client';
 
 import { IPostsRepository } from './IPostRepositoty';
 
@@ -47,23 +47,23 @@ export class PostRepository implements IPostsRepository {
       return find;
    }
 
-   async upLike(id: string, like: number): Promise<Like> {
+   async createLike(user_id: string, fk_id_post: string): Promise<Like> {
       const prisma = new PrismaClient();
 
-      const lk = await prisma.like.update({
-         where: { id },
+      const lk = await prisma.like.create({
          data: {
-            like,
+            user_id,
+            fk_id_post,
          },
       });
 
       return lk;
    }
 
-   async findLikeById(id: string): Promise<Like | null> {
+   async findLikeByUserId(id: string): Promise<Like | null> {
       const prisma = new PrismaClient();
-      const like = await prisma.like.findUnique({
-         where: { id },
+      const like = await prisma.like.findFirst({
+         where: { user_id: id },
       });
 
       return like;

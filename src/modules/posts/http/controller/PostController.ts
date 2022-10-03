@@ -35,9 +35,10 @@ export class PostController {
    async like(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(LikeService);
 
-      const { image_id } = req.params;
+      const { fk_id_post } = req.body;
+      const user_id = req.user.id;
 
-      const like = await service.execute(image_id);
+      const like = await service.execute(user_id, fk_id_post);
 
       // req.io.emit('like', like);
 

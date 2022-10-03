@@ -32,6 +32,9 @@ user.post('/link/create', control.createLink);
 //! ! RANK GLOBAL
 user.get('/global-rank', control.rank);
 
+//! ! PADRINHO
+user.post('/create-padrinho', control.createPadrinho);
+
 // user.get('/find', Auth, control.findUnicUser);
 // user.put('/upToken', Auth, control.updateToken);
 // user.put('/update-padrinho', Auth, control.updatePadrinho);

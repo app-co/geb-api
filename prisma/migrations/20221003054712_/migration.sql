@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Padrinho" ALTER COLUMN "qnt" SET DEFAULT 0,
+ALTER COLUMN "qnt" DROP DEFAULT;
+DROP SEQUENCE "Padrinho_qnt_seq";

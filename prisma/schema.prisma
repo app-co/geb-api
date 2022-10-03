@@ -80,7 +80,7 @@ model Post {
    image                   String
    description             String
    created_at              DateTime                @default(now())
-   like                    Like?
+   like                    Like[]
    fk_id_user              String
    // user                    User?
    // profile                 Profile?       
@@ -91,7 +91,7 @@ model Like {
    like                    Int                       @default(0)
    user_id                 String
    post                    Post           @relation(fields: [fk_id_post], references: [id])
-   fk_id_post              String         @unique
+   fk_id_post              String         
 }
 
 
@@ -100,7 +100,7 @@ model Padrinho {
    user_id                 String 
    apadrinhado_name        String
    apadrinhado_id          String         @unique
-   qnt                     Int                     @default(autoincrement())        
+   qnt                     Int                     @default(0)        
    // user                    User?                   @relation(references: [id], fields: [user_id])
 }
 

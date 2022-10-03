@@ -20,6 +20,7 @@ import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
 import { pontos } from '../../../utils';
+import { ListAllB2b } from '../../B2b/services/ListAllB2b';
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface Props {
@@ -60,20 +61,40 @@ export class GlobalPontsService {
    ) {}
 
    async execute(): Promise<any> {
-      // let ListAllusers = await this.cache.recover<User[]>('list-all-users');
-      // let transaction = await this.cache.recover<Transaction[]>('transaction');
-      // let listAllPresenca = await this.cache.recover<Presenca[]>('presenca');
-      // let indi = await this.cache.recover<Indication[]>('indication');
-      // let b2b = await this.cache.recover<B2b[]>('b2b');
-      const ListAllusers = await this.userRepository.listAllUser();
-      const transaction = await this.repoTransaction.listAllTransaction();
-      const listAllPresenca = await this.presencaRepository.listAllPresenca();
-      const indi = await this.indRepo.listAll();
-      const b2b = await this.repoB2b.listAllB2b();
+      let ListAllusers = await this.cache.recover<User[]>('users');
+      let transaction = await this.cache.recover<Transaction[]>('transaction');
+      let listAllPresenca = await this.cache.recover<Presenca[]>('presenca');
+      let indi = await this.cache.recover<Indication[]>('indication');
+      let b2b = await this.cache.recover<B2b[]>('b2b');
+
+      if (!ListAllusers) {
+         ListAllusers = await this.userRepository.listAllUser();
+         await this.cache.save('users', ListAllusers);
+      }
+
+      if (!transaction) {
+         transaction = await this.repoTransaction.listAllTransaction();
+         await this.cache.save('transaction', transaction);
+      }
+
+      if (!listAllPresenca) {
+         listAllPresenca = await this.presencaRepository.listAllPresenca();
+         await this.cache.save('presenca', listAllPresenca);
+      }
+
+      if (!indi) {
+         indi = await this.indRepo.listAll();
+         await this.cache.save('indication', indi);
+      }
+
+      if (!b2b) {
+         b2b = await this.repoB2b.listAllB2b();
+         await this.cache.save('b2b', b2b);
+      }
 
       const Concumo = ListAllusers!
          .map((user, index) => {
-            const cons = transaction?.filter(h => h.consumidor_id === user.id);
+            const cons = transaction!.filter(h => h.consumidor_id === user.id);
             const valor = cons.reduce((ac, i) => {
                return ac + Number(i.valor);
             }, 0);

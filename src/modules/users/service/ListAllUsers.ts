@@ -7,10 +7,6 @@ import { inject, injectable } from 'tsyringe';
 
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
-interface Props {
-   user: IUserDtos;
-   profile: IProfileDto | 'null';
-}
 @injectable()
 export class ListAllUser {
    constructor(

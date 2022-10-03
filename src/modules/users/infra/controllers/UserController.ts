@@ -6,6 +6,7 @@ import { DeleteUserService } from '@modules/users/service/DeleteUserService';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
 import { GlobalPontsService } from '@modules/users/service/GlobalPontsService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
+import { CreatePadrinhoService } from '@modules/users/service/Padrinho/Padrinho/createPadrinhoService';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -132,6 +133,22 @@ export class UserController {
       const serv = container.resolve(GlobalPontsService);
 
       const ex = await serv.execute();
+
+      return res.json(ex);
+   }
+
+   //! ! PADRINNHO
+
+   async createPadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+      const { apadrinhado_name, apadrinhado_id } = req.body;
+
+      const user_id = req.user.id;
+      const ex = await serv.execute({
+         user_id,
+         apadrinhado_name,
+         apadrinhado_id,
+      });
 
       return res.json(ex);
    }

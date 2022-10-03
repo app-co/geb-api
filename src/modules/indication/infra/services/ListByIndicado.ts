@@ -20,6 +20,7 @@ export class ListByIndicado {
          `indication-indicado:${id}`,
       );
 
+      console.log(id);
       if (!find) {
          find = await this.indRepository.findByIndicado(id);
          await this.cache.save(`indication-indicado:${id}`, find);

@@ -1,12 +1,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
    Links,
+   Padrinho,
    PrismaClient,
    Profile,
    SituationUser,
    User,
 } from '@prisma/client';
-import { ILinkDto, IProfileDto, IUserDtos, ISituationUser } from '@shared/dtos';
+import {
+   ILinkDto,
+   IProfileDto,
+   IUserDtos,
+   ISituationUser,
+   IPadrinhoDto,
+} from '@shared/dtos';
 
 import { IUsersRepository } from './IUsersRespository';
 
@@ -70,6 +77,7 @@ export class UsersRespository implements IUsersRepository {
          include: {
             situation: true,
             profile: true,
+            region: true,
          },
       });
       return find;
@@ -230,5 +238,27 @@ export class UsersRespository implements IUsersRepository {
       });
 
       return up;
+   }
+
+   async findSituation(id: string): Promise<SituationUser | null> {
+      const fin = await this.prisma.situationUser.findFirst({
+         where: { fk_id_user: id },
+      });
+
+      return fin;
+   }
+
+   // !! PADRINHO
+
+   async createPadrinho(data: IPadrinhoDto): Promise<Padrinho> {
+      const cre = await this.prisma.padrinho.create({
+         data: {
+            apadrinhado_id: data.apadrinhado_id,
+            apadrinhado_name: data.apadrinhado_name,
+            user_id: data.user_id,
+         },
+      });
+
+      return cre;
    }
 }

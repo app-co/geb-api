@@ -65,6 +65,7 @@ export class CreateProfi {
          logo,
          avatar,
       });
+      await this.cache.invalidate('users');
 
       await this.cache.invalidate('profile');
 

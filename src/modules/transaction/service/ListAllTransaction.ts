@@ -24,6 +24,10 @@ export class ListAllTransaction {
          await this.cache.save('transaction', tran);
       }
 
-      return tran;
+      const res = tran.sort((a, b) => {
+         return a.valor - b.valor;
+      });
+
+      return res;
    }
 }

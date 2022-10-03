@@ -33,7 +33,7 @@ export class PresencaRepository implements IPresencaRespository {
    }
 
    async listOrderWithId(id: string): Promise<null | OrderPresenca> {
-      const list = await this.prisma.orderPresenca.findUnique({
+      const list = await this.prisma.orderPresenca.findFirst({
          where: { id },
       });
 

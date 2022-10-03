@@ -121,3 +121,10 @@ export interface ILikeDto {
    like: number;
    fk_id_post: string;
 }
+
+export interface IPadrinhoDto {
+   id?: string;
+   user_id: string;
+   apadrinhado_name: string;
+   apadrinhado_id: string;
+}

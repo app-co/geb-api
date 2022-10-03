@@ -55,7 +55,7 @@ export class GlobalPontsPresencaService {
                h => h.user_id === user.id,
             );
 
-            const qnt = userPresenca.length;
+            const qnt = userPresenca.length + 1;
 
             return {
                id: user.id,

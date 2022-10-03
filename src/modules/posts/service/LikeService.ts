@@ -18,16 +18,15 @@ export class LikeService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute(id: string): Promise<Like> {
-      const find = await this.postRepository.findLikeById(id);
+   async execute(user_id: string, fk_id_post: string): Promise<Like> {
+      const find = await this.postRepository.findById(fk_id_post);
+      const findLik = await this.postRepository.findLikeByUserId(user_id);
 
       if (!find) {
          throw new Err('post nao encontrado');
       }
 
-      const like = (find.like += 1);
-
-      const lk = await this.postRepository.upLike(id, like);
+      const lk = await this.postRepository.createLike(user_id, fk_id_post);
 
       await this.cache.invalidate('post');
 

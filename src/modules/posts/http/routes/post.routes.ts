@@ -9,8 +9,10 @@ const post = Router();
 const controller = new PostController();
 const postUpload = multer(upload);
 
+post.use(Auth);
+
 post.post('/', controller.create);
-post.patch('/like/:image_id', controller.like);
+post.post('/like', controller.like);
 post.get('/', controller.listAllPosts);
 
 export { post };
