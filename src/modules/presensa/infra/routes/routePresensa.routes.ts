@@ -18,6 +18,8 @@ RoutePresensa.get(
    controler.listAllPresecaUser,
 );
 
+RoutePresensa.get('list-all', controler.listAllPreseca);
+
 RoutePresensa.delete('/delete-order/:id', controler.delte);
 
 RoutePresensa.get('/rank-presenca', controler.rank);

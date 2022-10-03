@@ -3,6 +3,7 @@ import { CreatePresencaService } from '@modules/presensa/services/CreatePresensa
 import { DeletePresensa } from '@modules/presensa/services/DeletePresenca';
 import { GlobalPontsPresencaService } from '@modules/presensa/services/GlobalPontsPresencaService';
 import { ListAllOrderPresensaService } from '@modules/presensa/services/ListAllOrderPresencaService';
+import { ListAllPresensaService } from '@modules/presensa/services/ListAllPresensaService';
 import { ListPresencaUseraService } from '@modules/presensa/services/ListPresencaUserService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -58,6 +59,14 @@ export class PresensaController {
       const user_id = req.user.id;
 
       const list = await service.execute({ user_id });
+
+      return res.json(list);
+   }
+
+   async listAllPreseca(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(ListAllPresensaService);
+
+      const list = await service.execute();
 
       return res.json(list);
    }
