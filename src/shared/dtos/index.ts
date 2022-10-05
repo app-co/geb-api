@@ -127,4 +127,5 @@ export interface IPadrinhoDto {
    user_id: string;
    apadrinhado_name: string;
    apadrinhado_id: string;
+   qnt: number;
 }

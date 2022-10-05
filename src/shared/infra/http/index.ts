@@ -1,6 +1,6 @@
 /* eslint-disable import-helpers/order-imports */
 import 'reflect-metadata';
-import { Err } from '@shared/errors/AppError';
+import rateLimiter from '@shared/midle/rateLimit';
 import { errors } from 'celebrate';
 import cors from 'cors';
 import express, { Request, Response, NextFunction } from 'express';
@@ -10,10 +10,10 @@ import socket from 'socket.io';
 
 import path from 'path';
 
-import rateLimiter from '@shared/midle/rateLimit';
 import { Route } from './routes/index.routes';
 
 import '@shared/container';
+import { Err } from '../../errors/AppError';
 
 const app = express();
 const server = createServer(app);

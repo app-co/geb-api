@@ -25,6 +25,8 @@ export class UsersRespository implements IUsersRepository {
       apadrinhado: boolean,
       firstLogin: boolean,
       inativo: boolean,
+      qntIndication?: number,
+      qntPadrinho?: number,
    ): Promise<User> {
       const user = await this.prisma.user.create({
          data: {
@@ -43,6 +45,12 @@ export class UsersRespository implements IUsersRepository {
             region: {
                create: {
                   city: 'BOTUCATU',
+               },
+            },
+            dadosFire: {
+               create: {
+                  qntIdication: qntIndication,
+                  qntPadrinho,
                },
             },
          },
@@ -78,6 +86,7 @@ export class UsersRespository implements IUsersRepository {
             situation: true,
             profile: true,
             region: true,
+            dadosFire: true,
          },
       });
       return find;
@@ -231,6 +240,7 @@ export class UsersRespository implements IUsersRepository {
       const up = await this.prisma.situationUser.update({
          where: { id: data.id },
          data: {
+            fk_id_user: data.fk_id_user,
             apadrinhado: data.apadrinhado,
             firstLogin: data.firstLogin,
             inativo: data.inativo,
@@ -256,6 +266,7 @@ export class UsersRespository implements IUsersRepository {
             apadrinhado_id: data.apadrinhado_id,
             apadrinhado_name: data.apadrinhado_name,
             user_id: data.user_id,
+            qnt: data.qnt,
          },
       });
 

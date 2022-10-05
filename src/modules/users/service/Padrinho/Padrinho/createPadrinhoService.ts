@@ -20,19 +20,24 @@ export class CreatePadrinhoService {
       user_id,
       apadrinhado_name,
       apadrinhado_id,
-   }: IPadrinhoDto): Promise<Padrinho> {
-      const find = await this.userRepository.findSituation(user_id);
+      qnt,
+   }: IPadrinhoDto): Promise<any> {
+      const find = await this.userRepository.findSituation(apadrinhado_id);
 
       if (find) {
          await this.userRepository.updateSituation({
-            ...find,
+            id: find.id,
+            firstLogin: find.firstLogin,
             apadrinhado: true,
+            inativo: find.inativo,
          });
       }
+
       const create = await this.userRepository.createPadrinho({
          user_id,
          apadrinhado_id,
          apadrinhado_name,
+         qnt,
       });
       await this.cache.invalidate('users');
 

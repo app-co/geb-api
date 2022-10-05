@@ -28,6 +28,13 @@ export class DeleteTransactionService {
       }
 
       await this.transactionRepository.delete(transaction.id);
+
       await this.cache.invalidate('transaction');
+      await this.cache.invalidatePrefix('transaction-prestador');
+      await this.cache.invalidatePrefix('transaction-consumidor');
+
+      await this.cache.invalidate('orderTransaction');
+      await this.cache.invalidatePrefix(`order-transaction-consumidor`);
+      await this.cache.invalidatePrefix('order-transaction-prestador');
    }
 }

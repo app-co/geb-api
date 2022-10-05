@@ -37,6 +37,7 @@ export class CreateOrderPresencaService {
       });
 
       await this.cache.invalidate(`orderPresenca`);
+      await this.cache.invalidatePrefix('presenca');
 
       return create;
    }

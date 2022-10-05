@@ -13,6 +13,8 @@ export interface IUsersRepository {
       apadrinhado?: boolean,
       firstLogin?: boolean,
       inativo?: boolean,
+      qntIndication?: number,
+      qntPadrinho?: number,
    ): Promise<User>;
    findByMembro(membro: string): Promise<User | null>;
    findById(user_id: string): Promise<User | null>;

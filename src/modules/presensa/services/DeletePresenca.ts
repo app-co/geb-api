@@ -33,6 +33,6 @@ export class DeletePresensa {
       await this.presencaRepository.deleteOrderPresenca(find.id);
 
       await this.cache.invalidate('orderPresenca');
-      await this.cache.invalidatePrefix('orderPresenca');
+      await this.cache.invalidatePrefix('presenca');
    }
 }

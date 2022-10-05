@@ -15,8 +15,18 @@ export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateUserService);
 
-      const { nome, membro, senha, adm, id, apadrinhado, firstLogin, inativo } =
-         req.body;
+      const {
+         nome,
+         qntIndication,
+         qntPadrinho,
+         membro,
+         senha,
+         adm,
+         id,
+         apadrinhado,
+         firstLogin,
+         inativo,
+      } = req.body;
 
       const user = await service.execute({
          nome,
@@ -27,9 +37,10 @@ export class UserController {
          apadrinhado,
          firstLogin,
          inativo,
+         qntIndication,
+         qntPadrinho,
       });
 
-      console.log(firstLogin);
       return res.json(user);
    }
 
@@ -141,13 +152,14 @@ export class UserController {
 
    async createPadrinho(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(CreatePadrinhoService);
-      const { apadrinhado_name, apadrinhado_id } = req.body;
+      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
 
       const user_id = req.user.id;
       const ex = await serv.execute({
          user_id,
          apadrinhado_name,
          apadrinhado_id,
+         qnt,
       });
 
       return res.json(ex);

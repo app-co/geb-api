@@ -41,17 +41,17 @@ export class CreateIndicationService {
       const user = await this.userRepo.findById(quemIndicou_id);
       const indicado = await this.userRepo.findById(indicado_id);
 
-      // if (!user) {
-      //    throw new Err('usuário não encontrado');
-      // }
+      if (!user) {
+         throw new Err('usuário não encontrado');
+      }
 
-      // if (!indicado) {
-      //    throw new Err('usuário não encontrado');
-      // }
+      if (!indicado) {
+         throw new Err('usuário não encontrado');
+      }
 
-      // if (user.id === indicado.id) {
-      //    throw new Err('você não pode fazer uma indicação à você mesmo');
-      // }
+      if (user.id === indicado.id) {
+         throw new Err('você não pode fazer uma indicação à você mesmo');
+      }
 
       const crete = await this.indicationRepo.create({
          indicado_id,

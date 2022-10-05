@@ -15,6 +15,8 @@ interface Props {
    apadrinhado?: boolean;
    firstLogin?: boolean;
    inativo?: boolean;
+   qntPadrinho?: number;
+   qntIndication?: number;
 }
 
 @injectable()
@@ -36,6 +38,8 @@ export class CreateUserService {
       apadrinhado,
       firstLogin,
       inativo,
+      qntIndication,
+      qntPadrinho,
    }: Props): Promise<User> {
       const prisma = new PrismaClient();
       const find = await this.userRepository.findByMembro(membro);
@@ -52,6 +56,8 @@ export class CreateUserService {
          apadrinhado,
          firstLogin,
          inativo,
+         qntIndication,
+         qntPadrinho,
       );
 
       await this.cache.invalidate('users');
