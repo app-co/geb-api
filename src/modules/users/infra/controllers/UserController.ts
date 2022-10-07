@@ -102,9 +102,10 @@ export class UserController {
          ramo,
          logo,
          avatar,
+         user_id,
       } = req.body;
 
-      const user_id = req.user.id;
+      // const user_id = req.user.id;
 
       const create = await serv.execute({
          whats,

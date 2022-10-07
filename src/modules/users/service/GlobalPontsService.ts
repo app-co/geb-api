@@ -102,7 +102,7 @@ export class GlobalPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons!.length * 10,
+               pontos: cons!.length * pontos.consumo,
                valor,
             };
             return {
@@ -136,7 +136,7 @@ export class GlobalPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons.length * 10,
+               pontos: cons.length * pontos.consumo,
                valor,
             };
             return {
@@ -199,7 +199,7 @@ export class GlobalPontsService {
             const pont = {
                id: user.id,
                nome: user.nome,
-               pontos: fil.length * 10,
+               pontos: fil.length * pontos.indicacao,
             };
 
             return pont;
@@ -229,7 +229,7 @@ export class GlobalPontsService {
             const send = {
                id: user.id,
                nome: user.nome,
-               pontos: cons.length * 10,
+               pontos: cons.length * pontos.b2b,
             };
             return {
                send,
