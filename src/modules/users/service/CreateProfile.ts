@@ -42,6 +42,7 @@ export class CreateProfi {
       logo,
       avatar,
    }: Props): Promise<Profile> {
+      console.log(fk_id_user);
       const user = await this.userRepository.findById(fk_id_user);
       const profile = await this.userRepository.findByIdProfile(fk_id_user);
 
