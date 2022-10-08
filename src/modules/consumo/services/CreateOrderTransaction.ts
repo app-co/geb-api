@@ -39,21 +39,21 @@ export class CreateOrderTransaction {
       prestador_name,
       consumidor_name,
    }: Props): Promise<OrderTransaction> {
-      // const findUser = await this.userRepository.findById(consumidor_id);
+      const findUser = await this.userRepository.findById(consumidor_id);
 
-      // const findPrestaor = await this.userRepository.findById(prestador_id);
+      const findPrestaor = await this.userRepository.findById(prestador_id);
 
-      // if (!findPrestaor) {
-      //    throw new Err('Prestador não encontrado');
-      // }
+      if (!findPrestaor) {
+         throw new Err('Prestador não encontrado');
+      }
 
-      // if (!findUser) {
-      //    throw new Err('Consumidor não encontrado');
-      // }
+      if (!findUser) {
+         throw new Err('Consumidor não encontrado');
+      }
 
-      // if (findUser.id === prestador_id) {
-      //    throw new Err('Você nao pode realizar uma orderm para você mesmo');
-      // }
+      if (findUser.id === prestador_id) {
+         throw new Err('Você nao pode realizar uma orderm para você mesmo');
+      }
 
       const consumo = await this.consumoRepository.create({
          consumidor_name,
