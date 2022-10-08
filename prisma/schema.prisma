@@ -40,15 +40,15 @@ model User {
 
 model Profile {
    id                      String         @id       @default(uuid())
-   whats                   String      
+   whats                   String?      
    logotipo                String?     
    avatar                  String?    
-   workName                String      
-   CNPJ                    String      
-   CPF                     String      
-   ramo                    String      
-   enquadramento           String
-   email                   String
+   workName                String?      
+   CNPJ                    String?     
+   CPF                     String?      
+   ramo                    String?     
+   enquadramento           String?
+   email                   String?
 
    user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    fk_id_user              String         @unique
