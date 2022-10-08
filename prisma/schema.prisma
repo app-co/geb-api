@@ -63,7 +63,7 @@ model SituationUser {
    firstLogin              Boolean                    @default(false)
    apadrinhado             Boolean                    @default(false)
    logado                  Boolean                    @default(false)
-   user                    User           @relation(fields: [fk_id_user], references: [id])
+   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    fk_id_user              String         @unique
 
 }
@@ -209,7 +209,7 @@ model Indication {
 }
 
 model DadosFire {
-   user                    User              @relation(fields: [fk_id_user], references: [id])
+   user                    User              @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    fk_id_user              String            @unique
    qntIdication            Int?               @default(0)
    qntPadrinho             Int?              @default(0)

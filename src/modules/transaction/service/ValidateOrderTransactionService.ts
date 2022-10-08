@@ -51,23 +51,23 @@ export class ValidateOrderTransactionService {
    }: Props): Promise<Transaction> {
       const user = await this.userRepository.findById(user_id);
 
-      if (!user) {
-         throw new Err('Prestador não encontrado');
-      }
+      // if (!user) {
+      //    throw new Err('Prestador não encontrado');
+      // }
 
-      if (order_id) {
-         const findP = await this.orderRepository.findOrderById(order_id);
+      // if (order_id) {
+      //    const findP = await this.orderRepository.findOrderById(order_id);
 
-         if (!findP) {
-            throw new Err('Ordem não encontrada');
-         }
+      //    if (!findP) {
+      //       throw new Err('Ordem não encontrada');
+      //    }
 
-         if (user.id !== findP.prestador_id) {
-            throw new Err('Você não tem acesso a essa order', 401);
-         }
+      //    if (user.id !== findP.prestador_id) {
+      //       throw new Err('Você não tem acesso a essa order', 401);
+      //    }
 
-         await this.orderRepository.deleteOrder(findP.id);
-      }
+      //    await this.orderRepository.deleteOrder(findP.id);
+      // }
 
       const create = this.transactionRepository.create({
          consumidor_id,

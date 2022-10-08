@@ -24,15 +24,15 @@ export class CreatePresencaService {
    ) {}
 
    async execute({ user_id, nome, presenca }: IProps): Promise<Presenca> {
-      const find = await this.presencaRepository.listOrderWithUserId(user_id);
+      // const find = await this.presencaRepository.listOrderWithUserId(user_id);
 
-      if (!find) {
-         throw new Err('Não há orderm de presença para validar');
-      }
+      // if (!find) {
+      //    throw new Err('Não há orderm de presença para validar');
+      // }
 
-      if (find) {
-         await this.presencaRepository.deleteOrderPresenca(find.id);
-      }
+      // if (find) {
+      //    await this.presencaRepository.deleteOrderPresenca(find.id);
+      // }
 
       const create = await this.presencaRepository.create({
          user_id,
