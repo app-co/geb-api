@@ -25,7 +25,6 @@ model User {
    situation               SituationUser?
    region                  Region?
    dadosFire               DadosFire?
-
    // post                    Post           @relation(fields: [fk_id_post], references: [id])
    // fk_id_post              String         @unique
 
