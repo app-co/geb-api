@@ -102,7 +102,7 @@ export class UserController {
          ramo,
          logo,
          avatar,
-         user_id,
+         fk_id_user,
       } = req.body;
 
       // const user_id = req.user.id;
@@ -115,7 +115,7 @@ export class UserController {
          email,
          enquadramento,
          ramo,
-         fk_id_user: user_id,
+         fk_id_user,
          logo,
          avatar,
       });
