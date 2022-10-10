@@ -104,9 +104,6 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async deleteUser(membro: string): Promise<User> {
-      // await this.prisma.situationUser.delete({
-      //    where: { membro },
-      // });
       const user = await this.prisma.user.delete({
          where: { membro },
       });
@@ -152,9 +149,9 @@ export class UsersRespository implements IUsersRepository {
 
    // !!PROFILE  */
 
-   async updateProfile(data: IProfileDto, id: string): Promise<Profile> {
+   async updateProfile(data: IProfileDto): Promise<Profile> {
       const up = await this.prisma.profile.update({
-         where: { id },
+         where: { id: data.id },
          data: {
             whats: data.whats,
             workName: data.workName,

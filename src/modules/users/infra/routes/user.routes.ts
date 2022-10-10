@@ -25,6 +25,7 @@ user.get('/find-user-by-id', control.findUserById);
 
 // !! CREATE PROFILE */
 user.post('/create-profile', control.createProfile);
+user.put('/update-profile', control.updateProfile);
 
 //! ! LINKS
 user.post('/link/create', control.createLink);

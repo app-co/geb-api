@@ -37,6 +37,7 @@ export interface IUsersRepository {
    findByIdProfile(id: string): Promise<Profile | null>;
    findAllProfile(): Promise<Profile[]>;
    findProfileByUserId(user_id: string): Promise<Profile | null>;
+   updateProfile(data: IProfileDto): Promise<Profile>;
 
    // ! SITUATION
 

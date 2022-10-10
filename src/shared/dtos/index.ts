@@ -22,8 +22,8 @@ export interface ISituationUser {
 }
 
 export interface IProfileDto {
+   id?: string;
    fk_id_user: string;
-   // fk_id_post?: string;
    whats: string;
    workName: string;
    CNPJ: string;

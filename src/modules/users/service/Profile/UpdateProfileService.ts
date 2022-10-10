@@ -5,23 +5,10 @@ import { IProfileDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
-import { IUsersRepository } from '../repositories/IUsersRespository';
-
-interface Props {
-   whats: string;
-   workName: string;
-   CNPJ: string;
-   CPF: string;
-   email: string;
-   enquadramento: string;
-   ramo: string;
-   logo: string;
-   avatar: string;
-   fk_id_user: string;
-}
+import { IUsersRepository } from '../../repositories/IUsersRespository';
 
 @injectable()
-export class CreateProfi {
+export class UpdateProfileService {
    constructor(
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
@@ -41,20 +28,20 @@ export class CreateProfi {
       enquadramento,
       logo,
       avatar,
-   }: Props): Promise<Profile> {
-      console.log(fk_id_user);
+   }: IProfileDto): Promise<Profile> {
       const user = await this.userRepository.findById(fk_id_user);
       const profile = await this.userRepository.findByIdProfile(fk_id_user);
 
-      if (profile) {
-         throw new Err('profile ja criado');
+      if (!profile) {
+         throw new Err('Você ainda não possui um perfil');
       }
 
       if (!user) {
          throw new Err('Usuário não encontrado');
       }
 
-      const create = await this.userRepository.createProfile({
+      const create = await this.userRepository.updateProfile({
+         id: profile.id,
          whats,
          workName,
          CNPJ,

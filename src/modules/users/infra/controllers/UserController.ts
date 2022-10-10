@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CreateLink } from '@modules/users/service/createLink';
-import { CreateProfi } from '@modules/users/service/CreateProfile';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
 import { DeleteUserService } from '@modules/users/service/DeleteUserService';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
 import { GlobalPontsService } from '@modules/users/service/GlobalPontsService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
 import { CreatePadrinhoService } from '@modules/users/service/Padrinho/Padrinho/createPadrinhoService';
+import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
+import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -92,6 +93,39 @@ export class UserController {
    // ! PROFILE */
    async createProfile(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(CreateProfi);
+      const {
+         whats,
+         workName,
+         CNPJ,
+         CPF,
+         email,
+         enquadramento,
+         ramo,
+         logo,
+         avatar,
+         fk_id_user,
+      } = req.body;
+
+      // const user_id = req.user.id;
+
+      const create = await serv.execute({
+         whats,
+         workName,
+         CNPJ,
+         CPF,
+         email,
+         enquadramento,
+         ramo,
+         fk_id_user,
+         logo,
+         avatar,
+      });
+
+      return res.json(create);
+   }
+
+   async updateProfile(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(UpdateProfileService);
       const {
          whats,
          workName,
