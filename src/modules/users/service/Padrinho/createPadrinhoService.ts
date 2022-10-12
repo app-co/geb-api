@@ -28,7 +28,7 @@ export class CreatePadrinhoService {
          await this.userRepository.updateSituation({
             id: find.id,
             firstLogin: find.firstLogin,
-            apadrinhado: true,
+            apadrinhado: !find.apadrinhado,
             inativo: find.inativo,
          });
       }
@@ -42,6 +42,8 @@ export class CreatePadrinhoService {
       await this.cache.invalidate('users');
 
       await this.cache.invalidate('profile');
+
+      await this.cache.invalidatePrefix(`individualPonts`);
 
       return create;
    }

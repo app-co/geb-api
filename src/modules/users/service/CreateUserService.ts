@@ -61,6 +61,7 @@ export class CreateUserService {
       );
 
       await this.cache.invalidate('users');
+      await this.cache.invalidatePrefix(`individualPonts`);
 
       return user;
    }

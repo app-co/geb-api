@@ -44,6 +44,8 @@ export class CreatePresencaService {
       await this.cache.invalidate('presenca');
       await this.cache.invalidatePrefix('orderPresenca');
 
+      await this.cache.invalidatePrefix('individualPonts');
+
       return create;
    }
 }
