@@ -277,7 +277,9 @@ export class GlobalPontsService {
             const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
             const allP = allPadrinho!.filter(h => h.user_id === user.id);
 
-            const pt = allP.length + cons!.qntPadrinho!;
+            const filP = allP || [];
+
+            const pt = filP.length + cons!.qntPadrinho!;
 
             const send = {
                id: user.id,
