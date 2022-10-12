@@ -13,15 +13,16 @@ import {
    Presenca,
    Indication,
    B2b,
+   Padrinho,
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IUserDtos, IProfileDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
+import { pontos as ponts } from 'utils/pontos';
 
-import { pontos } from '../../../utils';
-import { ListAllB2b } from '../../B2b/services/ListAllB2b';
-import { IUsersRepository } from '../repositories/IUsersRespository';
+import { ListAllB2b } from '../../../B2b/services/ListAllB2b';
+import { IUsersRepository } from '../../repositories/IUsersRespository';
 
 interface Props {
    compras: Tips[];
@@ -29,6 +30,14 @@ interface Props {
    presenca: Tips[];
    indication: Tips[];
    b2b: Tips[];
+}
+
+interface IndividualProps {
+   compras: Tips;
+   vendas: Tips;
+   presenca: Tips;
+   indication: Tips;
+   b2b: Tips;
 }
 
 interface Tips {
@@ -39,7 +48,7 @@ interface Tips {
    valor?: number;
 }
 @injectable()
-export class GlobalPontsService {
+export class IndicifualPontsService {
    constructor(
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
@@ -60,12 +69,15 @@ export class GlobalPontsService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute(): Promise<any> {
+   async execute(user_id: string): Promise<any> {
       let ListAllusers = await this.cache.recover<User[]>('users');
       let transaction = await this.cache.recover<Transaction[]>('transaction');
       let listAllPresenca = await this.cache.recover<Presenca[]>('presenca');
       let indi = await this.cache.recover<Indication[]>('indication');
       let b2b = await this.cache.recover<B2b[]>('b2b');
+      let allPadrinho = await this.cache.recover<Padrinho[]>('padrinho');
+
+      const lisAllDadosFire = await this.userRepository.listAllDataFire();
 
       if (!ListAllusers) {
          ListAllusers = await this.userRepository.listAllUser();
@@ -92,6 +104,19 @@ export class GlobalPontsService {
          await this.cache.save('b2b', b2b);
       }
 
+      if (!allPadrinho) {
+         const data = await this.userRepository.listAllPadrinho();
+
+         if (!data) {
+            const dados = [] as Padrinho[];
+            allPadrinho = dados;
+
+            await this.cache.save('padrinho', dados);
+         } else {
+            await this.cache.save('padrinho', data);
+         }
+      }
+
       const Concumo = ListAllusers!
          .map((user, index) => {
             const cons = transaction!.filter(h => h.consumidor_id === user.id);
@@ -102,7 +127,7 @@ export class GlobalPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons!.length * pontos.consumo,
+               pontos: cons!.length * ponts.consumo,
                valor,
             };
             return {
@@ -136,7 +161,7 @@ export class GlobalPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons.length * pontos.consumo,
+               pontos: cons.length * ponts.consumo,
                valor,
             };
             return {
@@ -170,7 +195,7 @@ export class GlobalPontsService {
             return {
                id: user.id,
                nome: user.nome,
-               pontos: qnt * pontos.presenca,
+               pontos: qnt * ponts.presenca,
                quantidade: qnt,
             };
          })
@@ -192,14 +217,18 @@ export class GlobalPontsService {
 
       const Ind = ListAllusers!
          .map(user => {
+            const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
+
             const fil = indi!.filter(
                h => h.quemIndicou_id === user.id && h.validate === true,
             );
 
+            const pt = fil.length + cons!.qntIdication!;
+
             const pont = {
                id: user.id,
                nome: user.nome,
-               pontos: fil.length * pontos.indicacao,
+               pontos: pt * ponts.indication,
             };
 
             return pont;
@@ -229,7 +258,39 @@ export class GlobalPontsService {
             const send = {
                id: user.id,
                nome: user.nome,
-               pontos: cons.length * pontos.b2b,
+               pontos: cons.length * ponts.b2b,
+            };
+            return {
+               send,
+            };
+         })
+         .sort((a, b) => {
+            if (a.send.nome > b.send.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.send.pontos - a.send.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h.send,
+               rank: i + 1,
+            };
+         });
+
+      const padrinho = ListAllusers!
+         .map(user => {
+            const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
+            const allP = allPadrinho!.filter(h => h.user_id === user.id);
+
+            const pt = allP.length + cons!.qntPadrinho!;
+
+            const send = {
+               id: user.id,
+               nome: user.nome,
+               pontos: pt * ponts.padrinho,
             };
             return {
                send,
@@ -257,8 +318,24 @@ export class GlobalPontsService {
          presenca: Pres,
          indication: Ind,
          b2b: B2,
+         padrinho,
       };
 
-      return relatori;
+      let dados = await this.cache.recover<any>(`individualPonts:${user_id}`);
+
+      if (!dados) {
+         dados = {
+            compras: relatori.compras.find(h => h.id === user_id),
+            vendas: relatori.vendas.find(h => h.id === user_id),
+            presenca: relatori.presenca.find(h => h.id === user_id),
+            indication: relatori.indication.find(h => h.id === user_id),
+            b2b: relatori.b2b.find(h => h.id === user_id),
+            padrinho: relatori.padrinho.find(h => h.id === user_id),
+         };
+
+         await this.cache.save(`individualPonts:${user_id}`, dados);
+      }
+
+      return dados;
    }
 }

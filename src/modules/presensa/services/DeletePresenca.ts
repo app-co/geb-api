@@ -34,5 +34,6 @@ export class DeletePresensa {
 
       await this.cache.invalidate('orderPresenca');
       await this.cache.invalidatePrefix('presenca');
+      await this.cache.invalidatePrefix('individualPonts');
    }
 }

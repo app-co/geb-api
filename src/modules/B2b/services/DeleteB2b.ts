@@ -27,6 +27,7 @@ export class DeleteB2b {
       await this.cache.invalidate('b2b');
       await this.cache.invalidatePrefix('b2bSend');
       await this.cache.invalidatePrefix('b2bReci');
+      await this.cache.invalidatePrefix('individualPonts');
 
       return del;
    }

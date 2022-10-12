@@ -28,6 +28,13 @@ export class ListAllUser {
          console.log('banco list all users');
       }
 
+      const us = users.sort((a, b) => {
+         if (a.nome > b.nome) {
+            return -0;
+         }
+         return -1;
+      });
+
       return users;
    }
 }

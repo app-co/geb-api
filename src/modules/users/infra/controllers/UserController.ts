@@ -3,9 +3,10 @@ import { CreateLink } from '@modules/users/service/createLink';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
 import { DeleteUserService } from '@modules/users/service/DeleteUserService';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
-import { GlobalPontsService } from '@modules/users/service/GlobalPontsService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
-import { CreatePadrinhoService } from '@modules/users/service/Padrinho/Padrinho/createPadrinhoService';
+import { CreatePadrinhoService } from '@modules/users/service/Padrinho/createPadrinhoService';
+import { GlobalPontsService } from '@modules/users/service/Pontos/GlobalPontsService';
+import { IndicifualPontsService } from '@modules/users/service/Pontos/IndividualPontsService';
 import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
 import { SessionService } from '@modules/users/service/SessionService.service';
@@ -173,12 +174,21 @@ export class UserController {
       return res.json(user);
    }
 
-   //! RANK GERAL
+   //! pntos
 
    async rank(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(GlobalPontsService);
 
       const ex = await serv.execute();
+
+      return res.json(ex);
+   }
+
+   async rankIndividual(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(IndicifualPontsService);
+
+      const user_id = req.user.id;
+      const ex = await serv.execute(user_id);
 
       return res.json(ex);
    }

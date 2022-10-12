@@ -32,6 +32,7 @@ user.post('/link/create', control.createLink);
 
 //! ! RANK GLOBAL
 user.get('/global-rank', control.rank);
+user.get('/global-rank-ind', control.rankIndividual);
 
 //! ! PADRINHO
 user.post('/create-padrinho', control.createPadrinho);

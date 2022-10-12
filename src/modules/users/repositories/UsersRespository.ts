@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
+   DadosFire,
    Links,
    Padrinho,
    PrismaClient,
@@ -51,6 +52,17 @@ export class UsersRespository implements IUsersRepository {
                create: {
                   qntIdication: qntIndication,
                   qntPadrinho,
+               },
+            },
+            profile: {
+               create: {
+                  whats: 'whats',
+                  workName: 'workName',
+                  CNPJ: 'CNPJ',
+                  CPF: 'CPF',
+                  ramo: 'ramo',
+                  enquadramento: 'enquadramento',
+                  email: 'email',
                },
             },
          },
@@ -255,6 +267,12 @@ export class UsersRespository implements IUsersRepository {
       return fin;
    }
 
+   async listAllSituation(): Promise<SituationUser[]> {
+      const l = await this.prisma.situationUser.findMany();
+
+      return l;
+   }
+
    // !! PADRINHO
 
    async createPadrinho(data: IPadrinhoDto): Promise<Padrinho> {
@@ -268,5 +286,34 @@ export class UsersRespository implements IUsersRepository {
       });
 
       return cre;
+   }
+
+   async findPadrinhoById(id: string): Promise<Padrinho | null> {
+      const find = await this.prisma.padrinho.findUnique({
+         where: { id },
+      });
+
+      return find;
+   }
+
+   async findPadrinhoByUserId(user_id: string): Promise<Padrinho | null> {
+      const find = await this.prisma.padrinho.findFirst({
+         where: { user_id },
+      });
+
+      return find;
+   }
+
+   async listAllPadrinho(): Promise<Padrinho[]> {
+      const all = await this.prisma.padrinho.findMany();
+      return all;
+   }
+
+   //! ! DADOS FIRE
+
+   async listAllDataFire(): Promise<DadosFire[]> {
+      const fire = this.prisma.dadosFire.findMany();
+
+      return fire;
    }
 }

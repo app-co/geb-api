@@ -3,6 +3,6 @@ export const pontos = {
    indication: 15,
    venda: 10,
    consumo: 10,
-   apadrinhamento: 35,
+   padrinho: 35,
    b2b: 20,
 };

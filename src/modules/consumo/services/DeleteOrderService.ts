@@ -27,5 +27,6 @@ export class DeleteOrderService {
       await this.cache.invalidate('orderTransaction');
       await this.cache.invalidatePrefix(`order-transaction-consumidor`);
       await this.cache.invalidatePrefix('order-transaction-prestador');
+      await this.cache.invalidatePrefix('individualPonts');
    }
 }

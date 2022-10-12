@@ -66,6 +66,7 @@ export class CreateIndicationService {
       await this.cache.invalidate(`indication`);
       await this.cache.invalidatePrefix(`indication-indicado`);
       await this.cache.invalidatePrefix('indiQuem');
+      await this.cache.invalidatePrefix('individualPonts');
       return crete;
    }
 }
