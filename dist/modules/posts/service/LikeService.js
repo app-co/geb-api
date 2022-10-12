@@ -27,15 +27,15 @@ let LikeService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target,
     this.cache = cache;
   }
 
-  async execute(id) {
-    const find = await this.postRepository.findLikeById(id);
+  async execute(user_id, fk_id_post) {
+    const find = await this.postRepository.findById(fk_id_post);
+    const findLik = await this.postRepository.findLikeByUserId(user_id);
 
     if (!find) {
       throw new _AppError.Err('post nao encontrado');
     }
 
-    const like = find.like += 1;
-    const lk = await this.postRepository.upLike(id, like);
+    const lk = await this.postRepository.createLike(user_id, fk_id_post);
     await this.cache.invalidate('post');
     return lk;
   }

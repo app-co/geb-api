@@ -15,6 +15,8 @@ var _GlobalPontsPresencaService = require("../../services/GlobalPontsPresencaSer
 
 var _ListAllOrderPresencaService = require("../../services/ListAllOrderPresencaService");
 
+var _ListAllPresensaService = require("../../services/ListAllPresensaService");
+
 var _ListPresencaUserService = require("../../services/ListPresencaUserService");
 
 var _tsyringe = require("tsyringe");
@@ -77,6 +79,13 @@ class PresensaController {
     const list = await service.execute({
       user_id
     });
+    return res.json(list);
+  }
+
+  async listAllPreseca(req, res) {
+    const service = _tsyringe.container.resolve(_ListAllPresensaService.ListAllPresensaService);
+
+    const list = await service.execute();
     return res.json(list);
   }
 

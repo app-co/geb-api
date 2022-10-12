@@ -38,6 +38,7 @@ let DeleteB2b = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target, k
     await this.cache.invalidate('b2b');
     await this.cache.invalidatePrefix('b2bSend');
     await this.cache.invalidatePrefix('b2bReci');
+    await this.cache.invalidatePrefix('individualPonts');
     return del;
   }
 

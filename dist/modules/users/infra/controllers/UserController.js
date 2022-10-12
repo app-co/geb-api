@@ -7,17 +7,23 @@ exports.UserController = void 0;
 
 var _createLink = require("../../service/createLink");
 
-var _CreateProfile = require("../../service/CreateProfile");
-
 var _CreateUserService = require("../../service/CreateUserService");
 
 var _DeleteUserService = require("../../service/DeleteUserService");
 
 var _findUserByIdService = require("../../service/findUserByIdService");
 
-var _GlobalPontsService = require("../../service/GlobalPontsService");
-
 var _ListAllUsers = require("../../service/ListAllUsers");
+
+var _createPadrinhoService = require("../../service/Padrinho/createPadrinhoService");
+
+var _GlobalPontsService = require("../../service/Pontos/GlobalPontsService");
+
+var _IndividualPontsService = require("../../service/Pontos/IndividualPontsService");
+
+var _CreateProfile = require("../../service/Profile/CreateProfile");
+
+var _UpdateProfileService = require("../../service/Profile/UpdateProfileService");
 
 var _SessionService = require("../../service/SessionService.service");
 
@@ -30,6 +36,8 @@ class UserController {
 
     const {
       nome,
+      qntIndication,
+      qntPadrinho,
       membro,
       senha,
       adm,
@@ -46,9 +54,10 @@ class UserController {
       id,
       apadrinhado,
       firstLogin,
-      inativo
+      inativo,
+      qntIndication,
+      qntPadrinho
     });
-    console.log(firstLogin);
     return res.json(user);
   }
 
@@ -113,9 +122,10 @@ class UserController {
       enquadramento,
       ramo,
       logo,
-      avatar
-    } = req.body;
-    const user_id = req.user.id;
+      avatar,
+      fk_id_user
+    } = req.body; // const user_id = req.user.id;
+
     const create = await serv.execute({
       whats,
       workName,
@@ -124,7 +134,38 @@ class UserController {
       email,
       enquadramento,
       ramo,
-      fk_id_user: user_id,
+      fk_id_user,
+      logo,
+      avatar
+    });
+    return res.json(create);
+  }
+
+  async updateProfile(req, res) {
+    const serv = _tsyringe.container.resolve(_UpdateProfileService.UpdateProfileService);
+
+    const {
+      whats,
+      workName,
+      CNPJ,
+      CPF,
+      email,
+      enquadramento,
+      ramo,
+      logo,
+      avatar,
+      fk_id_user
+    } = req.body; // const user_id = req.user.id;
+
+    const create = await serv.execute({
+      whats,
+      workName,
+      CNPJ,
+      CPF,
+      email,
+      enquadramento,
+      ramo,
+      fk_id_user,
       logo,
       avatar
     });
@@ -146,13 +187,40 @@ class UserController {
       link
     });
     return res.json(user);
-  } //! RANK GERAL
+  } //! pntos
 
 
   async rank(req, res) {
     const serv = _tsyringe.container.resolve(_GlobalPontsService.GlobalPontsService);
 
     const ex = await serv.execute();
+    return res.json(ex);
+  }
+
+  async rankIndividual(req, res) {
+    const serv = _tsyringe.container.resolve(_IndividualPontsService.IndicifualPontsService);
+
+    const user_id = req.user.id;
+    const ex = await serv.execute(user_id);
+    return res.json(ex);
+  } //! ! PADRINNHO
+
+
+  async createPadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const {
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    } = req.body;
+    const user_id = req.user.id;
+    const ex = await serv.execute({
+      user_id,
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    });
     return res.json(ex);
   } // async findUnicUser(req: Request, res: Response): Promise<Response> {}
   // async updateToken(req: Request, res: Response): Promise<Response> {}

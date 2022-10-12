@@ -51,7 +51,7 @@ let GlobalPontsPresencaService = (_dec = (0, _tsyringe.injectable)(), _dec2 = fu
 
     const global = listAllUser.map(user => {
       const userPresenca = listAllPresenca.filter(h => h.user_id === user.id);
-      const qnt = userPresenca.length;
+      const qnt = userPresenca.length + 1;
       return {
         id: user.id,
         nome: user.nome,

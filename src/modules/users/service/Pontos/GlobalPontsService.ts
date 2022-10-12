@@ -19,8 +19,8 @@ import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IUserDtos, IProfileDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-import { pontos as ponts } from 'utils/pontos';
 
+import { pontos as ponts } from '../../../../utils/pontos';
 import { ListAllB2b } from '../../../B2b/services/ListAllB2b';
 import { IUsersRepository } from '../../repositories/IUsersRespository';
 

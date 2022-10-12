@@ -31,9 +31,8 @@ let CreateOrderPresencaService = (_dec = (0, _tsyringe.injectable)(), _dec2 = fu
     user_id,
     nome
   }) {
-    const find = await this.presencaRepository.listOrderWithId(user_id);
+    const find = await this.presencaRepository.listOrderWithUserId(user_id);
     const dataN = new Date().getHours();
-    const dataFind = find?.createdAt.getHours();
 
     if (find) {
       throw new _AppError.Err('Você ja enviou uma solicitação de presença');
@@ -48,6 +47,7 @@ let CreateOrderPresencaService = (_dec = (0, _tsyringe.injectable)(), _dec2 = fu
       user_id
     });
     await this.cache.invalidate(`orderPresenca`);
+    await this.cache.invalidatePrefix('presenca');
     return create;
   }
 

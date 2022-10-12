@@ -31,11 +31,15 @@ user.delete('/delete/:membro', control.deleteUser);
 user.get('/find-user-by-id', control.findUserById); // user.put('/update', Auth, control.update);
 // !! CREATE PROFILE */
 
-user.post('/create-profile', control.createProfile); //! ! LINKS
+user.post('/create-profile', control.createProfile);
+user.put('/update-profile', control.updateProfile); //! ! LINKS
 
 user.post('/link/create', control.createLink); //! ! RANK GLOBAL
 
-user.get('/global-rank', control.rank); // user.get('/find', Auth, control.findUnicUser);
+user.get('/global-rank', control.rank);
+user.get('/global-rank-ind', control.rankIndividual); //! ! PADRINHO
+
+user.post('/create-padrinho', control.createPadrinho); // user.get('/find', Auth, control.findUnicUser);
 // user.put('/upToken', Auth, control.updateToken);
 // user.put('/update-padrinho', Auth, control.updatePadrinho);
 // user.put('/update-senha', Auth, control.updateSenhaUser);

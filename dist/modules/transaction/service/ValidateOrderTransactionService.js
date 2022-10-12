@@ -53,6 +53,15 @@ let ValidateOrderTransactionService = (_dec = (0, _tsyringe.injectable)(), _dec2
       throw new _AppError.Err('Prestador não encontrado');
     }
 
+    let dados = {
+      consumidor_id,
+      consumidor_name,
+      prestador_name,
+      prestador_id,
+      valor,
+      descricao
+    };
+
     if (order_id) {
       const findP = await this.orderRepository.findOrderById(order_id);
 
@@ -64,23 +73,18 @@ let ValidateOrderTransactionService = (_dec = (0, _tsyringe.injectable)(), _dec2
         throw new _AppError.Err('Você não tem acesso a essa order', 401);
       }
 
+      dados = findP;
       await this.orderRepository.deleteOrder(findP.id);
     }
 
-    const create = this.transactionRepository.create({
-      consumidor_id,
-      consumidor_name,
-      prestador_name,
-      prestador_id,
-      valor,
-      descricao
-    });
+    const create = this.transactionRepository.create(dados);
     await this.cache.invalidate('transaction');
     await this.cache.invalidatePrefix('transaction-prestador');
     await this.cache.invalidatePrefix('transaction-consumidor');
     await this.cache.invalidate('orderTransaction');
     await this.cache.invalidatePrefix(`order-transaction-consumidor`);
     await this.cache.invalidatePrefix('order-transaction-prestador');
+    await this.cache.invalidatePrefix(`individualPonts`);
     return create;
   }
 

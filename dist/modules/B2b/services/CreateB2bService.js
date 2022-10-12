@@ -9,6 +9,8 @@ var _IUsersRespository = require("../../users/repositories/IUsersRespository");
 
 var _ICacheProvider = _interopRequireDefault(require("../../../shared/container/providers/model/ICacheProvider"));
 
+var _AppError = require("../../../shared/errors/AppError");
+
 var _tsyringe = require("tsyringe");
 
 var _IB2bRepository = require("../repositories/IB2bRepository");
@@ -40,15 +42,19 @@ let CreateB2b = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target, k
     validate
   }) {
     const sendUser = await this.userRepository.findById(send_id);
-    const recevidUser = await this.userRepository.findById(recevid_id); // if (!sendUser) {
-    //    throw new Err('usuário não encontrado');
-    // }
-    // if (!recevidUser) {
-    //    throw new Err('usuário não encontrado');
-    // }
-    // if (sendUser.id === recevid_id) {
-    //    throw new Err('você não pode fazer b2b com você mesmo');
-    // }
+    const recevidUser = await this.userRepository.findById(recevid_id);
+
+    if (!sendUser) {
+      throw new _AppError.Err('usuário não encontrado');
+    }
+
+    if (!recevidUser) {
+      throw new _AppError.Err('usuário não encontrado');
+    }
+
+    if (sendUser.id === recevid_id) {
+      throw new _AppError.Err('você não pode fazer b2b com você mesmo');
+    }
 
     const create = await this.b2bRepository.create({
       send_id,
@@ -62,6 +68,7 @@ let CreateB2b = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target, k
     await this.cache.invalidate('b2b');
     await this.cache.invalidatePrefix('b2bSend');
     await this.cache.invalidatePrefix('b2bReci');
+    await this.cache.invalidatePrefix('individualPonts');
     return create;
   }
 

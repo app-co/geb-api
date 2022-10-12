@@ -48,7 +48,9 @@ let CreatePresencaService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functio
       presenca
     });
     await this.cache.invalidate('orderPresenca');
+    await this.cache.invalidate('presenca');
     await this.cache.invalidatePrefix('orderPresenca');
+    await this.cache.invalidatePrefix('individualPonts');
     return create;
   }
 

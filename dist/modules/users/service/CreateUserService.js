@@ -39,7 +39,9 @@ let CreateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     id,
     apadrinhado,
     firstLogin,
-    inativo
+    inativo,
+    qntIndication,
+    qntPadrinho
   }) {
     const prisma = new _client.PrismaClient();
     const find = await this.userRepository.findByMembro(membro);
@@ -56,8 +58,9 @@ let CreateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
       adm,
       id
     };
-    const user = await this.userRepository.create(data, apadrinhado, firstLogin, inativo);
+    const user = await this.userRepository.create(data, apadrinhado, firstLogin, inativo, qntIndication, qntPadrinho);
     await this.cache.invalidate('users');
+    await this.cache.invalidatePrefix(`individualPonts`);
     return user;
   }
 

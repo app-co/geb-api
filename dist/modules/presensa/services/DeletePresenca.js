@@ -39,7 +39,8 @@ let DeletePresensa = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (targ
 
     await this.presencaRepository.deleteOrderPresenca(find.id);
     await this.cache.invalidate('orderPresenca');
-    await this.cache.invalidatePrefix('orderPresenca');
+    await this.cache.invalidatePrefix('presenca');
+    await this.cache.invalidatePrefix('individualPonts');
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

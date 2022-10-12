@@ -38,6 +38,7 @@ let DeleteIndicationService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
     await this.cache.invalidate(`indication`);
     await this.cache.invalidatePrefix(`indication-indicado`);
     await this.cache.invalidatePrefix('indiQuem');
+    await this.cache.invalidatePrefix('individualPonts');
     return del;
   }
 

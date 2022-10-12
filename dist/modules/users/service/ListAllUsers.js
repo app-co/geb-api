@@ -34,6 +34,13 @@ let ListAllUser = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target,
       console.log('banco list all users');
     }
 
+    const us = users.sort((a, b) => {
+      if (a.nome > b.nome) {
+        return -0;
+      }
+
+      return -1;
+    });
     return users;
   }
 

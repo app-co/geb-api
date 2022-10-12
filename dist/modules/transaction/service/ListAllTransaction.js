@@ -34,7 +34,10 @@ let ListAllTransaction = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
       await this.cache.save('transaction', tran);
     }
 
-    return tran;
+    const res = tran.sort((a, b) => {
+      return a.valor - b.valor;
+    });
+    return res;
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

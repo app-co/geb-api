@@ -57,24 +57,22 @@ class PostRepository {
     return find;
   }
 
-  async upLike(id, like) {
+  async createLike(user_id, fk_id_post) {
     const prisma = new _client.PrismaClient();
-    const lk = await prisma.like.update({
-      where: {
-        id
-      },
+    const lk = await prisma.like.create({
       data: {
-        like
+        user_id,
+        fk_id_post
       }
     });
     return lk;
   }
 
-  async findLikeById(id) {
+  async findLikeByUserId(id) {
     const prisma = new _client.PrismaClient();
-    const like = await prisma.like.findUnique({
+    const like = await prisma.like.findFirst({
       where: {
-        id
+        user_id: id
       }
     });
     return like;

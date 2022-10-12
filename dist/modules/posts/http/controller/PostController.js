@@ -46,9 +46,10 @@ class PostController {
     const service = _tsyringe.container.resolve(_LikeService.LikeService);
 
     const {
-      image_id
-    } = req.params;
-    const like = await service.execute(image_id); // req.io.emit('like', like);
+      fk_id_post
+    } = req.body;
+    const user_id = req.user.id;
+    const like = await service.execute(user_id, fk_id_post); // req.io.emit('like', like);
 
     return res.json(like);
   }

@@ -13,7 +13,7 @@ class UsersRespository {
     this.prisma = new _client.PrismaClient();
   }
 
-  async create(data, apadrinhado, firstLogin, inativo) {
+  async create(data, apadrinhado, firstLogin, inativo, qntIndication, qntPadrinho) {
     const user = await this.prisma.user.create({
       data: {
         nome: data.nome,
@@ -31,6 +31,23 @@ class UsersRespository {
         region: {
           create: {
             city: 'BOTUCATU'
+          }
+        },
+        dadosFire: {
+          create: {
+            qntIdication: qntIndication,
+            qntPadrinho
+          }
+        },
+        profile: {
+          create: {
+            whats: 'whats',
+            workName: 'workName',
+            CNPJ: 'CNPJ',
+            CPF: 'CPF',
+            ramo: 'ramo',
+            enquadramento: 'enquadramento',
+            email: 'email'
           }
         }
       }
@@ -65,7 +82,9 @@ class UsersRespository {
     const find = await this.prisma.user.findMany({
       include: {
         situation: true,
-        profile: true
+        profile: true,
+        region: true,
+        dadosFire: true
       }
     });
     return find;
@@ -84,9 +103,6 @@ class UsersRespository {
   }
 
   async deleteUser(membro) {
-    // await this.prisma.situationUser.delete({
-    //    where: { membro },
-    // });
     const user = await this.prisma.user.delete({
       where: {
         membro
@@ -137,10 +153,10 @@ class UsersRespository {
   } // !!PROFILE  */
 
 
-  async updateProfile(data, id) {
+  async updateProfile(data) {
     const up = await this.prisma.profile.update({
       where: {
-        id
+        id: data.id
       },
       data: {
         whats: data.whats,
@@ -230,12 +246,69 @@ class UsersRespository {
         id: data.id
       },
       data: {
+        fk_id_user: data.fk_id_user,
         apadrinhado: data.apadrinhado,
         firstLogin: data.firstLogin,
         inativo: data.inativo
       }
     });
     return up;
+  }
+
+  async findSituation(id) {
+    const fin = await this.prisma.situationUser.findFirst({
+      where: {
+        fk_id_user: id
+      }
+    });
+    return fin;
+  }
+
+  async listAllSituation() {
+    const l = await this.prisma.situationUser.findMany();
+    return l;
+  } // !! PADRINHO
+
+
+  async createPadrinho(data) {
+    const cre = await this.prisma.padrinho.create({
+      data: {
+        apadrinhado_id: data.apadrinhado_id,
+        apadrinhado_name: data.apadrinhado_name,
+        user_id: data.user_id,
+        qnt: data.qnt
+      }
+    });
+    return cre;
+  }
+
+  async findPadrinhoById(id) {
+    const find = await this.prisma.padrinho.findUnique({
+      where: {
+        id
+      }
+    });
+    return find;
+  }
+
+  async findPadrinhoByUserId(user_id) {
+    const find = await this.prisma.padrinho.findFirst({
+      where: {
+        user_id
+      }
+    });
+    return find;
+  }
+
+  async listAllPadrinho() {
+    const all = await this.prisma.padrinho.findMany();
+    return all;
+  } //! ! DADOS FIRE
+
+
+  async listAllDataFire() {
+    const fire = this.prisma.dadosFire.findMany();
+    return fire;
   }
 
 }

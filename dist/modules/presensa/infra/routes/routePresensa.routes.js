@@ -19,6 +19,7 @@ RoutePresensa.post('/create-order-presenca', controler.createOrder);
 RoutePresensa.post('/create-presenca', controler.create);
 RoutePresensa.get('/list-all-order-presenca', controler.listAllOrder);
 RoutePresensa.get('/list-all-presenca-user/', controler.listAllPresecaUser);
+RoutePresensa.get('/list-all', controler.listAllPreseca);
 RoutePresensa.delete('/delete-order/:id', controler.delte);
 RoutePresensa.get('/rank-presenca', controler.rank); // RoutePresensa.patch('/update', Auth, controler.update);
 // RoutePresensa.get('/', Auth, controler.list);

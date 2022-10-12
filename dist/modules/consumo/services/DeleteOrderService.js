@@ -32,6 +32,7 @@ let DeleteOrderService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
     await this.cache.invalidate('orderTransaction');
     await this.cache.invalidatePrefix(`order-transaction-consumidor`);
     await this.cache.invalidatePrefix('order-transaction-prestador');
+    await this.cache.invalidatePrefix('individualPonts');
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

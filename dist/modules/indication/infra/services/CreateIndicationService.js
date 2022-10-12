@@ -9,6 +9,8 @@ var _IUsersRespository = require("../../../users/repositories/IUsersRespository"
 
 var _ICacheProvider = _interopRequireDefault(require("../../../../shared/container/providers/model/ICacheProvider"));
 
+var _AppError = require("../../../../shared/errors/AppError");
+
 var _tsyringe = require("tsyringe");
 
 var _IIndicationRepository = require("../repositories/IIndicationRepository");
@@ -40,15 +42,19 @@ let CreateIndicationService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
     quemIndicou_name
   }) {
     const user = await this.userRepo.findById(quemIndicou_id);
-    const indicado = await this.userRepo.findById(indicado_id); // if (!user) {
-    //    throw new Err('usuário não encontrado');
-    // }
-    // if (!indicado) {
-    //    throw new Err('usuário não encontrado');
-    // }
-    // if (user.id === indicado.id) {
-    //    throw new Err('você não pode fazer uma indicação à você mesmo');
-    // }
+    const indicado = await this.userRepo.findById(indicado_id);
+
+    if (!user) {
+      throw new _AppError.Err('usuário não encontrado');
+    }
+
+    if (!indicado) {
+      throw new _AppError.Err('usuário não encontrado');
+    }
+
+    if (user.id === indicado.id) {
+      throw new _AppError.Err('você não pode fazer uma indicação à você mesmo');
+    }
 
     const crete = await this.indicationRepo.create({
       indicado_id,
@@ -62,6 +68,7 @@ let CreateIndicationService = (_dec = (0, _tsyringe.injectable)(), _dec2 = funct
     await this.cache.invalidate(`indication`);
     await this.cache.invalidatePrefix(`indication-indicado`);
     await this.cache.invalidatePrefix('indiQuem');
+    await this.cache.invalidatePrefix('individualPonts');
     return crete;
   }
 

@@ -35,7 +35,7 @@ class PresencaRepository {
   }
 
   async listOrderWithId(id) {
-    const list = await this.prisma.orderPresenca.findUnique({
+    const list = await this.prisma.orderPresenca.findFirst({
       where: {
         id
       }
