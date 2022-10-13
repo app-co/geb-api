@@ -222,6 +222,9 @@ export class UsersRespository implements IUsersRepository {
       const user = await this.prisma.user.update({
          where: { membro },
          data: {
+            nome, 
+            adm,
+            token
             senha,
          },
       });

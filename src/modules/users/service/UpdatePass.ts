@@ -7,10 +7,8 @@ import { inject, injectable } from 'tsyringe';
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface Props {
-   nome: string;
    membro: string;
    senha: string;
-   adm: boolean;
 }
 
 @injectable()
@@ -20,10 +18,9 @@ export class UpdateSenha {
       private userRepository: IUsersRepository,
    ) {}
 
-   async execute({ membro, senha, adm }: Props): Promise<User> {
+   async execute({ membro, senha }: Props): Promise<User> {
       const find = await this.userRepository.findByMembro(membro);
 
-      console.log(membro);
       if (!find) {
          throw new Err('Membro nao encontrado');
       }
