@@ -10,6 +10,7 @@ import { IndicifualPontsService } from '@modules/users/service/Pontos/Individual
 import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
 import { SessionService } from '@modules/users/service/SessionService.service';
+import { UpdateSenha } from '@modules/users/service/UpdatePass';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -77,7 +78,15 @@ export class UserController {
       return res.json(rs);
    }
 
-   // async update(req: Request, res: Response): Promise<Response> {}
+   async updateSenha(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(UpdateSenha);
+
+      const { membro, senha } = req.body;
+
+      const rs = await serv.execute({ membro, senha });
+
+      return res.json(rs);
+   }
 
    // async updateAvatar(req: Request, res: Response): Promise<Response> {}
 

@@ -28,7 +28,7 @@ export interface IUsersRepository {
    listAllUser(): Promise<User[]>;
    updateUser(data: IUserDtos, id: string): Promise<User>;
    updateToken(id: string, token: string): Promise<User>;
-   updateSenha(senha: string, id: string): Promise<User>;
+   updateSenha(senha: string, membro: string): Promise<User>;
    deleteUser(membro: string): Promise<User>;
 
    // !! LINKS

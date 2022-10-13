@@ -218,9 +218,9 @@ export class UsersRespository implements IUsersRepository {
       return fi;
    }
 
-   async updateSenha(senha: string, id: string): Promise<User> {
+   async updateSenha(senha: string, membro: string): Promise<User> {
       const user = await this.prisma.user.update({
-         where: { id },
+         where: { membro },
          data: {
             senha,
          },
