@@ -21,6 +21,7 @@ const user = (0, _express.Router)();
 exports.user = user;
 const control = new _UserController.UserController();
 const img = (0, _multer.default)(_upload.default);
+user.post('/update-pass', control.updateSenha);
 user.post('/create-user', control.create);
 user.post('/session', control.session);
 user.use(_Auth.Auth); // user.patch('/avatar', img.single('avatar'), control.updateAvatar);

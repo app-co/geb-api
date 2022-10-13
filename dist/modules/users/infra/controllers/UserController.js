@@ -27,6 +27,8 @@ var _UpdateProfileService = require("../../service/Profile/UpdateProfileService"
 
 var _SessionService = require("../../service/SessionService.service");
 
+var _UpdatePass = require("../../service/UpdatePass");
+
 var _tsyringe = require("tsyringe");
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -97,8 +99,21 @@ class UserController {
       user_id: id
     });
     return res.json(rs);
-  } // async update(req: Request, res: Response): Promise<Response> {}
-  // async updateAvatar(req: Request, res: Response): Promise<Response> {}
+  }
+
+  async updateSenha(req, res) {
+    const serv = _tsyringe.container.resolve(_UpdatePass.UpdateSenha);
+
+    const {
+      membro,
+      senha
+    } = req.body;
+    const rs = await serv.execute({
+      membro,
+      senha
+    });
+    return res.json(rs);
+  } // async updateAvatar(req: Request, res: Response): Promise<Response> {}
   // async updateLogo(req: Request, res: Response): Promise<Response> {}
 
 
