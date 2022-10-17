@@ -97,16 +97,9 @@ export class GlobalPontsService {
       }
 
       if (!allPadrinho) {
-         const data = await this.userRepository.listAllPadrinho();
+         allPadrinho = await this.userRepository.listAllPadrinho();
 
-         if (!data) {
-            const dados = [] as Padrinho[];
-            allPadrinho = dados;
-
-            await this.cache.save('padrinho', dados);
-         } else {
-            await this.cache.save('padrinho', data);
-         }
+         await this.cache.save('padrinho', allPadrinho);
       }
 
       const Concumo = ListAllusers!
@@ -275,11 +268,12 @@ export class GlobalPontsService {
       const padrinho = ListAllusers!
          .map(user => {
             const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
-            const allP = allPadrinho!.filter(h => h.user_id === user.id);
+            let allP = [];
+            if (allPadrinho) {
+               allP = allPadrinho.filter(h => h.user_id === user.id);
+            }
 
-            const filP = allP || [];
-
-            const pt = filP.length + cons!.qntPadrinho!;
+            const pt = allP.length + cons!.qntPadrinho!;
 
             const send = {
                id: user.id,

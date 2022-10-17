@@ -172,6 +172,8 @@ export class UsersRespository implements IUsersRepository {
             ramo: data.ramo,
             enquadramento: data.enquadramento,
             email: data.email,
+            avatar: data.avatar,
+            logotipo: data.logo,
          },
       });
 
@@ -307,6 +309,12 @@ export class UsersRespository implements IUsersRepository {
    async listAllPadrinho(): Promise<Padrinho[]> {
       const all = await this.prisma.padrinho.findMany();
       return all;
+   }
+
+   async deletePadrinho(id: string): Promise<void> {
+      await this.prisma.padrinho.delete({
+         where: { id },
+      });
    }
 
    //! ! DADOS FIRE

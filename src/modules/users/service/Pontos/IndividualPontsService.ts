@@ -16,7 +16,7 @@ import {
    Padrinho,
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
-import { IUserDtos, IProfileDto } from '@shared/dtos';
+import { IUserDtos, IProfileDto, IPadrinhoDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
@@ -105,16 +105,9 @@ export class IndicifualPontsService {
       }
 
       if (!allPadrinho) {
-         const data = await this.userRepository.listAllPadrinho();
+         allPadrinho = await this.userRepository.listAllPadrinho();
 
-         if (!data) {
-            const dados = [] as Padrinho[];
-            allPadrinho = dados;
-
-            await this.cache.save('padrinho', dados);
-         } else {
-            await this.cache.save('padrinho', data);
-         }
+         await this.cache.save('padrinho', allPadrinho);
       }
 
       const Concumo = ListAllusers!
@@ -283,7 +276,9 @@ export class IndicifualPontsService {
       const padrinho = ListAllusers!
          .map(user => {
             const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
+
             const allP = allPadrinho!.filter(h => h.user_id === user.id);
+            console.log(allP);
 
             const pt = allP.length + cons!.qntPadrinho!;
 

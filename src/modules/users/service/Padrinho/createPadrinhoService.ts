@@ -23,6 +23,7 @@ export class CreatePadrinhoService {
       qnt,
    }: IPadrinhoDto): Promise<any> {
       const find = await this.userRepository.findSituation(apadrinhado_id);
+      const al = await this.userRepository.listAllPadrinho();
 
       if (find) {
          await this.userRepository.updateSituation({
@@ -44,6 +45,7 @@ export class CreatePadrinhoService {
       await this.cache.invalidate('profile');
 
       await this.cache.invalidatePrefix(`individualPonts`);
+      await this.cache.invalidate('padrinho');
 
       return create;
    }

@@ -57,6 +57,7 @@ export interface IUsersRepository {
    findPadrinhoById(id: string): Promise<Padrinho | null>;
    findPadrinhoByUserId(user_id: string): Promise<Padrinho | null>;
    listAllPadrinho(): Promise<Padrinho[]>;
+   deletePadrinho(id: string): Promise<void>;
 
    //! ! DATA FIRE
 
