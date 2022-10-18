@@ -43,8 +43,15 @@ export class CreateUserService {
    }: Props): Promise<User> {
       const prisma = new PrismaClient();
       const find = await this.userRepository.findByMembro(membro);
+      const findById = await this.userRepository.findById(id);
+
+      console.log(id);
 
       if (find) {
+         throw new Err('Esse membro já está cadastrado');
+      }
+
+      if (findById) {
          throw new Err('Esse membro já está cadastrado');
       }
 
