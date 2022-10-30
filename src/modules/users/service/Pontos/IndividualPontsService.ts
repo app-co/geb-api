@@ -113,9 +113,10 @@ export class IndicifualPontsService {
       const Concumo = ListAllusers!
          .map((user, index) => {
             const cons = transaction!.filter(h => h.consumidor_id === user.id);
-            const valor = cons.reduce((ac, i) => {
-               return ac + Number(i.valor);
-            }, 0);
+            const valor =
+               cons.reduce((ac, i) => {
+                  return ac + Number(i.valor);
+               }, 0) / 100;
 
             const consumo = {
                id: user.id,
@@ -147,9 +148,10 @@ export class IndicifualPontsService {
          .map((user, index) => {
             const cons = transaction!.filter(h => h.prestador_id === user.id);
 
-            const valor = cons.reduce((ac, i) => {
-               return ac + Number(i.valor);
-            }, 0);
+            const valor =
+               cons.reduce((ac, i) => {
+                  return ac + Number(i.valor);
+               }, 0) / 100;
 
             const consumo = {
                id: user.id,

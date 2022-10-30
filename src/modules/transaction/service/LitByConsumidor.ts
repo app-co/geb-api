@@ -29,7 +29,13 @@ export class ListByConsumidor {
          await this.cache.save(`transaction-consumidor:${id}`, find);
          console.log('listconsumidor: passou pelo banco');
       }
+      const bp = find.map(h => {
+         return {
+            ...h,
+            valor: h.valor / 100,
+         };
+      });
 
-      return find;
+      return bp;
    }
 }

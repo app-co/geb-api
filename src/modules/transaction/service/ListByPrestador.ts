@@ -32,6 +32,13 @@ export class ListByPrestador {
          console.log('list transaction by prestador: passou pelo banco');
       }
 
-      return find;
+      const bp = find.map(h => {
+         return {
+            ...h,
+            valor: h.valor / 100,
+         };
+      });
+
+      return bp;
    }
 }
