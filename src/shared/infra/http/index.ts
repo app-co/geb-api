@@ -29,17 +29,16 @@ io.off('dis', h => {
    console.log(`disconectado ${h.id}`);
 });
 
+app.use((req: Request, res: Response, nex: NextFunction) => {
+   req.io = io;
+   nex();
+});
 // app.use(rateLimiter);
 app.use(cors());
 app.use(express.json());
 
 app.use(Route);
 app.use(errors());
-
-app.use((req: Request, res: Response, nex: NextFunction) => {
-   req.io = io;
-   nex();
-});
 
 app.use(
    '/file/post',

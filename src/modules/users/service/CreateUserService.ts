@@ -41,22 +41,16 @@ export class CreateUserService {
       qntIndication,
       qntPadrinho,
    }: Props): Promise<User> {
-      const prisma = new PrismaClient();
       const find = await this.userRepository.findByMembro(membro);
-      const findById = await this.userRepository.findById(id);
-
-      console.log(id);
 
       if (find) {
          throw new Err('Esse membro já está cadastrado');
       }
 
-      if (findById) {
-         throw new Err('Esse membro já está cadastrado');
-      }
-
       const has = await hash(senha, 8);
       const data = { nome, membro, senha: has, adm, id };
+
+      console.log(data.membro);
 
       const user = await this.userRepository.create(
          data,

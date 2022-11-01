@@ -28,6 +28,8 @@ export class ConsumoController {
          prestador_name,
       });
 
+      await req.io.emit('order-trans', consumo);
+
       return res.json(consumo);
    }
 

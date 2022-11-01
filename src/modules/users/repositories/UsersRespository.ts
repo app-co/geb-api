@@ -35,7 +35,6 @@ export class UsersRespository implements IUsersRepository {
             membro: data.membro,
             adm: data.adm,
             senha: data.senha!,
-            id: data.id,
             situation: {
                create: {
                   apadrinhado,
