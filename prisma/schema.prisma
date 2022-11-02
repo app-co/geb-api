@@ -48,6 +48,8 @@ model Profile {
    ramo                    String?     
    enquadramento           String?
    email                   String?
+   avatarPath              String?
+   logoPath                String?
 
    user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    fk_id_user              String         @unique

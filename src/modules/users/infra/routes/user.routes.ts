@@ -27,6 +27,8 @@ user.get('/find-user-by-id', control.findUserById);
 // !! CREATE PROFILE */
 user.post('/create-profile', control.createProfile);
 user.put('/update-profile', control.updateProfile);
+user.patch('/update-avatar', img.single('avatar'), control.updateAvatar);
+user.patch('/update-logo', img.single('logo'), control.updateLogo);
 
 //! ! LINKS
 user.post('/link/create', control.createLink);

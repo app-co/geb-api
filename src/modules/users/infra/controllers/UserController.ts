@@ -8,11 +8,14 @@ import { CreatePadrinhoService } from '@modules/users/service/Padrinho/createPad
 import { GlobalPontsService } from '@modules/users/service/Pontos/GlobalPontsService';
 import { IndicifualPontsService } from '@modules/users/service/Pontos/IndividualPontsService';
 import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
+import { UpdateLogo } from '@modules/users/service/Profile/UpdateLogo';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { UpdateSenha } from '@modules/users/service/UpdatePass';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
+
+import { UpdateAvatar } from '../../service/Profile/UpdateAvatar';
 
 export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
@@ -163,6 +166,28 @@ export class UserController {
          logo,
          avatar,
       });
+
+      return res.json(create);
+   }
+
+   async updateAvatar(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(UpdateAvatar);
+      const avatar = req.file!.filename;
+
+      const { id } = req.user;
+
+      const create = await serv.execute(id, avatar);
+
+      return res.json(create);
+   }
+
+   async updateLogo(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(UpdateLogo);
+      const logo = req.file!.filename;
+
+      const { id } = req.user;
+
+      const create = await serv.execute(id, logo);
 
       return res.json(create);
    }

@@ -5,6 +5,7 @@ import {
    Profile,
    SituationUser,
    User,
+   Avatar,
 } from '@prisma/client';
 import {
    ILinkDto,
@@ -60,6 +61,5 @@ export interface IUsersRepository {
    deletePadrinho(id: string): Promise<void>;
 
    //! ! DATA FIRE
-
    listAllDataFire(): Promise<DadosFire[]>;
 }

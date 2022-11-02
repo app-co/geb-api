@@ -173,6 +173,8 @@ export class UsersRespository implements IUsersRepository {
             email: data.email,
             avatar: data.avatar,
             logotipo: data.logo,
+            avatarPath: data.avatarPath,
+            logoPath: data.logoPath,
          },
       });
 

@@ -37,6 +37,8 @@ export interface IProfileDto {
    whatsApp?: string;
    logo?: string;
    avatar?: string;
+   avatarPath?: string;
+   logoPath?: string;
 }
 
 export interface IRegion {
