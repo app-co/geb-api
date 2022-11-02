@@ -45,7 +45,7 @@ container.registerSingleton<ITransactionRepository>(
    TransactionRepository,
 );
 
-container.registerSingleton<IStorageProvider>('Storage', DiskStorageProvider);
+container.registerSingleton<IStorageProvider>('Storage', S3Storage);
 
 container.registerSingleton<IPresencaRespository>(
    'Presenca',

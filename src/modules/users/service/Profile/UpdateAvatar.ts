@@ -14,7 +14,7 @@ export class UpdateAvatar {
       private store: IStorageProvider,
    ) {}
 
-   async execute(id: string, avatar: string): Promise<PRofile> {
+   async execute(id: string, avatar: string): Promise<Profile> {
       const user = await this.userRepository.findByIdProfile(id);
 
       if (!user) {
@@ -29,7 +29,7 @@ export class UpdateAvatar {
 
       const dados = {
          ...user,
-         avatar: `http:/147.182.129.147/file/avatar/${av}`,
+         avatar: `https://geb-networking.s3.sa-east-1.amazonaws.com/avatar/${av}`,
          avatarPath: av,
       };
 
