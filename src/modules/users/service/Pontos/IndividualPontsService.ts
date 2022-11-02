@@ -280,7 +280,6 @@ export class IndicifualPontsService {
             const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
 
             const allP = allPadrinho!.filter(h => h.user_id === user.id);
-            console.log(allP);
 
             const pt = allP.length + cons!.qntPadrinho!;
 
