@@ -5,7 +5,7 @@ import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class UpdateLogo {
+export class UpdateAvatar {
    constructor(
       @inject('PrismaUser')
       private userRepository: IUsersRepository,
@@ -14,7 +14,7 @@ export class UpdateLogo {
       private store: IStorageProvider,
    ) {}
 
-   async execute(id: string, logo: string): Promise<Profile> {
+   async execute(id: string, logo: string): Promise<any> {
       const user = await this.userRepository.findByIdProfile(id);
 
       if (!user) {
@@ -29,12 +29,11 @@ export class UpdateLogo {
 
       const dados = {
          ...user,
-         logotipo: `http://192.168.5.124:3333/file/logo/${av}`,
+         logo: `http://147.182.129.147/file/avatar/${av}`,
          logoPath: av,
       };
 
       const prof = await this.userRepository.updateProfile(dados);
-      console.log(prof);
       return prof;
    }
 }

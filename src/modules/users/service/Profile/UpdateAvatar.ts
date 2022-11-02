@@ -22,7 +22,6 @@ export class UpdateAvatar {
       }
 
       if (user?.avatarPath) {
-         console.log('existe avatar');
          await this.store.deleteFile(user.avatarPath, 'avatar');
       }
 
@@ -30,7 +29,7 @@ export class UpdateAvatar {
 
       const dados = {
          ...user,
-         avatar: `http://192.168.5.124:3333/file/avatar/${av}`,
+         avatar: `http:/147.182.129.147/file/avatar/${av}`,
          avatarPath: av,
       };
 
