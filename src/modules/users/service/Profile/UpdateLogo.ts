@@ -15,7 +15,6 @@ export class UpdateLogo {
    ) {}
 
    async execute(id: string, logo: string): Promise<Profile> {
-      console.log(id);
       const user = await this.userRepository.findByIdProfile(id);
 
       if (!user) {
@@ -30,7 +29,7 @@ export class UpdateLogo {
 
       const dados = {
          ...user,
-         logotipo: `http://147.182.129.147:3333/file/logo/${av}`,
+         logotipo: `http://192.168.5.124:3333/file/logo/${av}`,
          logoPath: av,
       };
 
