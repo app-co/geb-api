@@ -30,7 +30,7 @@ export class UpdateLogo {
 
       const dados = {
          ...user,
-         logotipo: `http://192.168.5.124:3333/file/logo/${av}`,
+         logotipo: `http://147.182.129.147:3333/file/logo/${av}`,
          logoPath: av,
       };
 

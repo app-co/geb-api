@@ -30,7 +30,7 @@ export class UpdateAvatar {
 
       const dados = {
          ...user,
-         avatar: `http://192.168.5.124:3333/file/avatar/${av}`,
+         avatar: `http://147.182.129.147:3333/file/avatar/${av}`,
          avatarPath: av,
       };
 
