@@ -50,8 +50,6 @@ export class CreateUserService {
       const has = await hash(senha, 8);
       const data = { nome, membro, senha: has, adm, id };
 
-      console.log(data.membro);
-
       const user = await this.userRepository.create(
          data,
          apadrinhado,

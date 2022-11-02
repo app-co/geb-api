@@ -20,7 +20,6 @@ export class ListAllTransaction {
 
       if (!tran) {
          tran = await this.transactionRepository.listAllTransaction();
-         console.log('listalltransaction: transaction');
          await this.cache.save('transaction', tran);
       }
 

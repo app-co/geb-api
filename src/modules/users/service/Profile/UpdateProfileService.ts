@@ -53,7 +53,6 @@ export class UpdateProfileService {
          logo,
          avatar,
       });
-      console.log(avatar);
       await this.cache.invalidate('users');
 
       await this.cache.invalidate('profile');

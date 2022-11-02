@@ -26,8 +26,6 @@ export class DeleteUserService {
    async execute({ membro }: IPros): Promise<User> {
       const findId = await this.userRepository.findByMembro(membro);
 
-      console.log('user', membro);
-
       if (!findId) {
          throw new Err('usuário nao encontrado');
       }

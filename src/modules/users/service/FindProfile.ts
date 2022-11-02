@@ -22,8 +22,6 @@ export class FindProfile {
    async execute({ user_id }: IPros): Promise<Profile> {
       const findId = await this.userRepository.findProfileByUserId(user_id);
 
-      console.log('user', user_id);
-
       if (!findId) {
          throw new Err('profile nao encontrado');
       }
