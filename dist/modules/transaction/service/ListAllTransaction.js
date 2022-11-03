@@ -30,11 +30,15 @@ let ListAllTransaction = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
 
     if (!tran) {
       tran = await this.transactionRepository.listAllTransaction();
-      console.log('listalltransaction: transaction');
       await this.cache.save('transaction', tran);
     }
 
-    const res = tran.sort((a, b) => {
+    const d = tran.map(h => {
+      return { ...h,
+        valor: h.valor / 100
+      };
+    });
+    const res = d.sort((a, b) => {
       return a.valor - b.valor;
     });
     return res;

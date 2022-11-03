@@ -41,16 +41,16 @@ io.on('connection', client => {
 });
 io.off('dis', h => {
   console.log(`disconectado ${h.id}`);
+});
+app.use((req, res, nex) => {
+  req.io = io;
+  nex();
 }); // app.use(rateLimiter);
 
 app.use((0, _cors.default)());
 app.use(_express.default.json());
 app.use(_index.Route);
 app.use((0, _celebrate.errors)());
-app.use((req, res, nex) => {
-  req.io = io;
-  nex();
-});
 app.use('/file/post', _express.default.static(_path.default.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'post')));
 app.use('/file/avatar', _express.default.static(_path.default.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'avatar')));
 app.use('/file/logo', _express.default.static(_path.default.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'logo')));

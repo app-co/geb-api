@@ -49,8 +49,8 @@ class PostController {
       fk_id_post
     } = req.body;
     const user_id = req.user.id;
-    const like = await service.execute(user_id, fk_id_post); // req.io.emit('like', like);
-
+    const like = await service.execute(user_id, fk_id_post);
+    req.io.emit('like', like);
     return res.json(like);
   }
 

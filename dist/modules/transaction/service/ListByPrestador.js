@@ -36,7 +36,12 @@ let ListByPrestador = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (tar
       console.log('list transaction by prestador: passou pelo banco');
     }
 
-    return find;
+    const bp = find.map(h => {
+      return { ...h,
+        valor: h.valor / 100
+      };
+    });
+    return bp;
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

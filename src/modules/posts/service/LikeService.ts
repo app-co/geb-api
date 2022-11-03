@@ -22,6 +22,10 @@ export class LikeService {
       const find = await this.postRepository.findById(fk_id_post);
       const findLik = await this.postRepository.findLikeByUserId(user_id);
 
+      if (findLik) {
+         throw new Err('like ja criado');
+      }
+
       if (!find) {
          throw new Err('post nao encontrado');
       }

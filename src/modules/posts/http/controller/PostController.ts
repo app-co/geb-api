@@ -40,7 +40,7 @@ export class PostController {
 
       const like = await service.execute(user_id, fk_id_post);
 
-      // req.io.emit('like', like);
+      req.io.emit('like', like);
 
       return res.json(like);
    }

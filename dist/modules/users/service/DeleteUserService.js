@@ -31,7 +31,6 @@ let DeleteUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     membro
   }) {
     const findId = await this.userRepository.findByMembro(membro);
-    console.log('user', membro);
 
     if (!findId) {
       throw new _AppError.Err('usuário nao encontrado');

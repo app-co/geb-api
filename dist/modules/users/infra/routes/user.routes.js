@@ -33,7 +33,9 @@ user.get('/find-user-by-id', control.findUserById); // user.put('/update', Auth,
 // !! CREATE PROFILE */
 
 user.post('/create-profile', control.createProfile);
-user.put('/update-profile', control.updateProfile); //! ! LINKS
+user.put('/update-profile', control.updateProfile);
+user.patch('/update-avatar', img.single('avatar'), control.updateAvatar);
+user.patch('/update-logo', img.single('logo'), control.updateLogo); //! ! LINKS
 
 user.post('/link/create', control.createLink); //! ! RANK GLOBAL
 

@@ -65,6 +65,7 @@ let UpdateProfileService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function
     });
     await this.cache.invalidate('users');
     await this.cache.invalidate('profile');
+    await this.cache.invalidate('padrinho');
     return create;
   }
 

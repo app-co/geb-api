@@ -20,7 +20,6 @@ class UsersRespository {
         membro: data.membro,
         adm: data.adm,
         senha: data.senha,
-        id: data.id,
         situation: {
           create: {
             apadrinhado,
@@ -165,7 +164,11 @@ class UsersRespository {
         CPF: data.CPF,
         ramo: data.ramo,
         enquadramento: data.enquadramento,
-        email: data.email
+        email: data.email,
+        avatar: data.avatar,
+        logotipo: data.logo,
+        avatarPath: data.avatarPath,
+        logoPath: data.logoPath
       }
     });
     return up;
@@ -212,10 +215,10 @@ class UsersRespository {
     return fi;
   }
 
-  async updateSenha(senha, id) {
+  async updateSenha(senha, membro) {
     const user = await this.prisma.user.update({
       where: {
-        id
+        membro
       },
       data: {
         senha
@@ -303,6 +306,14 @@ class UsersRespository {
   async listAllPadrinho() {
     const all = await this.prisma.padrinho.findMany();
     return all;
+  }
+
+  async deletePadrinho(id) {
+    await this.prisma.padrinho.delete({
+      where: {
+        id
+      }
+    });
   } //! ! DADOS FIRE
 
 

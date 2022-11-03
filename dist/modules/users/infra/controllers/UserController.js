@@ -23,6 +23,8 @@ var _IndividualPontsService = require("../../service/Pontos/IndividualPontsServi
 
 var _CreateProfile = require("../../service/Profile/CreateProfile");
 
+var _UpdateLogo = require("../../service/Profile/UpdateLogo");
+
 var _UpdateProfileService = require("../../service/Profile/UpdateProfileService");
 
 var _SessionService = require("../../service/SessionService.service");
@@ -30,6 +32,8 @@ var _SessionService = require("../../service/SessionService.service");
 var _UpdatePass = require("../../service/UpdatePass");
 
 var _tsyringe = require("tsyringe");
+
+var _UpdateAvatar = require("../../service/Profile/UpdateAvatar");
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 class UserController {
@@ -184,6 +188,28 @@ class UserController {
       logo,
       avatar
     });
+    return res.json(create);
+  }
+
+  async updateAvatar(req, res) {
+    const serv = _tsyringe.container.resolve(_UpdateAvatar.UpdateAvatar);
+
+    const avatar = req.file.filename;
+    const {
+      id
+    } = req.user;
+    const create = await serv.execute(id, avatar);
+    return res.json(create);
+  }
+
+  async updateLogo(req, res) {
+    const serv = _tsyringe.container.resolve(_UpdateLogo.UpdateLogo);
+
+    const logo = req.file.filename;
+    const {
+      id
+    } = req.user;
+    const create = await serv.execute(id, logo);
     return res.json(create);
   } // !! LINKS
 

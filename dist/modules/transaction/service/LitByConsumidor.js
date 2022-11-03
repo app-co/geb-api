@@ -36,7 +36,12 @@ let ListByConsumidor = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (ta
       console.log('listconsumidor: passou pelo banco');
     }
 
-    return find;
+    const bp = find.map(h => {
+      return { ...h,
+        valor: h.valor / 100
+      };
+    });
+    return bp;
   }
 
 }) || _class) || _class) || _class) || _class) || _class);

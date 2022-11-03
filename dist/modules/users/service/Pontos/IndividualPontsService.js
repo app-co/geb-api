@@ -82,22 +82,15 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     }
 
     if (!allPadrinho) {
-      const data = await this.userRepository.listAllPadrinho();
-
-      if (!data) {
-        const dados = [];
-        allPadrinho = dados;
-        await this.cache.save('padrinho', dados);
-      } else {
-        await this.cache.save('padrinho', data);
-      }
+      allPadrinho = await this.userRepository.listAllPadrinho();
+      await this.cache.save('padrinho', allPadrinho);
     }
 
     const Concumo = ListAllusers.map((user, index) => {
       const cons = transaction.filter(h => h.consumidor_id === user.id);
       const valor = cons.reduce((ac, i) => {
         return ac + Number(i.valor);
-      }, 0);
+      }, 0) / 100;
       const consumo = {
         id: user.id,
         nome: user.nome,
@@ -124,7 +117,7 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       const cons = transaction.filter(h => h.prestador_id === user.id);
       const valor = cons.reduce((ac, i) => {
         return ac + Number(i.valor);
-      }, 0);
+      }, 0) / 100;
       const consumo = {
         id: user.id,
         nome: user.nome,

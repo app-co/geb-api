@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CreateUserService = void 0;
 
-var _client = require("@prisma/client");
-
 var _ICacheProvider = _interopRequireDefault(require("../../../shared/container/providers/model/ICacheProvider"));
 
 var _AppError = require("../../../shared/errors/AppError");
@@ -43,7 +41,6 @@ let CreateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     qntIndication,
     qntPadrinho
   }) {
-    const prisma = new _client.PrismaClient();
     const find = await this.userRepository.findByMembro(membro);
 
     if (find) {

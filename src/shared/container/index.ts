@@ -6,10 +6,6 @@ import { IPostsRepository } from '@modules/posts/repositories/IPostRepositoty';
 import { PostRepository } from '@modules/posts/repositories/PostRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { UsersRespository } from '@modules/users/repositories/UsersRespository';
-import {
-   DiskStorageProvider,
-   DiskStorageProvider,
-} from '@shared/StorageProvider/implementations/DiskStorageProvider';
 import { S3Storage } from '@shared/StorageProvider/implementations/S3Storage';
 import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
 import { container } from 'tsyringe';

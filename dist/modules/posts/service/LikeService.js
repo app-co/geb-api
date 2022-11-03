@@ -31,6 +31,10 @@ let LikeService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target,
     const find = await this.postRepository.findById(fk_id_post);
     const findLik = await this.postRepository.findLikeByUserId(user_id);
 
+    if (findLik) {
+      throw new _AppError.Err('like ja criado');
+    }
+
     if (!find) {
       throw new _AppError.Err('post nao encontrado');
     }

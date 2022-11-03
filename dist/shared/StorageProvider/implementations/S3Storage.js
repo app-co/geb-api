@@ -22,7 +22,7 @@ class S3Storage {
   constructor() {
     this.client = void 0;
     this.client = new _awsSdk.S3({
-      region: process.env.AWS_BUCKET_REGION
+      region: 'sa-east-1'
     });
   }
 

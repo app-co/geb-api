@@ -35,7 +35,6 @@ let FindOrderConsumidor = (_dec = (0, _tsyringe.injectable)(), _dec2 = function 
 
     if (!find) {
       find = await this.consumoRepository.findOrderConsumidor(consumidor_id);
-      console.log('banco: find by consumido', consumidor_id);
       await this.cache.save(`order-transaction-consumidor:${consumidor_id}`, find);
     }
 

@@ -32,6 +32,7 @@ let CreatePadrinhoService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functio
     qnt
   }) {
     const find = await this.userRepository.findSituation(apadrinhado_id);
+    const al = await this.userRepository.listAllPadrinho();
 
     if (find) {
       await this.userRepository.updateSituation({
@@ -51,6 +52,7 @@ let CreatePadrinhoService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functio
     await this.cache.invalidate('users');
     await this.cache.invalidate('profile');
     await this.cache.invalidatePrefix(`individualPonts`);
+    await this.cache.invalidate('padrinho');
     return create;
   }
 

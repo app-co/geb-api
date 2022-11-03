@@ -82,22 +82,15 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
     }
 
     if (!allPadrinho) {
-      const data = await this.userRepository.listAllPadrinho();
-
-      if (!data) {
-        const dados = [];
-        allPadrinho = dados;
-        await this.cache.save('padrinho', dados);
-      } else {
-        await this.cache.save('padrinho', data);
-      }
+      allPadrinho = await this.userRepository.listAllPadrinho();
+      await this.cache.save('padrinho', allPadrinho);
     }
 
     const Concumo = ListAllusers.map((user, index) => {
       const cons = transaction.filter(h => h.consumidor_id === user.id);
       const valor = cons.reduce((ac, i) => {
         return ac + Number(i.valor);
-      }, 0);
+      }, 0) / 100;
       const consumo = {
         id: user.id,
         nome: user.nome,
@@ -124,7 +117,7 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
       const cons = transaction.filter(h => h.prestador_id === user.id);
       const valor = cons.reduce((ac, i) => {
         return ac + Number(i.valor);
-      }, 0);
+      }, 0) / 100;
       const consumo = {
         id: user.id,
         nome: user.nome,
@@ -217,9 +210,13 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
     });
     const padrinho = ListAllusers.map(user => {
       const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
-      const allP = allPadrinho.filter(h => h.user_id === user.id);
-      const filP = allP || [];
-      const pt = filP.length + cons.qntPadrinho;
+      let allP = [];
+
+      if (allPadrinho) {
+        allP = allPadrinho.filter(h => h.user_id === user.id);
+      }
+
+      const pt = allP.length + cons.qntPadrinho;
       const send = {
         id: user.id,
         nome: user.nome,

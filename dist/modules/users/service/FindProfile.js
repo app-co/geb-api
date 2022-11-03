@@ -24,7 +24,6 @@ let FindProfile = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target,
     user_id
   }) {
     const findId = await this.userRepository.findProfileByUserId(user_id);
-    console.log('user', user_id);
 
     if (!findId) {
       throw new _AppError.Err('profile nao encontrado');
