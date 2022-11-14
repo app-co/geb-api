@@ -7,6 +7,9 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import { createServer } from 'http';
 import socket from 'socket.io';
+import multer from 'multer';
+import fs from 'fs';
+import { parse } from 'csv-parse';
 
 import path from 'path';
 
@@ -39,6 +42,39 @@ app.use(express.json());
 
 app.use(Route);
 app.use(errors());
+
+const up = multer({
+   dest: './tmp/csv',
+});
+
+app.post('/csv', up.single('csv'), (req, res) => {
+   const { file } = req;
+   return new Promise((resolve, reject) => {
+      const dt: any[] = [];
+      const stream = fs.createReadStream(file!.path);
+      const parseFile = parse({ delimiter: ';' });
+
+      stream.pipe(parseFile);
+
+      parseFile
+         .on('data', line => {
+            const [Nota, Dt_programação, MO, cidade, TLE] = line;
+            dt.push({
+               Nota,
+               Dt_programação,
+               MO,
+               cidade,
+               TLE,
+            });
+         })
+         .on('end', () => {
+            resolve(res.json(dt));
+         })
+         .on('error', err => {
+            reject(err);
+         });
+   });
+});
 
 app.use(
    '/file/post',
