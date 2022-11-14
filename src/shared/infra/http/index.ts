@@ -43,39 +43,6 @@ app.use(express.json());
 app.use(Route);
 app.use(errors());
 
-const up = multer({
-   dest: './tmp/csv',
-});
-
-app.post('/csv', up.single('csv'), (req, res) => {
-   const { file } = req;
-   return new Promise((resolve, reject) => {
-      const dt: any[] = [];
-      const stream = fs.createReadStream(file!.path);
-      const parseFile = parse({ delimiter: ';' });
-
-      stream.pipe(parseFile);
-
-      parseFile
-         .on('data', line => {
-            const [Nota, Dt_programação, MO, cidade, TLE] = line;
-            dt.push({
-               Nota,
-               Dt_programação,
-               MO,
-               cidade,
-               TLE,
-            });
-         })
-         .on('end', () => {
-            resolve(res.json(dt));
-         })
-         .on('error', err => {
-            reject(err);
-         });
-   });
-});
-
 app.use(
    '/file/post',
    express.static(
