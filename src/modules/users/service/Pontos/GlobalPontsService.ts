@@ -2,29 +2,25 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
-import { PontosB2b } from '@modules/B2b/services/PontosB2b';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
 import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
 import {
-   Profile,
-   Transaction,
-   User,
-   Presenca,
-   Indication,
    B2b,
+   Indication,
    Padrinho,
+   Presenca,
+   Transaction,
+   User
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
-import { IUserDtos, IProfileDto } from '@shared/dtos';
-import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
 import { pontos as ponts } from '../../../../utils/pontos';
-import { ListAllB2b } from '../../../B2b/services/ListAllB2b';
 import { IUsersRepository } from '../../repositories/IUsersRespository';
 
 interface Props {
+   TP: PropsTotalPontos[];
    compras: Tips[];
    vendas: Tips[];
    presenca: Tips[];
@@ -39,6 +35,12 @@ interface Tips {
    rank: number;
    valor?: number;
 }
+
+interface PropsTotalPontos {
+   nome: string;
+   totalPontos: number;
+}
+
 @injectable()
 export class GlobalPontsService {
    constructor(
@@ -302,7 +304,80 @@ export class GlobalPontsService {
             };
          });
 
+      const Total: PropsTotalPontos[] = [];
+
+      ListAllusers.forEach(user => {
+         let pt = {
+            nome: '',
+            totalPontos: 0,
+         };
+
+         Concumo.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         Vendas.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         Pres.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         Ind.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         B2.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         padrinho.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         Total.push(pt);
+      });
+
+      const TP = Total.sort((a, b) => {
+         if (b.totalPontos > a.totalPontos) {
+            return 0;
+         }
+         return -1;
+      });
+
       const relatori = {
+         TP,
          compras: Concumo,
          vendas: Vendas,
          presenca: Pres,
