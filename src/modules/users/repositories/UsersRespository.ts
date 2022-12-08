@@ -6,14 +6,10 @@ import {
    PrismaClient,
    Profile,
    SituationUser,
-   User,
+   User
 } from '@prisma/client';
 import {
-   ILinkDto,
-   IProfileDto,
-   IUserDtos,
-   ISituationUser,
-   IPadrinhoDto,
+   ILinkDto, IPadrinhoDto, IProfileDto, ISituationUser, IUserDtos
 } from '@shared/dtos';
 
 import { IUsersRepository } from './IUsersRespository';
@@ -35,6 +31,7 @@ export class UsersRespository implements IUsersRepository {
             membro: data.membro,
             adm: data.adm,
             senha: data.senha!,
+            id: data.id,
             situation: {
                create: {
                   apadrinhado,
