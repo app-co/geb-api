@@ -46,4 +46,6 @@ user.post('/create-padrinho', control.createPadrinho);
 
 // user.put('/update-senha', Auth, control.updateSenhaUser);
 
+user.get('/clear-cache', control.clearCash);
+
 export { user };

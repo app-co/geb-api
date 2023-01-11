@@ -6,10 +6,14 @@ import {
    PrismaClient,
    Profile,
    SituationUser,
-   User
+   User,
 } from '@prisma/client';
 import {
-   ILinkDto, IPadrinhoDto, IProfileDto, ISituationUser, IUserDtos
+   ILinkDto,
+   IPadrinhoDto,
+   IProfileDto,
+   ISituationUser,
+   IUserDtos,
 } from '@shared/dtos';
 
 import { IUsersRepository } from './IUsersRespository';

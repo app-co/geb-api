@@ -35,8 +35,6 @@ export class ListAllUser {
          return -1;
       });
 
-      await this.cache.removeAll();
-
       return users;
    }
 }

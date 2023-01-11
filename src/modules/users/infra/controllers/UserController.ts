@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { clearCacheService } from '@modules/users/service/clearCacheService';
 import { CreateLink } from '@modules/users/service/createLink';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
 import { DeleteUserService } from '@modules/users/service/DeleteUserService';
@@ -244,7 +245,13 @@ export class UserController {
       return res.json(ex);
    }
 
-   // async findUnicUser(req: Request, res: Response): Promise<Response> {}
+   async clearCash(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(clearCacheService);
+
+      const rs = await service.execute();
+
+      return res.json(rs);
+   }
 
    // async updateToken(req: Request, res: Response): Promise<Response> {}
 
