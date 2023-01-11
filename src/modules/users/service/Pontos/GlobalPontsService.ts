@@ -11,7 +11,7 @@ import {
    Padrinho,
    Presenca,
    Transaction,
-   User
+   User,
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { inject, injectable } from 'tsyringe';
@@ -70,8 +70,6 @@ export class GlobalPontsService {
       let indi = await this.cache.recover<Indication[]>('indication');
       let b2b = await this.cache.recover<B2b[]>('b2b');
       let allPadrinho = await this.cache.recover<Padrinho[]>('padrinho');
-
-      const lisAllDadosFire = await this.userRepository.listAllDataFire();
 
       if (!ListAllusers) {
          ListAllusers = await this.userRepository.listAllUser();
@@ -206,13 +204,11 @@ export class GlobalPontsService {
 
       const Ind = ListAllusers!
          .map(user => {
-            const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
-
             const fil = indi!.filter(
                h => h.quemIndicou_id === user.id && h.validate === true,
             );
 
-            const pt = fil.length + cons!.qntIdication!;
+            const pt = fil.length;
 
             const pont = {
                id: user.id,
@@ -271,13 +267,12 @@ export class GlobalPontsService {
 
       const padrinho = ListAllusers!
          .map(user => {
-            const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
             let allP = [];
             if (allPadrinho) {
                allP = allPadrinho.filter(h => h.user_id === user.id);
             }
 
-            const pt = allP.length + cons!.qntPadrinho!;
+            const pt = allP.length;
 
             const send = {
                id: user.id,
