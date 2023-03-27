@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
@@ -11,12 +11,9 @@ interface Props {
    membro: string;
    senha: string;
    adm: boolean;
-   id: string;
    apadrinhado?: boolean;
    firstLogin?: boolean;
    inativo?: boolean;
-   qntPadrinho?: number;
-   qntIndication?: number;
 }
 
 @injectable()
@@ -34,12 +31,9 @@ export class CreateUserService {
       membro,
       senha,
       adm,
-      id,
       apadrinhado,
       firstLogin,
       inativo,
-      qntIndication,
-      qntPadrinho,
    }: Props): Promise<User> {
       const find = await this.userRepository.findByMembro(membro);
 
@@ -48,15 +42,13 @@ export class CreateUserService {
       }
 
       const has = await hash(senha, 8);
-      const data = { nome, membro, senha: has, adm, id };
+      const data = { nome, membro, senha: has, adm };
 
       const user = await this.userRepository.create(
          data,
          apadrinhado,
          firstLogin,
          inativo,
-         qntIndication,
-         qntPadrinho,
       );
 
       await this.cache.invalidate('users');

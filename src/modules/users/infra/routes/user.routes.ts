@@ -12,6 +12,7 @@ const img = multer(upload);
 
 user.post('/update-pass', control.updateSenha);
 user.post('/create-user', control.create);
+user.post('/update-membro', control.updateMembro);
 user.post('/session', control.session);
 
 user.use(Auth);

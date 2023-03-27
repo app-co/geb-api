@@ -10,6 +10,7 @@ import {
 } from '@prisma/client';
 import {
    ILinkDto,
+   IMembro,
    IPadrinhoDto,
    IProfileDto,
    ISituationUser,
@@ -26,8 +27,6 @@ export class UsersRespository implements IUsersRepository {
       apadrinhado: boolean,
       firstLogin: boolean,
       inativo: boolean,
-      qntIndication?: number,
-      qntPadrinho?: number,
    ): Promise<User> {
       const user = await this.prisma.user.create({
          data: {
@@ -35,7 +34,6 @@ export class UsersRespository implements IUsersRepository {
             membro: data.membro,
             adm: data.adm,
             senha: data.senha!,
-            id: data.id,
             situation: {
                create: {
                   apadrinhado,
@@ -48,12 +46,7 @@ export class UsersRespository implements IUsersRepository {
                   city: 'BOTUCATU',
                },
             },
-            dadosFire: {
-               create: {
-                  qntIdication: qntIndication,
-                  qntPadrinho,
-               },
-            },
+
             profile: {
                create: {
                   whats: 'whats',
@@ -69,6 +62,20 @@ export class UsersRespository implements IUsersRepository {
       });
 
       return user;
+   }
+
+   public async updateMembro(data: IMembro): Promise<User> {
+      const us = this.prisma.user.update({
+         where: { id: data.id },
+         data: {
+            nome: data.nome,
+            membro: data.membro,
+            senha: data.senha,
+            adm: data.adm,
+         },
+      });
+
+      return us;
    }
 
    async findByMembro(membro: string): Promise<User | null> {

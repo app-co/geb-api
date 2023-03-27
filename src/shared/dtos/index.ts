@@ -13,6 +13,14 @@ export interface IUserDtos {
    region?: IRegion;
 }
 
+export interface IMembro {
+   id: string;
+   nome: string;
+   membro: string;
+   senha?: string;
+   adm: boolean;
+}
+
 export interface ISituationUser {
    id?: string;
    inativo: boolean;

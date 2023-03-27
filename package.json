@@ -5,7 +5,7 @@
    "author": "App-com",
    "scripts": {
       "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files ",
-      "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore node_modules src/shared/infra/http/index.ts",
+      "dev": "tsx watch src/shared/infra/http/index.ts",
       "type": "ts-node-dev  -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
       "test": "jest",
       "bd": "prisma migrate dev"
@@ -40,6 +40,7 @@
       "sharp": "^0.29.1",
       "socket.io": "^4.0.2",
       "ts-node-dev": "^1.1.6",
+      "tsx": "^3.12.5",
       "tsyringe": "^4.5.0",
       "typeorm": "^0.2.32",
       "typescript": "^4.2.4",

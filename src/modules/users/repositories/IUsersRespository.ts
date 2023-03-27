@@ -5,7 +5,6 @@ import {
    Profile,
    SituationUser,
    User,
-   Avatar,
 } from '@prisma/client';
 import {
    ILinkDto,
@@ -13,6 +12,7 @@ import {
    IUserDtos,
    ISituationUser,
    IPadrinhoDto,
+   IMembro,
 } from '@shared/dtos';
 
 export interface IUsersRepository {
@@ -21,8 +21,6 @@ export interface IUsersRepository {
       apadrinhado?: boolean,
       firstLogin?: boolean,
       inativo?: boolean,
-      qntIndication?: number,
-      qntPadrinho?: number,
    ): Promise<User>;
    findByMembro(membro: string): Promise<User | null>;
    findById(user_id: string): Promise<User | null>;
@@ -31,6 +29,7 @@ export interface IUsersRepository {
    updateToken(id: string, token: string): Promise<User>;
    updateSenha(senha: string, membro: string): Promise<User>;
    deleteUser(membro: string): Promise<User>;
+   updateMembro(data: IMembro): Promise<User>;
 
    // !! LINKS
 

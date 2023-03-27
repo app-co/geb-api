@@ -12,6 +12,7 @@ import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
 import { UpdateLogo } from '@modules/users/service/Profile/UpdateLogo';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
 import { SessionService } from '@modules/users/service/SessionService.service';
+import { UpdateMembroService } from '@modules/users/service/UpdateMembroService';
 import { UpdateSenha } from '@modules/users/service/UpdatePass';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
@@ -22,33 +23,36 @@ export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateUserService);
 
-      const {
-         nome,
-         qntIndication,
-         qntPadrinho,
-         membro,
-         senha,
-         adm,
-         id,
-         apadrinhado,
-         firstLogin,
-         inativo,
-      } = req.body;
+      const { nome, membro, senha, adm, apadrinhado, firstLogin, inativo } =
+         req.body;
 
       const user = await service.execute({
          nome,
          membro,
          senha,
          adm,
-         id,
          apadrinhado,
          firstLogin,
          inativo,
-         qntIndication,
-         qntPadrinho,
       });
 
       return res.json(user);
+   }
+
+   async updateMembro(req: Request, res: Response): Promise<Response> {
+      const service = container.resolve(UpdateMembroService);
+
+      const { membro, nome, id, senha, adm } = req.body;
+
+      const sess = await service.execute({
+         membro,
+         senha,
+         nome,
+         id,
+         adm,
+      });
+
+      return res.json(sess);
    }
 
    async session(req: Request, res: Response): Promise<Response> {
