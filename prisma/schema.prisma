@@ -7,24 +7,23 @@ datasource db {
 }
 
 generator client {
-   provider = "prisma-client-js"
+   provider        = "prisma-client-js"
    previewFeatures = ["referentialActions"]
 }
 
 // !! INFO USER
 
 model User {
-   id                      String        @id                @default(uuid())
-   nome                    String      
-   membro                  String         @unique   
-   token                   String?     
-   senha                   String
-   adm                     Boolean           
-   created_at              DateTime                         @default(now())
-   profile                 Profile?
-   situation               SituationUser?
-   region                  Region?
-   dadosFire               DadosFire?
+   id         String         @id @default(uuid())
+   nome       String
+   membro     String         @unique
+   token      String?
+   senha      String
+   adm        Boolean
+   created_at DateTime       @default(now())
+   profile    Profile?
+   situation  SituationUser?
+   region     Region?
    // post                    Post           @relation(fields: [fk_id_post], references: [id])
    // fk_id_post              String         @unique
 
@@ -34,185 +33,180 @@ model User {
    // feed                    Feed[]      
    // presenca                Presenca[]
    // pontos                  Pontos[]
+   Stars Stars[]
 }
 
-
 model Profile {
-   id                      String         @id       @default(uuid())
-   whats                   String?      
-   logotipo                String?     
-   avatar                  String?    
-   workName                String?      
-   CNPJ                    String?     
-   CPF                     String?      
-   ramo                    String?     
-   enquadramento           String?
-   email                   String?
-   avatarPath              String?
-   logoPath                String?
+   id            String  @id @default(uuid())
+   whats         String?
+   logotipo      String?
+   avatar        String?
+   workName      String?
+   CNPJ          String?
+   CPF           String?
+   ramo          String?
+   enquadramento String?
+   email         String?
+   avatarPath    String?
+   logoPath      String?
 
-   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user              String         @unique
+   user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user String @unique
    // post                    Post           @relation(fields: [fk_id_post], references: [id])
    // fk_id_post              String         @unique
-
 }
 
 model SituationUser {
-   id                      String         @id         @default(uuid())
-   inativo                 Boolean                    @default(false)
-   firstLogin              Boolean                    @default(false)
-   apadrinhado             Boolean                    @default(false)
-   logado                  Boolean                    @default(false)
-   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user              String         @unique
-
+   id          String  @id @default(uuid())
+   inativo     Boolean @default(false)
+   firstLogin  Boolean @default(false)
+   apadrinhado Boolean @default(false)
+   logado      Boolean @default(false)
+   user        User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user  String  @unique
 }
 
 model Region {
-   id                      String         @id         @default(uuid())
-   city                    String?                    @default("BOTUCATU")
-   user                    User           @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user              String         @unique
-
+   id         String  @id @default(uuid())
+   city       String? @default("BOTUCATU")
+   user       User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user String  @unique
 }
 
 model Post {
-   id                      String         @id       @default(uuid())
-   image                   String
-   description             String
-   created_at              DateTime                @default(now())
-   like                    Like[]
-   fk_id_user              String
+   id          String   @id @default(uuid())
+   image       String
+   description String
+   created_at  DateTime @default(now())
+   like        Like[]
+   fk_id_user  String
    // user                    User?
    // profile                 Profile?       
 }
 
 model Like {
-   id                      String         @id         @default(uuid())
-   like                    Int                       @default(0)
-   user_id                 String
-   post                    Post           @relation(fields: [fk_id_post], references: [id])
-   fk_id_post              String         
+   id         String @id @default(uuid())
+   like       Int    @default(0)
+   user_id    String
+   post       Post   @relation(fields: [fk_id_post], references: [id])
+   fk_id_post String
 }
 
-
 model Padrinho {
-   id                      String         @id      @default(uuid())
-   user_id                 String 
-   apadrinhado_name        String
-   apadrinhado_id          String         
-   qnt                     Int                     @default(0)        
+   id               String @id @default(uuid())
+   user_id          String
+   apadrinhado_name String
+   apadrinhado_id   String
+   qnt              Int    @default(0)
    // user                    User?                   @relation(references: [id], fields: [user_id])
 }
 
 model Links {
-   id                      String         @id       @default(uuid())
-   nome                    String
-   link                    String
-   user_id                 String         @unique
+   id      String @id @default(uuid())
+   nome    String
+   link    String
+   user_id String @unique
    // user                    User           @relation(references: [id], fields: [user_id])    
-
 }
 
 model Presenca {
-   id                      String        @id       @default(uuid())
-   user_id                 String
+   id        String   @id @default(uuid())
+   user_id   String
    // user                    User?                   @relation(references: [id], fields: [user_id])
-   presenca                Boolean                 @default(false)
-   nome                    String
-   createdAt               DateTime                @default(now())
+   presenca  Boolean  @default(false)
+   nome      String
+   createdAt DateTime @default(now())
 }
 
-model OrderPresenca{
-   id                      String        @id       @default(uuid())
-   user_id                 String
-   nome                    String
-   createdAt               DateTime                @default(now())
+model OrderPresenca {
+   id        String   @id @default(uuid())
+   user_id   String
+   nome      String
+   createdAt DateTime @default(now())
 }
 
 model Feed {
-   id String               @id                     @default(uuid())
-   image                   String
-   title                   String
-   subTitle                String
-   texto                   String
-   user_id                 String
+   id         String   @id @default(uuid())
+   image      String
+   title      String
+   subTitle   String
+   texto      String
+   user_id    String
    // user                    User                    @relation(fields: [user_id], references: [id])   
-   created_at              DateTime   
+   created_at DateTime
 }
 
 model OrderTransaction {
-   id                      String         @id      @default(uuid())
-   consumidor_name         String
-   consumidor_id           String
-   prestador_id            String
-   prestador_name          String
-   valor                   Int
-   descricao               String
-   created_at              DateTime                @default(now())
+   id              String   @id @default(uuid())
+   consumidor_name String
+   consumidor_id   String
+   prestador_id    String
+   prestador_name  String
+   valor           Int
+   descricao       String
+   created_at      DateTime @default(now())
 }
 
 model Consumo {
-   id                      String         @id      @default(uuid())
-   consumidor_id           String?
-   presstador_id           String?
-   type                    String
-   valor                   String
-   descricao               String
-   created_at              DateTime                @default(now())
+   id            String   @id @default(uuid())
+   consumidor_id String?
+   presstador_id String?
+   type          String
+   valor         String
+   descricao     String
+   created_at    DateTime @default(now())
 }
 
 model Transaction {
-   id                      String         @id      @default(uuid())
-   consumidor_name         String?
-   consumidor_id           String?
-   prestador_id            String?
-   prestador_name          String?
-   valor                   Int
-   descricao               String
-   created_at              DateTime                @default(now())
+   id              String   @id @default(uuid())
+   consumidor_name String?
+   consumidor_id   String?
+   prestador_id    String?
+   prestador_name  String?
+   valor           Int
+   descricao       String
+   created_at      DateTime @default(now())
 }
 
 model Pontos {
-   id             String      @id         @default(uuid())
-   presenca       Int                     @default(0)
-   padrinho       Int                     @default(0)
-   compra         Int                     @default(0)
-   venda          Int                     @default(0)
-   user_id        String
+   id       String @id @default(uuid())
+   presenca Int    @default(0)
+   padrinho Int    @default(0)
+   compra   Int    @default(0)
+   venda    Int    @default(0)
+   user_id  String
    // user           User?                   @relation(references: [id], fields: [user_id])
 }
 
 model B2b {
-   id             String      @id         @default(uuid())
-   send_id        String
-   send_name      String
-   recevid_name   String
-   recevid_id     String
-   assunto        String
-   appointment     String?
-   createdAt      DateTime                @default(now())
-   validate       Boolean                 @default(false)
+   id           String   @id @default(uuid())
+   send_id      String
+   send_name    String
+   recevid_name String
+   recevid_id   String
+   assunto      String
+   appointment  String?
+   createdAt    DateTime @default(now())
+   validate     Boolean  @default(false)
 }
 
 model Indication {
-   id                   String   @id      @default(uuid())
-   indicado_id          String
-   indicado_name        String
-   quemIndicou_id       String
-   quemIndicou_name     String
-   client_name          String
-   phone_number_client  Int
-   description          String
-   createdAt            DateTime          @default(now())
-   validate             Boolean           @default(false)
+   id                  String   @id @default(uuid())
+   indicado_id         String
+   indicado_name       String
+   quemIndicou_id      String
+   quemIndicou_name    String
+   client_name         String
+   phone_number_client Int
+   description         String
+   createdAt           DateTime @default(now())
+   validate            Boolean  @default(false)
 }
 
-model DadosFire {
-   user                    User              @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user              String            @unique
-   qntIdication            Int?               @default(0)
-   qntPadrinho             Int?              @default(0)
-
+model Stars {
+   id         String @id @default(uuid())
+   fk_id_user String @unique
+   star       Int    @default(0)
+   user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   valiador   String
 }

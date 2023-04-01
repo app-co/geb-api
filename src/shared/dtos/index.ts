@@ -139,3 +139,10 @@ export interface IPadrinhoDto {
    apadrinhado_id: string;
    qnt: number;
 }
+
+export interface IStarDto {
+   id?: string;
+   fk_user_id: string;
+   star: number;
+   valiador: string;
+}

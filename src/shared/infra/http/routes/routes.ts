@@ -3,6 +3,7 @@ import { ConsumoRoute } from '@modules/consumo/infra/routes/index.routes';
 import { IndicationRoute } from '@modules/indication/infra/routes';
 import { postRoute } from '@modules/posts/http/routes/routes';
 import { PresensaRoute } from '@modules/presensa/infra/routes';
+import { RouteStar } from '@modules/starts/infra/routes';
 import { TransactionRoute } from '@modules/transaction/infra/routes/routes.routes';
 import { UserRoute } from '@modules/users/infra/routes/routes';
 import { Router } from 'express';
@@ -16,5 +17,6 @@ routes.use(TransactionRoute);
 routes.use(PresensaRoute);
 routes.use(b2bRoute);
 routes.use(IndicationRoute);
+routes.use(RouteStar);
 
 export { routes };

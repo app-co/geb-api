@@ -4,6 +4,8 @@ import { IIndicationRepository } from '@modules/indication/infra/repositories/II
 import { IndicationRepository } from '@modules/indication/infra/repositories/IndicationRepository';
 import { IPostsRepository } from '@modules/posts/repositories/IPostRepositoty';
 import { PostRepository } from '@modules/posts/repositories/PostRepository';
+import { IStarRepository } from '@modules/starts/repositories/IStarRespository';
+import { StarPrisma } from '@modules/starts/repositories/prisma';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { UsersRespository } from '@modules/users/repositories/UsersRespository';
 import { S3Storage } from '@shared/StorageProvider/implementations/S3Storage';
@@ -53,3 +55,5 @@ container.registerSingleton<IIndicationRepository>(
    'PrismaIndication',
    IndicationRepository,
 );
+
+container.registerSingleton<IStarRepository>('PrismaStar', StarPrisma);
