@@ -14,6 +14,7 @@ interface Props {
    membro: string;
    senha?: string;
    adm: boolean;
+   token?: string;
 }
 
 @injectable()
@@ -26,7 +27,14 @@ export class UpdateMembroService {
       private cache: ICacheProvider,
    ) {}
 
-   async execute({ id, nome, membro, senha, adm }: Props): Promise<User> {
+   async execute({
+      id,
+      nome,
+      membro,
+      senha,
+      token,
+      adm,
+   }: Props): Promise<User> {
       const findUser = await this.userRepository.findById(id);
 
       if (!findUser) {
@@ -45,10 +53,10 @@ export class UpdateMembroService {
          membro,
          senha: hs,
          adm,
+         token,
       });
 
       await this.cache.invalidate('users');
-      await this.cache.invalidatePrefix(`individualPonts`);
 
       return update;
    }

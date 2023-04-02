@@ -11,7 +11,7 @@ export class StarPrisma implements IStarRepository {
          data: {
             star: data.star,
             valiador: data.valiador,
-            fk_id_user: data.fk_user_id,
+            fk_id_user: data.fk_id_user,
          },
       });
 

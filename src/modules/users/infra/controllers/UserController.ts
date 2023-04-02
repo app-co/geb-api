@@ -42,7 +42,7 @@ export class UserController {
    async updateMembro(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateMembroService);
 
-      const { membro, nome, id, senha, adm } = req.body;
+      const { membro, nome, id, senha, token, adm } = req.body;
 
       const sess = await service.execute({
          membro,
@@ -50,6 +50,7 @@ export class UserController {
          nome,
          id,
          adm,
+         token,
       });
 
       return res.json(sess);

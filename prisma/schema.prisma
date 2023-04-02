@@ -18,7 +18,7 @@ model User {
    nome       String
    membro     String         @unique
    token      String?
-   senha      String
+   senha      String?
    adm        Boolean
    created_at DateTime       @default(now())
    profile    Profile?
@@ -33,7 +33,8 @@ model User {
    // feed                    Feed[]      
    // presenca                Presenca[]
    // pontos                  Pontos[]
-   Stars Stars[]
+   Stars     Stars[]
+   DadosFire DadosFire?
 }
 
 model Profile {
@@ -203,9 +204,16 @@ model Indication {
    validate            Boolean  @default(false)
 }
 
+model DadosFire {
+   user         User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user   String @unique
+   qntIdication Int?   @default(0)
+   qntPadrinho  Int?   @default(0)
+}
+
 model Stars {
    id         String @id @default(uuid())
-   fk_id_user String @unique
+   fk_id_user String
    star       Int    @default(0)
    user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    valiador   String

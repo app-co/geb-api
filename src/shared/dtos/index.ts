@@ -19,6 +19,7 @@ export interface IMembro {
    membro: string;
    senha?: string;
    adm: boolean;
+   token?: string;
 }
 
 export interface ISituationUser {
@@ -142,7 +143,7 @@ export interface IPadrinhoDto {
 
 export interface IStarDto {
    id?: string;
-   fk_user_id: string;
+   fk_id_user: string;
    star: number;
    valiador: string;
 }

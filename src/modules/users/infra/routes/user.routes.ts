@@ -12,10 +12,10 @@ const img = multer(upload);
 
 user.post('/update-pass', control.updateSenha);
 user.post('/create-user', control.create);
-user.post('/update-membro', control.updateMembro);
 user.post('/session', control.session);
 
 user.use(Auth);
+user.post('/update-membro', control.updateMembro);
 
 // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
 // user.patch('/logo', img.single('logo'), control.updateLogo);

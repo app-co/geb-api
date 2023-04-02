@@ -72,6 +72,7 @@ export class UsersRespository implements IUsersRepository {
             membro: data.membro,
             senha: data.senha,
             adm: data.adm,
+            token: data.token,
          },
       });
 
@@ -105,7 +106,8 @@ export class UsersRespository implements IUsersRepository {
             situation: true,
             profile: true,
             region: true,
-            dadosFire: true,
+            DadosFire: true,
+            Stars: true,
          },
       });
       return find;
