@@ -37,6 +37,7 @@ model User {
    DadosFire  DadosFire?
    Padrinho   Padrinho[]
    Convidados Convidado[]
+   midia      midia[]
 }
 
 model Profile {
@@ -225,4 +226,12 @@ model Convidado {
    name_convidado String
    user           User     @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
    created_at     DateTime @default(now())
+}
+
+model midia {
+   id         String @id @default(uuid())
+   nome       String
+   link       String
+   fk_user_id String
+   user       User   @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
 }
