@@ -35,7 +35,7 @@ model User {
    Stars Stars[]
 
    DadosFire  DadosFire?
-   Links      Links[]
+   Links      Links?
    Padrinho   Padrinho[]
    Convidados Convidado[]
 }
@@ -108,8 +108,8 @@ model Links {
    id      String @id @default(uuid())
    nome    String
    link    String
-   user_id String
-   user    User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+   user_id String @unique
+   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Presenca {

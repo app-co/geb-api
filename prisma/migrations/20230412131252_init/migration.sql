@@ -251,9 +251,6 @@ CREATE UNIQUE INDEX "SituationUser_fk_id_user_key" ON "SituationUser"("fk_id_use
 CREATE UNIQUE INDEX "Region_fk_id_user_key" ON "Region"("fk_id_user");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Links_user_id_key" ON "Links"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "DadosFire_fk_id_user_key" ON "DadosFire"("fk_id_user");
 
 -- AddForeignKey
@@ -272,7 +269,7 @@ ALTER TABLE "Like" ADD CONSTRAINT "Like_fk_id_post_fkey" FOREIGN KEY ("fk_id_pos
 ALTER TABLE "Padrinho" ADD CONSTRAINT "Padrinho_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Links" ADD CONSTRAINT "Links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Links" ADD CONSTRAINT "Links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "DadosFire" ADD CONSTRAINT "DadosFire_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
