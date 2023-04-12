@@ -17,18 +17,17 @@ import {
    IUserDtos,
 } from '@shared/dtos';
 
+import { prisma } from '../../../utils/prisma';
 import { IUsersRepository } from './IUsersRespository';
 
 export class UsersRespository implements IUsersRepository {
-   private prisma = new PrismaClient();
-
    public async create(
       data: IUserDtos,
       apadrinhado: boolean,
       firstLogin: boolean,
       inativo: boolean,
    ): Promise<User> {
-      const user = await this.prisma.user.create({
+      const user = await prisma.user.create({
          data: {
             nome: data.nome,
             membro: data.membro,
@@ -65,7 +64,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    public async updateMembro(data: IMembro): Promise<User> {
-      const us = this.prisma.user.update({
+      const us = prisma.user.update({
          where: { id: data.id },
          data: {
             nome: data.nome,
@@ -80,7 +79,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findByMembro(membro: string): Promise<User | null> {
-      const find = await this.prisma.user.findUnique({
+      const find = await prisma.user.findUnique({
          where: { membro },
       });
 
@@ -88,7 +87,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findById(user_id: string): Promise<User | null> {
-      const find = await this.prisma.user.findUnique({
+      const find = await prisma.user.findUnique({
          where: { id: user_id },
          include: {
             profile: true,
@@ -103,7 +102,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async listAllUser(): Promise<User[]> {
-      const find = await this.prisma.user.findMany({
+      const find = await prisma.user.findMany({
          include: {
             situation: true,
             profile: true,
@@ -117,7 +116,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async updateToken(id: string, token: string): Promise<User> {
-      const up = await this.prisma.user.update({
+      const up = await prisma.user.update({
          where: { id },
          data: {
             token,
@@ -128,7 +127,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async deleteUser(membro: string): Promise<User> {
-      const user = await this.prisma.user.delete({
+      const user = await prisma.user.delete({
          where: { membro },
       });
 
@@ -140,7 +139,7 @@ export class UsersRespository implements IUsersRepository {
    // !!PROFILE  */
 
    async updateProfile(data: IProfileDto): Promise<Profile> {
-      const up = await this.prisma.profile.update({
+      const up = await prisma.profile.update({
          where: { id: data.id },
          data: {
             whats: data.whats,
@@ -161,7 +160,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findByIdProfile(id: string): Promise<Profile | null> {
-      const find = await this.prisma.profile.findFirst({
+      const find = await prisma.profile.findFirst({
          where: { fk_id_user: id },
       });
 
@@ -169,7 +168,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async createProfile(data: IProfileDto): Promise<Profile> {
-      const create = await this.prisma.profile.create({
+      const create = await prisma.profile.create({
          data: {
             whats: data.whats,
             workName: data.workName,
@@ -188,7 +187,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findProfileByUserId(fk_id_user: string): Promise<Profile | null> {
-      const find = await this.prisma.profile.findFirst({
+      const find = await prisma.profile.findFirst({
          where: { fk_id_user },
       });
 
@@ -196,12 +195,12 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findAllProfile(): Promise<Profile[]> {
-      const fi = await this.prisma.profile.findMany();
+      const fi = await prisma.profile.findMany();
       return fi;
    }
 
    async updateSenha(senha: string, membro: string): Promise<User> {
-      const user = await this.prisma.user.update({
+      const user = await prisma.user.update({
          where: { membro },
          data: {
             senha,
@@ -212,7 +211,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async updateUser(data: IUserDtos, id: string): Promise<User> {
-      const up = await this.prisma.user.update({
+      const up = await prisma.user.update({
          where: { id },
          data: {
             nome: data.nome,
@@ -228,7 +227,7 @@ export class UsersRespository implements IUsersRepository {
    // !! SITUATION
 
    async updateSituation(data: ISituationUser): Promise<SituationUser> {
-      const up = await this.prisma.situationUser.update({
+      const up = await prisma.situationUser.update({
          where: { id: data.id },
          data: {
             fk_id_user: data.fk_id_user,
@@ -242,7 +241,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findSituation(id: string): Promise<SituationUser | null> {
-      const fin = await this.prisma.situationUser.findFirst({
+      const fin = await prisma.situationUser.findFirst({
          where: { fk_id_user: id },
       });
 
@@ -250,7 +249,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async listAllSituation(): Promise<SituationUser[]> {
-      const l = await this.prisma.situationUser.findMany();
+      const l = await prisma.situationUser.findMany();
 
       return l;
    }
@@ -258,7 +257,7 @@ export class UsersRespository implements IUsersRepository {
    // !! PADRINHO
 
    async createPadrinho(data: IPadrinhoDto): Promise<Padrinho> {
-      const cre = await this.prisma.padrinho.create({
+      const cre = await prisma.padrinho.create({
          data: {
             apadrinhado_id: data.apadrinhado_id,
             apadrinhado_name: data.apadrinhado_name,
@@ -271,7 +270,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findPadrinhoById(id: string): Promise<Padrinho | null> {
-      const find = await this.prisma.padrinho.findUnique({
+      const find = await prisma.padrinho.findUnique({
          where: { id },
       });
 
@@ -279,7 +278,7 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async findPadrinhoByUserId(user_id: string): Promise<Padrinho | null> {
-      const find = await this.prisma.padrinho.findFirst({
+      const find = await prisma.padrinho.findFirst({
          where: { user_id },
       });
 
@@ -287,12 +286,12 @@ export class UsersRespository implements IUsersRepository {
    }
 
    async listAllPadrinho(): Promise<Padrinho[]> {
-      const all = await this.prisma.padrinho.findMany();
+      const all = await prisma.padrinho.findMany();
       return all;
    }
 
    async deletePadrinho(id: string): Promise<void> {
-      await this.prisma.padrinho.delete({
+      await prisma.padrinho.delete({
          where: { id },
       });
    }
@@ -300,7 +299,7 @@ export class UsersRespository implements IUsersRepository {
    //! ! DADOS FIRE
 
    async listAllDataFire(): Promise<DadosFire[]> {
-      const fire = this.prisma.dadosFire.findMany();
+      const fire = prisma.dadosFire.findMany();
 
       return fire;
    }

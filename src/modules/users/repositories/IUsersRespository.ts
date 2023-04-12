@@ -31,13 +31,6 @@ export interface IUsersRepository {
    deleteUser(membro: string): Promise<User>;
    updateMembro(data: IMembro): Promise<User>;
 
-   // !! LINKS
-
-   createLink(data: ILinkDto): Promise<Links>;
-   findLinkByUserId(user_id: string): Promise<Links[]>;
-   updateLink(id: string, link: string): Promise<Links>;
-   deleteLink(id: string): Promise<void>;
-
    //! ! PROFILE */
 
    createProfile(data: IProfileDto): Promise<Profile>;
