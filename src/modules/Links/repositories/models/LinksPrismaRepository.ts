@@ -1,33 +1,33 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Links, Prisma } from '@prisma/client';
+import { Links, Prisma, midia } from '@prisma/client';
 import { ILikeDto, ILinkDto } from '@shared/dtos';
 
 import { prisma } from '../../../../utils/prisma';
 import { ILinksRepository } from '../IRepository/ILinksRepository';
 
 export class LinksPrismaRepository implements ILinksRepository {
-   public async create(data: ILinkDto): Promise<Links> {
-      const create = await prisma.links.create({
+   public async create(data: ILinkDto): Promise<midia> {
+      const create = await prisma.midia.create({
          data: {
             nome: data.nome,
             link: data.link,
-            user_id: data.user_id,
+            fk_user_id: data.fk_user_id,
          },
       });
 
       return create;
    }
 
-   public async findByName(name: string): Promise<Links | null> {
-      const list = await prisma.links.findFirst({ where: { nome: name } });
+   public async findByName(name: string): Promise<midia | null> {
+      const list = await prisma.midia.findFirst({ where: { nome: name } });
 
       return list;
    }
 
-   public async listByUser(user_id: string): Promise<Links[]> {
-      const list = await prisma.links.findMany({
+   public async listByUser(fk_user_id: string): Promise<midia[]> {
+      const list = await prisma.midia.findMany({
          where: {
-            user_id,
+            fk_user_id,
          },
       });
 

@@ -13,7 +13,7 @@ export class LinksController {
       const create = await service.create({
          nome,
          link,
-         user_id: id,
+         fk_user_id: id,
       });
 
       return res.json(create);

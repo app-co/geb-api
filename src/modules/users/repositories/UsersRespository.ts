@@ -95,7 +95,7 @@ export class UsersRespository implements IUsersRepository {
             region: true,
             situation: true,
             Stars: true,
-            Links: true,
+            midia: true,
          },
       });
 
@@ -110,7 +110,7 @@ export class UsersRespository implements IUsersRepository {
             region: true,
             DadosFire: true,
             Stars: true,
-            Links: true,
+            midia: true,
          },
       });
       return find;
@@ -136,40 +136,6 @@ export class UsersRespository implements IUsersRepository {
    }
 
    //! !  LINKS
-
-   async createLink(data: ILinkDto): Promise<Links> {
-      const cr = await this.prisma.links.create({
-         data: {
-            user_id: data.user_id,
-            link: data.link,
-            nome: data.nome,
-         },
-      });
-      return cr;
-   }
-
-   async findLinkByUserId(user_id: string): Promise<Links[]> {
-      const fin = await this.prisma.links.findMany({
-         where: { user_id },
-      });
-
-      return fin;
-   }
-
-   async updateLink(id: string, link: string): Promise<Links> {
-      const up = await this.prisma.links.update({
-         where: { id },
-         data: { link },
-      });
-
-      return up;
-   }
-
-   async deleteLink(id: string): Promise<void> {
-      await this.prisma.links.delete({
-         where: { id },
-      });
-   }
 
    // !!PROFILE  */
 

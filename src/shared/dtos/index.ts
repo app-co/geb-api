@@ -113,7 +113,7 @@ export interface IIndicationDto {
 
 export interface ILinkDto {
    id?: string;
-   user_id: string;
+   fk_user_id: string;
    nome: string;
    link: string;
 }

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Links, Prisma } from '@prisma/client';
+import { Links, Prisma, midia } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { ILinkDto } from '@shared/dtos';
 import { Err } from '@shared/errors/AppError';
-import { hash } from 'bcryptjs';
 import { inject, injectable } from 'tsyringe';
 
 import { ILinksRepository } from '../repositories/IRepository/ILinksRepository';
@@ -22,7 +21,7 @@ export class createLinks {
       private cache: ICacheProvider,
    ) {}
 
-   async create({ nome, link, user_id }: ILinkDto): Promise<Links> {
+   async create({ nome, link, fk_user_id }: ILinkDto): Promise<midia> {
       const find = await this.repoLinks.findByName(nome);
 
       if (find) {
@@ -32,7 +31,7 @@ export class createLinks {
       const create = await this.repoLinks.create({
          nome,
          link,
-         user_id,
+         fk_user_id,
       });
 
       await this.cache.invalidate('users');
@@ -41,11 +40,11 @@ export class createLinks {
       return create;
    }
 
-   async listMany(user_id: string): Promise<Links[]> {
-      let list = await this.cache.recover<Links[]>('links');
+   async listMany(fk_user_id: string): Promise<midia[]> {
+      let list = await this.cache.recover<midia[]>('links');
 
       if (!list) {
-         list = await this.repoLinks.listByUser(user_id);
+         list = await this.repoLinks.listByUser(fk_user_id);
 
          await this.cache.save(`links`, list);
 
