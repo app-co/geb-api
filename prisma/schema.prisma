@@ -27,14 +27,17 @@ model User {
    // post                    Post           @relation(fields: [fk_id_post], references: [id])
    // fk_id_post              String         @unique
 
-   // links                   Links[]
    // padrinho                Padrinho[]                  
    // post                    Post[]      
    // feed                    Feed[]      
    // presenca                Presenca[]
    // pontos                  Pontos[]
-   Stars     Stars[]
-   DadosFire DadosFire?
+   Stars Stars[]
+
+   DadosFire  DadosFire?
+   Links      Links[]
+   Padrinho   Padrinho[]
+   Convidados Convidado[]
 }
 
 model Profile {
@@ -50,9 +53,8 @@ model Profile {
    email         String?
    avatarPath    String?
    logoPath      String?
-
-   user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user String @unique
+   user          User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+   fk_id_user    String  @unique
    // post                    Post           @relation(fields: [fk_id_post], references: [id])
    // fk_id_post              String         @unique
 }
@@ -99,15 +101,15 @@ model Padrinho {
    apadrinhado_name String
    apadrinhado_id   String
    qnt              Int    @default(0)
-   // user                    User?                   @relation(references: [id], fields: [user_id])
+   user             User?  @relation(references: [id], fields: [user_id])
 }
 
 model Links {
    id      String @id @default(uuid())
    nome    String
    link    String
-   user_id String @unique
-   // user                    User           @relation(references: [id], fields: [user_id])    
+   user_id String
+   user    User   @relation(references: [id], fields: [user_id])
 }
 
 model Presenca {
@@ -217,4 +219,12 @@ model Stars {
    star       Int    @default(0)
    user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    valiador   String
+}
+
+model Convidado {
+   id             String   @id @default(uuid())
+   fk_user_id     String
+   name_convidado String
+   user           User     @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
+   created_at     DateTime @default(now())
 }

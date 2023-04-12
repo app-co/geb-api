@@ -1,8 +1,11 @@
 import { b2bRoute } from '@modules/B2b/infra/routes';
 import { ConsumoRoute } from '@modules/consumo/infra/routes/index.routes';
+import { routeGuest } from '@modules/convidado/infra/routes';
 import { IndicationRoute } from '@modules/indication/infra/routes';
+import { LinksRoute } from '@modules/Links/http/routes';
 import { postRoute } from '@modules/posts/http/routes/routes';
 import { PresensaRoute } from '@modules/presensa/infra/routes';
+import { situationRoute } from '@modules/situation/infra/routes';
 import { RouteStar } from '@modules/starts/infra/routes';
 import { TransactionRoute } from '@modules/transaction/infra/routes/routes.routes';
 import { UserRoute } from '@modules/users/infra/routes/routes';
@@ -18,5 +21,8 @@ routes.use(PresensaRoute);
 routes.use(b2bRoute);
 routes.use(IndicationRoute);
 routes.use(RouteStar);
+routes.use(routeGuest);
+routes.use(situationRoute);
+routes.use(LinksRoute);
 
 export { routes };

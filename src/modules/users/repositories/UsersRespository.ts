@@ -94,6 +94,8 @@ export class UsersRespository implements IUsersRepository {
             profile: true,
             region: true,
             situation: true,
+            Stars: true,
+            Links: true,
          },
       });
 
@@ -108,6 +110,7 @@ export class UsersRespository implements IUsersRepository {
             region: true,
             DadosFire: true,
             Stars: true,
+            Links: true,
          },
       });
       return find;

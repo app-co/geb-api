@@ -1,9 +1,15 @@
 import { B2bRepository } from '@modules/B2b/repositories/B2bRepository';
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
+import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
+import { ConvidadoPrisma } from '@modules/convidado/repositories/prisma';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IndicationRepository } from '@modules/indication/infra/repositories/IndicationRepository';
+import { ILinksRepository } from '@modules/Links/repositories/IRepository/ILinksRepository';
+import { LinksPrismaRepository } from '@modules/Links/repositories/models/LinksPrismaRepository';
 import { IPostsRepository } from '@modules/posts/repositories/IPostRepositoty';
 import { PostRepository } from '@modules/posts/repositories/PostRepository';
+import { ISituationPrisma } from '@modules/situation/repositories/ISituationPrisma';
+import { SituationPrisma } from '@modules/situation/repositories/prisma';
 import { IStarRepository } from '@modules/starts/repositories/IStarRespository';
 import { StarPrisma } from '@modules/starts/repositories/prisma';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
@@ -57,3 +63,14 @@ container.registerSingleton<IIndicationRepository>(
 );
 
 container.registerSingleton<IStarRepository>('PrismaStar', StarPrisma);
+container.registerSingleton<IConvidadoPrisma>(
+   'PrismaConvidado',
+   ConvidadoPrisma,
+);
+
+container.registerSingleton<ISituationPrisma>(
+   'PrismaSituation',
+   SituationPrisma,
+);
+
+container.registerSingleton<ILinksRepository>('Link', LinksPrismaRepository);

@@ -147,3 +147,10 @@ export interface IStarDto {
    star: number;
    valiador: string;
 }
+
+export interface IConvidadoDto {
+   id?: string;
+   fk_user_id: string;
+   name_convidado: string;
+   created_at?: string;
+}

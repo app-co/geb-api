@@ -1,0 +1,41 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { {{model}}, Prisma } from '@prisma/client';
+import ICacheProvider from '@shared/container/providers/Cache/model/ICacheProvider';
+import { Err } from '@shared/errors/AppError';
+import { hash } from 'bcryptjs';
+import { inject, injectable } from 'tsyringe';
+import { I{{model}}Repository } from '../repositories/IRepository/I{{model}}Repository';
+
+interface props {
+  id: string;
+}
+
+
+@injectable()
+export class {{service}} {
+  constructor(
+    @inject(process.env.{{model}}!)
+    private repo{{model}} : I{{model}}Repository,
+
+    @inject('Cache')
+    private cache: ICacheProvider,
+  ) {}
+
+  async create({}: Prisma.{{model}}.CreateInput): Promise<{{model}}> {}
+
+  async findById({id}: props): Promise<{{model}}> {
+    const list = await this.repo{{model}}.findById(id);
+
+    if (!list) {
+      throw new Err('Nada encontrado');
+    }
+
+    return list;
+  }
+
+  async listMany(): Promise<{{model}}[]> {
+    const list = await this.repo{{model}}.listMany();
+
+    return list;
+  }
+}
