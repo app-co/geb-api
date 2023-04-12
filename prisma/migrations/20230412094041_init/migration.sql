@@ -4,28 +4,30 @@ CREATE TABLE "User" (
     "nome" TEXT NOT NULL,
     "membro" TEXT NOT NULL,
     "token" TEXT,
-    "senha" TEXT NOT NULL,
+    "senha" TEXT,
     "adm" BOOLEAN NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Profile" (
     "id" TEXT NOT NULL,
-    "whats" TEXT NOT NULL,
+    "whats" TEXT,
     "logotipo" TEXT,
     "avatar" TEXT,
-    "workName" TEXT NOT NULL,
-    "CNPJ" TEXT NOT NULL,
-    "CPF" TEXT NOT NULL,
-    "ramo" TEXT NOT NULL,
-    "enquadramento" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "workName" TEXT,
+    "CNPJ" TEXT,
+    "CPF" TEXT,
+    "ramo" TEXT,
+    "enquadramento" TEXT,
+    "email" TEXT,
+    "avatarPath" TEXT,
+    "logoPath" TEXT,
     "fk_id_user" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -37,16 +39,16 @@ CREATE TABLE "SituationUser" (
     "logado" BOOLEAN NOT NULL DEFAULT false,
     "fk_id_user" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "SituationUser_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Region" (
     "id" TEXT NOT NULL,
-    "city" TEXT DEFAULT E'BOTUCATU',
+    "city" TEXT DEFAULT 'BOTUCATU',
     "fk_id_user" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Region_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -57,7 +59,7 @@ CREATE TABLE "Post" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fk_id_user" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -67,7 +69,7 @@ CREATE TABLE "Like" (
     "user_id" TEXT NOT NULL,
     "fk_id_post" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Like_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -76,9 +78,9 @@ CREATE TABLE "Padrinho" (
     "user_id" TEXT NOT NULL,
     "apadrinhado_name" TEXT NOT NULL,
     "apadrinhado_id" TEXT NOT NULL,
-    "qnt" SERIAL NOT NULL,
+    "qnt" INTEGER NOT NULL DEFAULT 0,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Padrinho_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -88,7 +90,7 @@ CREATE TABLE "Links" (
     "link" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Links_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -99,7 +101,7 @@ CREATE TABLE "Presenca" (
     "nome" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Presenca_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -109,7 +111,7 @@ CREATE TABLE "OrderPresenca" (
     "nome" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "OrderPresenca_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -122,7 +124,7 @@ CREATE TABLE "Feed" (
     "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Feed_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,7 +138,7 @@ CREATE TABLE "OrderTransaction" (
     "descricao" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "OrderTransaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -149,7 +151,7 @@ CREATE TABLE "Consumo" (
     "descricao" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Consumo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -163,7 +165,7 @@ CREATE TABLE "Transaction" (
     "descricao" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -175,7 +177,7 @@ CREATE TABLE "Pontos" (
     "venda" INTEGER NOT NULL DEFAULT 0,
     "user_id" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Pontos_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -190,7 +192,7 @@ CREATE TABLE "B2b" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "validate" BOOLEAN NOT NULL DEFAULT false,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "B2b_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -206,38 +208,77 @@ CREATE TABLE "Indication" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "validate" BOOLEAN NOT NULL DEFAULT false,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Indication_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DadosFire" (
+    "fk_id_user" TEXT NOT NULL,
+    "qntIdication" INTEGER DEFAULT 0,
+    "qntPadrinho" INTEGER DEFAULT 0
+);
+
+-- CreateTable
+CREATE TABLE "Stars" (
+    "id" TEXT NOT NULL,
+    "fk_id_user" TEXT NOT NULL,
+    "star" INTEGER NOT NULL DEFAULT 0,
+    "valiador" TEXT NOT NULL,
+
+    CONSTRAINT "Stars_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Convidado" (
+    "id" TEXT NOT NULL,
+    "fk_user_id" TEXT NOT NULL,
+    "name_convidado" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Convidado_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User.membro_unique" ON "User"("membro");
+CREATE UNIQUE INDEX "User_membro_key" ON "User"("membro");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Profile.fk_id_user_unique" ON "Profile"("fk_id_user");
+CREATE UNIQUE INDEX "Profile_fk_id_user_key" ON "Profile"("fk_id_user");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SituationUser.fk_id_user_unique" ON "SituationUser"("fk_id_user");
+CREATE UNIQUE INDEX "SituationUser_fk_id_user_key" ON "SituationUser"("fk_id_user");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Region.fk_id_user_unique" ON "Region"("fk_id_user");
+CREATE UNIQUE INDEX "Region_fk_id_user_key" ON "Region"("fk_id_user");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Like.fk_id_post_unique" ON "Like"("fk_id_post");
+CREATE UNIQUE INDEX "Links_user_id_key" ON "Links"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Padrinho.apadrinhado_id_unique" ON "Padrinho"("apadrinhado_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Links.user_id_unique" ON "Links"("user_id");
+CREATE UNIQUE INDEX "DadosFire_fk_id_user_key" ON "DadosFire"("fk_id_user");
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Profile" ADD CONSTRAINT "Profile_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SituationUser" ADD FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SituationUser" ADD CONSTRAINT "SituationUser_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Region" ADD FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Region" ADD CONSTRAINT "Region_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Like" ADD FOREIGN KEY ("fk_id_post") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Like" ADD CONSTRAINT "Like_fk_id_post_fkey" FOREIGN KEY ("fk_id_post") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Padrinho" ADD CONSTRAINT "Padrinho_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Links" ADD CONSTRAINT "Links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DadosFire" ADD CONSTRAINT "DadosFire_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Stars" ADD CONSTRAINT "Stars_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Convidado" ADD CONSTRAINT "Convidado_fk_user_id_fkey" FOREIGN KEY ("fk_user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

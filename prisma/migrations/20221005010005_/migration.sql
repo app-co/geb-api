@@ -1,2 +1,0 @@
--- AddForeignKey
-ALTER TABLE "DadosFire" ADD FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -109,7 +109,7 @@ model Links {
    nome    String
    link    String
    user_id String
-   user    User   @relation(references: [id], fields: [user_id])
+   user    User?  @relation(references: [id], fields: [user_id])
 }
 
 model Presenca {
