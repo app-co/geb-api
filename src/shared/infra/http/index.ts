@@ -24,13 +24,13 @@ const io = new socket.Server(server);
 
 export const clients: Array<any> = [];
 
-io.on('connection', (client: any) => {
-   console.log(`conectado ${client.id}`);
-});
+// io.on('connection', (client: any) => {
+//    console.log(`conectado ${client.id}`);
+// });
 
-io.off('dis', h => {
-   console.log(`disconectado ${h.id}`);
-});
+// io.off('dis', h => {
+//    console.log(`disconectado ${h.id}`);
+// });
 
 app.use((req: Request, res: Response, nex: NextFunction) => {
    req.io = io;
