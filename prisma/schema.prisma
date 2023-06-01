@@ -224,8 +224,10 @@ model Convidado {
    id             String   @id @default(uuid())
    fk_user_id     String
    name_convidado String
+   approved       Boolean  @default(false)
    user           User     @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
    created_at     DateTime @default(now())
+   updated_at     DateTime @default(now()) @updatedAt
 }
 
 model midia {

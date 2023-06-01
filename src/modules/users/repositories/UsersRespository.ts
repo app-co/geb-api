@@ -110,6 +110,7 @@ export class UsersRespository implements IUsersRepository {
             DadosFire: true,
             Stars: true,
             midia: true,
+            Convidados: true,
          },
       });
       return find;

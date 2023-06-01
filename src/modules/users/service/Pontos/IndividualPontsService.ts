@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { PontosB2b } from '@modules/B2b/services/PontosB2b';
+import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
 import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
@@ -14,6 +15,7 @@ import {
    Indication,
    B2b,
    Padrinho,
+   Convidado,
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IUserDtos, IProfileDto, IPadrinhoDto } from '@shared/dtos';
@@ -65,6 +67,9 @@ export class IndicifualPontsService {
       @inject('PrismaB2b')
       private repoB2b: IB2bRepository,
 
+      @inject('PrismaConvidado')
+      private repoConv: IConvidadoPrisma,
+
       @inject('Cache')
       private cache: ICacheProvider,
    ) {}
@@ -76,6 +81,7 @@ export class IndicifualPontsService {
       let indi = await this.cache.recover<Indication[]>('indication');
       let b2b = await this.cache.recover<B2b[]>('b2b');
       let allPadrinho = await this.cache.recover<Padrinho[]>('padrinho');
+      let allVisitante = await this.cache.recover<Convidado[]>('visitante');
 
       if (!ListAllusers) {
          ListAllusers = await this.userRepository.listAllUser();
@@ -106,6 +112,12 @@ export class IndicifualPontsService {
          allPadrinho = await this.userRepository.listAllPadrinho();
 
          await this.cache.save('padrinho', allPadrinho);
+      }
+
+      if (!allVisitante) {
+         allVisitante = await this.repoConv.listAll();
+
+         await this.cache.save('visitante', allPadrinho);
       }
 
       const Concumo = ListAllusers!
@@ -302,6 +314,37 @@ export class IndicifualPontsService {
             };
          });
 
+      const convidado = ListAllusers!
+         .map(user => {
+            const allP = allVisitante!.filter(h => h.fk_user_id === user.id);
+
+            const pt = allP.length;
+
+            const send = {
+               id: user.id,
+               nome: user.nome,
+               pontos: pt * 10,
+            };
+            return {
+               send,
+            };
+         })
+         .sort((a, b) => {
+            if (a.send.nome > b.send.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.send.pontos - a.send.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h.send,
+               rank: i + 1,
+            };
+         });
+
       const relatori = {
          compras: Concumo,
          vendas: Vendas,
@@ -309,6 +352,7 @@ export class IndicifualPontsService {
          indication: Ind,
          b2b: B2,
          padrinho,
+         convidado,
       };
 
       let dados = await this.cache.recover<any>(`individualPonts:${user_id}`);
@@ -321,6 +365,7 @@ export class IndicifualPontsService {
             indication: relatori.indication.find(h => h.id === user_id),
             b2b: relatori.b2b.find(h => h.id === user_id),
             padrinho: relatori.padrinho.find(h => h.id === user_id),
+            convidado: relatori.convidado.find(h => h.id === user_id),
          };
 
          await this.cache.save(`individualPonts:${user_id}`, dados);

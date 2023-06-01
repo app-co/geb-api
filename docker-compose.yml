@@ -1,0 +1,19 @@
+version: '3'
+
+services: 
+  projetos:
+    image: bitnami/postgresql
+    ports: 
+      - 5432:5432
+    environment:
+      # - POSTGRESQL_USERNAME=api
+      - POSTGRESQL_PASSWORD=camaleao
+      - POSTGRESQL_DATABASE=GEB
+  redi:
+    image: redis:6.2-alpine
+    ports:
+      - '56379:6379'
+  
+
+      
+# docker run --name redis -p 6379:6379 -d -t redis:alpine% 

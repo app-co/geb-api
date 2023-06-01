@@ -24,4 +24,15 @@ export class ConvidadoPrisma implements IConvidadoPrisma {
 
       return find;
    }
+
+   async update(id: string, approved: boolean): Promise<Convidado> {
+      const up = await this.prisma.convidado.update({
+         where: { id },
+         data: {
+            approved,
+         },
+      });
+
+      return up;
+   }
 }

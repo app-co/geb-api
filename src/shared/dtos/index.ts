@@ -153,4 +153,5 @@ export interface IConvidadoDto {
    fk_user_id: string;
    name_convidado: string;
    created_at?: string;
+   update_at?: string;
 }
