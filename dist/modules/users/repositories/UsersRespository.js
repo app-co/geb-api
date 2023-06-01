@@ -5,16 +5,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UsersRespository = void 0;
 
-var _client = require("@prisma/client");
+var _prisma = require("../../../utils/prisma");
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 class UsersRespository {
-  constructor() {
-    this.prisma = new _client.PrismaClient();
-  }
-
-  async create(data, apadrinhado, firstLogin, inativo, qntIndication, qntPadrinho) {
-    const user = await this.prisma.user.create({
+  async create(data, apadrinhado, firstLogin, inativo) {
+    const user = await _prisma.prisma.user.create({
       data: {
         nome: data.nome,
         membro: data.membro,
@@ -30,12 +26,6 @@ class UsersRespository {
         region: {
           create: {
             city: 'BOTUCATU'
-          }
-        },
-        dadosFire: {
-          create: {
-            qntIdication: qntIndication,
-            qntPadrinho
           }
         },
         profile: {
@@ -54,8 +44,25 @@ class UsersRespository {
     return user;
   }
 
+  async updateMembro(data) {
+    const us = _prisma.prisma.user.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        nome: data.nome,
+        membro: data.membro,
+        senha: data.senha,
+        adm: data.adm,
+        token: data.token
+      }
+    });
+
+    return us;
+  }
+
   async findByMembro(membro) {
-    const find = await this.prisma.user.findUnique({
+    const find = await _prisma.prisma.user.findUnique({
       where: {
         membro
       }
@@ -64,33 +71,38 @@ class UsersRespository {
   }
 
   async findById(user_id) {
-    const find = await this.prisma.user.findUnique({
+    const find = await _prisma.prisma.user.findUnique({
       where: {
         id: user_id
       },
       include: {
         profile: true,
         region: true,
-        situation: true
+        situation: true,
+        Stars: true,
+        midia: true
       }
     });
     return find;
   }
 
   async listAllUser() {
-    const find = await this.prisma.user.findMany({
+    const find = await _prisma.prisma.user.findMany({
       include: {
         situation: true,
         profile: true,
         region: true,
-        dadosFire: true
+        DadosFire: true,
+        Stars: true,
+        midia: true,
+        Convidados: true
       }
     });
     return find;
   }
 
   async updateToken(id, token) {
-    const up = await this.prisma.user.update({
+    const up = await _prisma.prisma.user.update({
       where: {
         id
       },
@@ -102,58 +114,18 @@ class UsersRespository {
   }
 
   async deleteUser(membro) {
-    const user = await this.prisma.user.delete({
+    const user = await _prisma.prisma.user.delete({
       where: {
         membro
       }
     });
     return user;
   } //! !  LINKS
-
-
-  async createLink(data) {
-    const cr = await this.prisma.links.create({
-      data: {
-        user_id: data.user_id,
-        link: data.link,
-        nome: data.nome
-      }
-    });
-    return cr;
-  }
-
-  async findLinkByUserId(user_id) {
-    const fin = await this.prisma.links.findMany({
-      where: {
-        user_id
-      }
-    });
-    return fin;
-  }
-
-  async updateLink(id, link) {
-    const up = await this.prisma.links.update({
-      where: {
-        id
-      },
-      data: {
-        link
-      }
-    });
-    return up;
-  }
-
-  async deleteLink(id) {
-    await this.prisma.links.delete({
-      where: {
-        id
-      }
-    });
-  } // !!PROFILE  */
+  // !!PROFILE  */
 
 
   async updateProfile(data) {
-    const up = await this.prisma.profile.update({
+    const up = await _prisma.prisma.profile.update({
       where: {
         id: data.id
       },
@@ -175,7 +147,7 @@ class UsersRespository {
   }
 
   async findByIdProfile(id) {
-    const find = await this.prisma.profile.findFirst({
+    const find = await _prisma.prisma.profile.findFirst({
       where: {
         fk_id_user: id
       }
@@ -184,7 +156,7 @@ class UsersRespository {
   }
 
   async createProfile(data) {
-    const create = await this.prisma.profile.create({
+    const create = await _prisma.prisma.profile.create({
       data: {
         whats: data.whats,
         workName: data.workName,
@@ -202,7 +174,7 @@ class UsersRespository {
   }
 
   async findProfileByUserId(fk_id_user) {
-    const find = await this.prisma.profile.findFirst({
+    const find = await _prisma.prisma.profile.findFirst({
       where: {
         fk_id_user
       }
@@ -211,12 +183,12 @@ class UsersRespository {
   }
 
   async findAllProfile() {
-    const fi = await this.prisma.profile.findMany();
+    const fi = await _prisma.prisma.profile.findMany();
     return fi;
   }
 
   async updateSenha(senha, membro) {
-    const user = await this.prisma.user.update({
+    const user = await _prisma.prisma.user.update({
       where: {
         membro
       },
@@ -228,7 +200,7 @@ class UsersRespository {
   }
 
   async updateUser(data, id) {
-    const up = await this.prisma.user.update({
+    const up = await _prisma.prisma.user.update({
       where: {
         id
       },
@@ -244,7 +216,7 @@ class UsersRespository {
 
 
   async updateSituation(data) {
-    const up = await this.prisma.situationUser.update({
+    const up = await _prisma.prisma.situationUser.update({
       where: {
         id: data.id
       },
@@ -259,7 +231,7 @@ class UsersRespository {
   }
 
   async findSituation(id) {
-    const fin = await this.prisma.situationUser.findFirst({
+    const fin = await _prisma.prisma.situationUser.findFirst({
       where: {
         fk_id_user: id
       }
@@ -268,13 +240,13 @@ class UsersRespository {
   }
 
   async listAllSituation() {
-    const l = await this.prisma.situationUser.findMany();
+    const l = await _prisma.prisma.situationUser.findMany();
     return l;
   } // !! PADRINHO
 
 
   async createPadrinho(data) {
-    const cre = await this.prisma.padrinho.create({
+    const cre = await _prisma.prisma.padrinho.create({
       data: {
         apadrinhado_id: data.apadrinhado_id,
         apadrinhado_name: data.apadrinhado_name,
@@ -286,7 +258,7 @@ class UsersRespository {
   }
 
   async findPadrinhoById(id) {
-    const find = await this.prisma.padrinho.findUnique({
+    const find = await _prisma.prisma.padrinho.findUnique({
       where: {
         id
       }
@@ -295,7 +267,7 @@ class UsersRespository {
   }
 
   async findPadrinhoByUserId(user_id) {
-    const find = await this.prisma.padrinho.findFirst({
+    const find = await _prisma.prisma.padrinho.findFirst({
       where: {
         user_id
       }
@@ -304,12 +276,12 @@ class UsersRespository {
   }
 
   async listAllPadrinho() {
-    const all = await this.prisma.padrinho.findMany();
+    const all = await _prisma.prisma.padrinho.findMany();
     return all;
   }
 
   async deletePadrinho(id) {
-    await this.prisma.padrinho.delete({
+    await _prisma.prisma.padrinho.delete({
       where: {
         id
       }
@@ -318,7 +290,8 @@ class UsersRespository {
 
 
   async listAllDataFire() {
-    const fire = this.prisma.dadosFire.findMany();
+    const fire = _prisma.prisma.dadosFire.findMany();
+
     return fire;
   }
 

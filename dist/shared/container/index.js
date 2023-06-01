@@ -2,9 +2,17 @@
 
 var _B2bRepository = require("../../modules/B2b/repositories/B2bRepository");
 
+var _prisma = require("../../modules/convidado/repositories/prisma");
+
 var _IndicationRepository = require("../../modules/indication/infra/repositories/IndicationRepository");
 
+var _LinksPrismaRepository = require("../../modules/Links/repositories/models/LinksPrismaRepository");
+
 var _PostRepository = require("../../modules/posts/repositories/PostRepository");
+
+var _prisma2 = require("../../modules/situation/repositories/prisma");
+
+var _prisma3 = require("../../modules/starts/repositories/prisma");
 
 var _UsersRespository = require("../../modules/users/repositories/UsersRespository");
 
@@ -47,3 +55,11 @@ _tsyringe.container.registerSingleton('Presenca', _PresençaRepository.PresencaR
 _tsyringe.container.registerSingleton('PrismaB2b', _B2bRepository.B2bRepository);
 
 _tsyringe.container.registerSingleton('PrismaIndication', _IndicationRepository.IndicationRepository);
+
+_tsyringe.container.registerSingleton('PrismaStar', _prisma3.StarPrisma);
+
+_tsyringe.container.registerSingleton('PrismaConvidado', _prisma.ConvidadoPrisma);
+
+_tsyringe.container.registerSingleton('PrismaSituation', _prisma2.SituationPrisma);
+
+_tsyringe.container.registerSingleton('Link', _LinksPrismaRepository.LinksPrismaRepository);

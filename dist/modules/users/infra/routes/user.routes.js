@@ -24,7 +24,8 @@ const img = (0, _multer.default)(_upload.default);
 user.post('/update-pass', control.updateSenha);
 user.post('/create-user', control.create);
 user.post('/session', control.session);
-user.use(_Auth.Auth); // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
+user.use(_Auth.Auth);
+user.post('/update-membro', control.updateMembro); // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
 // user.patch('/logo', img.single('logo'), control.updateLogo);
 
 user.get('/list-all-user', control.listAll);
@@ -46,3 +47,5 @@ user.post('/create-padrinho', control.createPadrinho); // user.get('/find', Auth
 // user.put('/upToken', Auth, control.updateToken);
 // user.put('/update-padrinho', Auth, control.updatePadrinho);
 // user.put('/update-senha', Auth, control.updateSenhaUser);
+
+user.get('/clear-cache', control.clearCash);

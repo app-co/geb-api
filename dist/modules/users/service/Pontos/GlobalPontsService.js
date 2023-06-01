@@ -54,7 +54,6 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
     let indi = await this.cache.recover('indication');
     let b2b = await this.cache.recover('b2b');
     let allPadrinho = await this.cache.recover('padrinho');
-    const lisAllDadosFire = await this.userRepository.listAllDataFire();
 
     if (!ListAllusers) {
       ListAllusers = await this.userRepository.listAllUser();
@@ -163,9 +162,8 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
       };
     });
     const Ind = ListAllusers.map(user => {
-      const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
       const fil = indi.filter(h => h.quemIndicou_id === user.id && h.validate === true);
-      const pt = fil.length + cons.qntIdication;
+      const pt = fil.length;
       const pont = {
         id: user.id,
         nome: user.nome,
@@ -209,14 +207,13 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
       };
     });
     const padrinho = ListAllusers.map(user => {
-      const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
       let allP = [];
 
       if (allPadrinho) {
         allP = allPadrinho.filter(h => h.user_id === user.id);
       }
 
-      const pt = allP.length + cons.qntPadrinho;
+      const pt = allP.length;
       const send = {
         id: user.id,
         nome: user.nome,
@@ -238,7 +235,71 @@ let GlobalPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (
         rank: i + 1
       };
     });
+    const Total = [];
+    ListAllusers.forEach(user => {
+      let pt = {
+        nome: '',
+        totalPontos: 0
+      };
+      Concumo.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      Vendas.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      Pres.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      Ind.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      B2.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      padrinho.forEach(c => {
+        if (c.id === user.id) {
+          pt = {
+            nome: c.nome,
+            totalPontos: pt.totalPontos + c.pontos
+          };
+        }
+      });
+      Total.push(pt);
+    });
+    const TP = Total.sort((a, b) => {
+      if (b.totalPontos > a.totalPontos) {
+        return 0;
+      }
+
+      return -1;
+    });
     const relatori = {
+      TP,
       compras: Concumo,
       vendas: Vendas,
       presenca: Pres,

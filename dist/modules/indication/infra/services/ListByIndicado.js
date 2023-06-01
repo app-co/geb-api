@@ -27,7 +27,6 @@ let ListByIndicado = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (targ
 
   async execute(id) {
     let find = await this.cache.recover(`indication-indicado:${id}`);
-    console.log(id);
 
     if (!find) {
       find = await this.indRepository.findByIndicado(id);

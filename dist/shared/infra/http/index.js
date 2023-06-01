@@ -34,14 +34,14 @@ const app = (0, _express.default)();
 exports.app = app;
 const server = (0, _http.createServer)(app);
 const io = new _socket.default.Server(server);
-const clients = [];
+const clients = []; // io.on('connection', (client: any) => {
+//    console.log(`conectado ${client.id}`);
+// });
+// io.off('dis', h => {
+//    console.log(`disconectado ${h.id}`);
+// });
+
 exports.clients = clients;
-io.on('connection', client => {
-  console.log(`conectado ${client.id}`);
-});
-io.off('dis', h => {
-  console.log(`disconectado ${h.id}`);
-});
 app.use((req, res, nex) => {
   req.io = io;
   nex();

@@ -3,8 +3,8 @@ import { midia, Prisma } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { inject, injectable } from 'tsyringe';
-import { ILinksRepository } from '../repositories/IRepository/ILinksRepository';
 
+import { ILinksRepository } from '../repositories/IRepository/ILinksRepository';
 
 interface props {
    id: string;
@@ -20,7 +20,7 @@ export class updateLinkService {
       private cache: ICacheProvider,
    ) {}
 
-   async create({}:): Promise<midia> {}
+   async create(): Promise<midia> {}
 
    async findById({ id }: props): Promise<midia> {
       const list = await this.repomidia.findById(id);

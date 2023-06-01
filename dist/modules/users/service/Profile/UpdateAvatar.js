@@ -34,7 +34,7 @@ let UpdateAvatar = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target
       throw new _AppError.Err('Perfil não encontrado');
     }
 
-    if (user !== null && user !== void 0 && user.avatarPath) {
+    if (user?.avatarPath) {
       await this.store.deleteFile(user.avatarPath, 'avatar');
     }
 

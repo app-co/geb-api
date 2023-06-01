@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.UserController = void 0;
 
+var _clearCacheService = require("../../service/clearCacheService");
+
 var _createLink = require("../../service/createLink");
 
 var _CreateUserService = require("../../service/CreateUserService");
@@ -29,6 +31,8 @@ var _UpdateProfileService = require("../../service/Profile/UpdateProfileService"
 
 var _SessionService = require("../../service/SessionService.service");
 
+var _UpdateMembroService = require("../../service/UpdateMembroService");
+
 var _UpdatePass = require("../../service/UpdatePass");
 
 var _tsyringe = require("tsyringe");
@@ -42,12 +46,9 @@ class UserController {
 
     const {
       nome,
-      qntIndication,
-      qntPadrinho,
       membro,
       senha,
       adm,
-      id,
       apadrinhado,
       firstLogin,
       inativo
@@ -57,14 +58,33 @@ class UserController {
       membro,
       senha,
       adm,
-      id,
       apadrinhado,
       firstLogin,
-      inativo,
-      qntIndication,
-      qntPadrinho
+      inativo
     });
     return res.json(user);
+  }
+
+  async updateMembro(req, res) {
+    const service = _tsyringe.container.resolve(_UpdateMembroService.UpdateMembroService);
+
+    const {
+      membro,
+      nome,
+      id,
+      senha,
+      token,
+      adm
+    } = req.body;
+    const sess = await service.execute({
+      membro,
+      senha,
+      nome,
+      id,
+      adm,
+      token
+    });
+    return res.json(sess);
   }
 
   async session(req, res) {
@@ -263,8 +283,14 @@ class UserController {
       qnt
     });
     return res.json(ex);
-  } // async findUnicUser(req: Request, res: Response): Promise<Response> {}
-  // async updateToken(req: Request, res: Response): Promise<Response> {}
+  }
+
+  async clearCash(req, res) {
+    const service = _tsyringe.container.resolve(_clearCacheService.clearCacheService);
+
+    const rs = await service.execute();
+    return res.json(rs);
+  } // async updateToken(req: Request, res: Response): Promise<Response> {}
   // async updatePadrinho(req: Request, res: Response): Promise<Response> {}
   // async updateSenhaUser(req: Request, res: Response): Promise<Response> {}
 

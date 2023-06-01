@@ -34,12 +34,9 @@ let CreateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
     membro,
     senha,
     adm,
-    id,
     apadrinhado,
     firstLogin,
-    inativo,
-    qntIndication,
-    qntPadrinho
+    inativo
   }) {
     const find = await this.userRepository.findByMembro(membro);
 
@@ -52,10 +49,9 @@ let CreateUserService = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (t
       nome,
       membro,
       senha: has,
-      adm,
-      id
+      adm
     };
-    const user = await this.userRepository.create(data, apadrinhado, firstLogin, inativo, qntIndication, qntPadrinho);
+    const user = await this.userRepository.create(data, apadrinhado, firstLogin, inativo);
     await this.cache.invalidate('users');
     await this.cache.invalidatePrefix(`individualPonts`);
     return user;

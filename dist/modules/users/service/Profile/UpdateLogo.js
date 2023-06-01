@@ -34,7 +34,7 @@ let UpdateLogo = (_dec = (0, _tsyringe.injectable)(), _dec2 = function (target, 
       throw new _AppError.Err('Perfil não encontrado');
     }
 
-    if (user !== null && user !== void 0 && user.logoPath) {
+    if (user?.logoPath) {
       await this.store.deleteFile(user.logoPath, 'logo');
     }
 

@@ -7,6 +7,8 @@ exports.IndicifualPontsService = void 0;
 
 var _IB2bRepository = require("../../../B2b/repositories/IB2bRepository");
 
+var _IConvidadoPrisma = require("../../../convidado/repositories/IConvidadoPrisma");
+
 var _IIndicationRepository = require("../../../indication/infra/repositories/IIndicationRepository");
 
 var _IPresençaRepository = require("../../../presensa/repositories/IPresen\xE7aRepository");
@@ -21,7 +23,7 @@ var _pontos = require("../../../../utils/pontos");
 
 var _IUsersRespository = require("../../repositories/IUsersRespository");
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _class;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,14 +38,17 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
 }, _dec6 = function (target, key) {
   return (0, _tsyringe.inject)('PrismaB2b')(target, undefined, 4);
 }, _dec7 = function (target, key) {
-  return (0, _tsyringe.inject)('Cache')(target, undefined, 5);
-}, _dec8 = Reflect.metadata("design:type", Function), _dec9 = Reflect.metadata("design:paramtypes", [typeof _IUsersRespository.IUsersRepository === "undefined" ? Object : _IUsersRespository.IUsersRepository, typeof _ITransactionRespository.ITransactionRepository === "undefined" ? Object : _ITransactionRespository.ITransactionRepository, typeof _IPresençaRepository.IPresencaRespository === "undefined" ? Object : _IPresençaRepository.IPresencaRespository, typeof _IIndicationRepository.IIndicationRepository === "undefined" ? Object : _IIndicationRepository.IIndicationRepository, typeof _IB2bRepository.IB2bRepository === "undefined" ? Object : _IB2bRepository.IB2bRepository, typeof _ICacheProvider.default === "undefined" ? Object : _ICacheProvider.default]), _dec(_class = _dec2(_class = _dec3(_class = _dec4(_class = _dec5(_class = _dec6(_class = _dec7(_class = _dec8(_class = _dec9(_class = class IndicifualPontsService {
-  constructor(userRepository, repoTransaction, presencaRepository, indRepo, repoB2b, cache) {
+  return (0, _tsyringe.inject)('PrismaConvidado')(target, undefined, 5);
+}, _dec8 = function (target, key) {
+  return (0, _tsyringe.inject)('Cache')(target, undefined, 6);
+}, _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", [typeof _IUsersRespository.IUsersRepository === "undefined" ? Object : _IUsersRespository.IUsersRepository, typeof _ITransactionRespository.ITransactionRepository === "undefined" ? Object : _ITransactionRespository.ITransactionRepository, typeof _IPresençaRepository.IPresencaRespository === "undefined" ? Object : _IPresençaRepository.IPresencaRespository, typeof _IIndicationRepository.IIndicationRepository === "undefined" ? Object : _IIndicationRepository.IIndicationRepository, typeof _IB2bRepository.IB2bRepository === "undefined" ? Object : _IB2bRepository.IB2bRepository, typeof _IConvidadoPrisma.IConvidadoPrisma === "undefined" ? Object : _IConvidadoPrisma.IConvidadoPrisma, typeof _ICacheProvider.default === "undefined" ? Object : _ICacheProvider.default]), _dec(_class = _dec2(_class = _dec3(_class = _dec4(_class = _dec5(_class = _dec6(_class = _dec7(_class = _dec8(_class = _dec9(_class = _dec10(_class = class IndicifualPontsService {
+  constructor(userRepository, repoTransaction, presencaRepository, indRepo, repoB2b, repoConv, cache) {
     this.userRepository = userRepository;
     this.repoTransaction = repoTransaction;
     this.presencaRepository = presencaRepository;
     this.indRepo = indRepo;
     this.repoB2b = repoB2b;
+    this.repoConv = repoConv;
     this.cache = cache;
   }
 
@@ -54,7 +59,7 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     let indi = await this.cache.recover('indication');
     let b2b = await this.cache.recover('b2b');
     let allPadrinho = await this.cache.recover('padrinho');
-    const lisAllDadosFire = await this.userRepository.listAllDataFire();
+    let allVisitante = await this.cache.recover('visitante');
 
     if (!ListAllusers) {
       ListAllusers = await this.userRepository.listAllUser();
@@ -84,6 +89,11 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     if (!allPadrinho) {
       allPadrinho = await this.userRepository.listAllPadrinho();
       await this.cache.save('padrinho', allPadrinho);
+    }
+
+    if (!allVisitante) {
+      allVisitante = await this.repoConv.listAll();
+      await this.cache.save('visitante', allPadrinho);
     }
 
     const Concumo = ListAllusers.map((user, index) => {
@@ -163,9 +173,8 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       };
     });
     const Ind = ListAllusers.map(user => {
-      const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
       const fil = indi.filter(h => h.quemIndicou_id === user.id && h.validate === true);
-      const pt = fil.length + cons.qntIdication;
+      const pt = fil.length;
       const pont = {
         id: user.id,
         nome: user.nome,
@@ -209,13 +218,36 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       };
     });
     const padrinho = ListAllusers.map(user => {
-      const cons = lisAllDadosFire.find(h => h.fk_id_user === user.id);
       const allP = allPadrinho.filter(h => h.user_id === user.id);
-      const pt = allP.length + cons.qntPadrinho;
+      const pt = allP.length;
       const send = {
         id: user.id,
         nome: user.nome,
         pontos: pt * _pontos.pontos.padrinho
+      };
+      return {
+        send
+      };
+    }).sort((a, b) => {
+      if (a.send.nome > b.send.nome) {
+        return -0;
+      }
+
+      return -1;
+    }).sort((a, b) => {
+      return b.send.pontos - a.send.pontos;
+    }).map((h, i) => {
+      return { ...h.send,
+        rank: i + 1
+      };
+    });
+    const convidado = ListAllusers.map(user => {
+      const allP = allVisitante.filter(h => h.fk_user_id === user.id);
+      const pt = allP.length;
+      const send = {
+        id: user.id,
+        nome: user.nome,
+        pontos: pt * 10
       };
       return {
         send
@@ -239,7 +271,8 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       presenca: Pres,
       indication: Ind,
       b2b: B2,
-      padrinho
+      padrinho,
+      convidado
     };
     let dados = await this.cache.recover(`individualPonts:${user_id}`);
 
@@ -250,7 +283,8 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
         presenca: relatori.presenca.find(h => h.id === user_id),
         indication: relatori.indication.find(h => h.id === user_id),
         b2b: relatori.b2b.find(h => h.id === user_id),
-        padrinho: relatori.padrinho.find(h => h.id === user_id)
+        padrinho: relatori.padrinho.find(h => h.id === user_id),
+        convidado: relatori.convidado.find(h => h.id === user_id)
       };
       await this.cache.save(`individualPonts:${user_id}`, dados);
     }
@@ -258,5 +292,5 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     return dados;
   }
 
-}) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class);
+}) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class);
 exports.IndicifualPontsService = IndicifualPontsService;

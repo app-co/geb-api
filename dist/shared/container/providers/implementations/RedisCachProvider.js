@@ -32,6 +32,10 @@ class RedisCacheProvider {
     return parseData;
   }
 
+  async removeAll() {
+    await this.client.flushall();
+  }
+
   async invalidate(key) {
     await this.client.del(key);
   }
