@@ -25,8 +25,10 @@ let UpdateConvidadoService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     this.cache = cache;
   }
 
-  async exec(id, approved) {
-    const up = await this.convidadoRepo.update(id, approved);
+  async exec({
+    id
+  }) {
+    const up = await this.convidadoRepo.update(id);
     await this.cache.invalidate('convidado');
     return up;
   }

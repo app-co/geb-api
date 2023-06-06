@@ -285,6 +285,73 @@ class UserController {
     return res.json(ex);
   }
 
+  async createPadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const {
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    } = req.body;
+    const user_id = req.user.id;
+    const ex = await serv.execute({
+      user_id,
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    });
+    return res.json(ex);
+  }
+
+  async createPadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const {
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    } = req.body;
+    const user_id = req.user.id;
+    const ex = await serv.execute({
+      user_id,
+      apadrinhado_name,
+      apadrinhado_id,
+      qnt
+    });
+    return res.json(ex);
+  }
+
+  async listAllPadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const ex = await serv.listAll();
+    return res.json(ex);
+  }
+
+  async listByPadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const {
+      id
+    } = req.user;
+    const ex = await serv.listByPadrinho({
+      id: String(id)
+    });
+    return res.json(ex);
+  }
+
+  async deletePadrinho(req, res) {
+    const serv = _tsyringe.container.resolve(_createPadrinhoService.CreatePadrinhoService);
+
+    const {
+      id
+    } = req.params;
+    const ex = await serv.listByPadrinho({
+      id: String(id)
+    });
+    return res.json(ex);
+  }
+
   async clearCash(req, res) {
     const service = _tsyringe.container.resolve(_clearCacheService.clearCacheService);
 

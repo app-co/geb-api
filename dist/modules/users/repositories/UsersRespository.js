@@ -267,7 +267,7 @@ class UsersRespository {
   }
 
   async findPadrinhoByUserId(user_id) {
-    const find = await _prisma.prisma.padrinho.findFirst({
+    const find = await _prisma.prisma.padrinho.findMany({
       where: {
         user_id
       }

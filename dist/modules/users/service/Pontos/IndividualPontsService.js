@@ -9,6 +9,8 @@ var _IB2bRepository = require("../../../B2b/repositories/IB2bRepository");
 
 var _IConvidadoPrisma = require("../../../convidado/repositories/IConvidadoPrisma");
 
+var _IDonateRepository = require("../../../Donate/repositories/IRepository/IDonateRepository");
+
 var _IIndicationRepository = require("../../../indication/infra/repositories/IIndicationRepository");
 
 var _IPresençaRepository = require("../../../presensa/repositories/IPresen\xE7aRepository");
@@ -23,7 +25,7 @@ var _pontos = require("../../../../utils/pontos");
 
 var _IUsersRespository = require("../../repositories/IUsersRespository");
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _class;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40,15 +42,18 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
 }, _dec7 = function (target, key) {
   return (0, _tsyringe.inject)('PrismaConvidado')(target, undefined, 5);
 }, _dec8 = function (target, key) {
-  return (0, _tsyringe.inject)('Cache')(target, undefined, 6);
-}, _dec9 = Reflect.metadata("design:type", Function), _dec10 = Reflect.metadata("design:paramtypes", [typeof _IUsersRespository.IUsersRepository === "undefined" ? Object : _IUsersRespository.IUsersRepository, typeof _ITransactionRespository.ITransactionRepository === "undefined" ? Object : _ITransactionRespository.ITransactionRepository, typeof _IPresençaRepository.IPresencaRespository === "undefined" ? Object : _IPresençaRepository.IPresencaRespository, typeof _IIndicationRepository.IIndicationRepository === "undefined" ? Object : _IIndicationRepository.IIndicationRepository, typeof _IB2bRepository.IB2bRepository === "undefined" ? Object : _IB2bRepository.IB2bRepository, typeof _IConvidadoPrisma.IConvidadoPrisma === "undefined" ? Object : _IConvidadoPrisma.IConvidadoPrisma, typeof _ICacheProvider.default === "undefined" ? Object : _ICacheProvider.default]), _dec(_class = _dec2(_class = _dec3(_class = _dec4(_class = _dec5(_class = _dec6(_class = _dec7(_class = _dec8(_class = _dec9(_class = _dec10(_class = class IndicifualPontsService {
-  constructor(userRepository, repoTransaction, presencaRepository, indRepo, repoB2b, repoConv, cache) {
+  return (0, _tsyringe.inject)('donate')(target, undefined, 6);
+}, _dec9 = function (target, key) {
+  return (0, _tsyringe.inject)('Cache')(target, undefined, 7);
+}, _dec10 = Reflect.metadata("design:type", Function), _dec11 = Reflect.metadata("design:paramtypes", [typeof _IUsersRespository.IUsersRepository === "undefined" ? Object : _IUsersRespository.IUsersRepository, typeof _ITransactionRespository.ITransactionRepository === "undefined" ? Object : _ITransactionRespository.ITransactionRepository, typeof _IPresençaRepository.IPresencaRespository === "undefined" ? Object : _IPresençaRepository.IPresencaRespository, typeof _IIndicationRepository.IIndicationRepository === "undefined" ? Object : _IIndicationRepository.IIndicationRepository, typeof _IB2bRepository.IB2bRepository === "undefined" ? Object : _IB2bRepository.IB2bRepository, typeof _IConvidadoPrisma.IConvidadoPrisma === "undefined" ? Object : _IConvidadoPrisma.IConvidadoPrisma, typeof _IDonateRepository.IDonateRepository === "undefined" ? Object : _IDonateRepository.IDonateRepository, typeof _ICacheProvider.default === "undefined" ? Object : _ICacheProvider.default]), _dec(_class = _dec2(_class = _dec3(_class = _dec4(_class = _dec5(_class = _dec6(_class = _dec7(_class = _dec8(_class = _dec9(_class = _dec10(_class = _dec11(_class = class IndicifualPontsService {
+  constructor(userRepository, repoTransaction, presencaRepository, indRepo, repoB2b, repoConv, repoDon, cache) {
     this.userRepository = userRepository;
     this.repoTransaction = repoTransaction;
     this.presencaRepository = presencaRepository;
     this.indRepo = indRepo;
     this.repoB2b = repoB2b;
     this.repoConv = repoConv;
+    this.repoDon = repoDon;
     this.cache = cache;
   }
 
@@ -59,7 +64,8 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     let indi = await this.cache.recover('indication');
     let b2b = await this.cache.recover('b2b');
     let allPadrinho = await this.cache.recover('padrinho');
-    let allVisitante = await this.cache.recover('visitante');
+    let allVisitante = await this.cache.recover('convidado');
+    let allDonates = await this.cache.recover('donate');
 
     if (!ListAllusers) {
       ListAllusers = await this.userRepository.listAllUser();
@@ -93,7 +99,12 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
 
     if (!allVisitante) {
       allVisitante = await this.repoConv.listAll();
-      await this.cache.save('visitante', allPadrinho);
+      await this.cache.save('convidado', allVisitante);
+    }
+
+    if (!allDonates) {
+      allDonates = await this.repoDon.listMany();
+      await this.cache.save('donate', allDonates);
     }
 
     const Concumo = ListAllusers.map((user, index) => {
@@ -242,12 +253,44 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       };
     });
     const convidado = ListAllusers.map(user => {
-      const allP = allVisitante.filter(h => h.fk_user_id === user.id);
-      const pt = allP.length;
+      const allP = allVisitante.filter(h => {
+        if (h.fk_user_id === user.id && h.approved === true) {
+          return h;
+        }
+      });
+      const pt = allP.length * 10;
       const send = {
         id: user.id,
         nome: user.nome,
-        pontos: pt * 10
+        pontos: pt
+      };
+      return {
+        send
+      };
+    }).sort((a, b) => {
+      if (a.send.nome > b.send.nome) {
+        return -0;
+      }
+
+      return -1;
+    }).sort((a, b) => {
+      return b.send.pontos - a.send.pontos;
+    }).map((h, i) => {
+      return { ...h.send,
+        rank: i + 1
+      };
+    });
+    const donates = ListAllusers.map(user => {
+      const allP = allDonates.filter(h => {
+        if (h.fk_id_user === user.id && h.approved === true) {
+          return h;
+        }
+      });
+      const pt = allP.length * 50;
+      const send = {
+        id: user.id,
+        nome: user.nome,
+        pontos: pt
       };
       return {
         send
@@ -272,25 +315,25 @@ let IndicifualPontsService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
       indication: Ind,
       b2b: B2,
       padrinho,
-      convidado
+      convidado,
+      donates
     };
-    let dados = await this.cache.recover(`individualPonts:${user_id}`);
+    let dados = await this.cache.recover(`individualPonts:${user_id}`); // if (!dados) {
 
-    if (!dados) {
-      dados = {
-        compras: relatori.compras.find(h => h.id === user_id),
-        vendas: relatori.vendas.find(h => h.id === user_id),
-        presenca: relatori.presenca.find(h => h.id === user_id),
-        indication: relatori.indication.find(h => h.id === user_id),
-        b2b: relatori.b2b.find(h => h.id === user_id),
-        padrinho: relatori.padrinho.find(h => h.id === user_id),
-        convidado: relatori.convidado.find(h => h.id === user_id)
-      };
-      await this.cache.save(`individualPonts:${user_id}`, dados);
-    }
+    dados = {
+      compras: relatori.compras.find(h => h.id === user_id),
+      vendas: relatori.vendas.find(h => h.id === user_id),
+      presenca: relatori.presenca.find(h => h.id === user_id),
+      indication: relatori.indication.find(h => h.id === user_id),
+      b2b: relatori.b2b.find(h => h.id === user_id),
+      padrinho: relatori.padrinho.find(h => h.id === user_id),
+      convidado: relatori.convidado.find(h => h.id === user_id),
+      donates: relatori.donates.find(h => h.id === user_id)
+    }; // await this.cache.save(`individualPonts:${user_id}`, dados);
+    // }
 
     return dados;
   }
 
-}) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class);
+}) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class) || _class);
 exports.IndicifualPontsService = IndicifualPontsService;

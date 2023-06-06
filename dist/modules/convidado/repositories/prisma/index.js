@@ -12,6 +12,14 @@ class ConvidadoPrisma {
     this.prisma = new _client.PrismaClient();
   }
 
+  async delete(id) {
+    await this.prisma.convidado.delete({
+      where: {
+        id
+      }
+    });
+  }
+
   async create(data) {
     const create = await this.prisma.convidado.create({
       data: {
@@ -31,13 +39,13 @@ class ConvidadoPrisma {
     return find;
   }
 
-  async update(id, approved) {
+  async update(id) {
     const up = await this.prisma.convidado.update({
       where: {
         id
       },
       data: {
-        approved
+        approved: true
       }
     });
     return up;

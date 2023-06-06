@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Donate, Prisma } from '@prisma/client';
-import { prisma } from 'utils/prisma';
 
+import { prisma } from '../../../../utils/prisma';
 import { IDonateRepository } from '../IRepository/IDonateRepository';
 
 interface props {

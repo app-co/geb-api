@@ -39,10 +39,23 @@ class ConvidadoController {
     const serv = _tsyringe.container.resolve(_updateConvidadoService.UpdateConvidadoService);
 
     const {
-      id,
-      approved
-    } = req.body;
-    const list = await serv.exec(id, approved);
+      id
+    } = req.params;
+    const list = await serv.exec({
+      id: String(id)
+    });
+    return res.json(list);
+  }
+
+  async delete(req, res) {
+    const serv = _tsyringe.container.resolve(_createConvidadoService.CreateConvidadoService);
+
+    const {
+      id
+    } = req.params;
+    const list = await serv.delete({
+      id: String(id)
+    });
     return res.json(list);
   }
 

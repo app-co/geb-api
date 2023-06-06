@@ -37,5 +37,12 @@ let CreateConvidadoService = (_dec = (0, _tsyringe.injectable)(), _dec2 = functi
     return create;
   }
 
+  async delete({
+    id
+  }) {
+    const create = await this.convidadoRepo.delete(id);
+    await this.cache.invalidate('convidado');
+  }
+
 }) || _class) || _class) || _class) || _class) || _class);
 exports.CreateConvidadoService = CreateConvidadoService;
