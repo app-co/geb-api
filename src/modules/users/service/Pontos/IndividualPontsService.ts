@@ -4,6 +4,7 @@
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { PontosB2b } from '@modules/B2b/services/PontosB2b';
 import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
+import { IDonateRepository } from '@modules/Donate/repositories/IRepository/IDonateRepository';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
 import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
@@ -16,6 +17,7 @@ import {
    B2b,
    Padrinho,
    Convidado,
+   Donate,
 } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { IUserDtos, IProfileDto, IPadrinhoDto } from '@shared/dtos';
@@ -70,6 +72,9 @@ export class IndicifualPontsService {
       @inject('PrismaConvidado')
       private repoConv: IConvidadoPrisma,
 
+      @inject('donate')
+      private repoDon: IDonateRepository,
+
       @inject('Cache')
       private cache: ICacheProvider,
    ) {}
@@ -81,7 +86,8 @@ export class IndicifualPontsService {
       let indi = await this.cache.recover<Indication[]>('indication');
       let b2b = await this.cache.recover<B2b[]>('b2b');
       let allPadrinho = await this.cache.recover<Padrinho[]>('padrinho');
-      let allVisitante = await this.cache.recover<Convidado[]>('visitante');
+      let allVisitante = await this.cache.recover<Convidado[]>('convidado');
+      let allDonates = await this.cache.recover<Donate[]>('donate');
 
       if (!ListAllusers) {
          ListAllusers = await this.userRepository.listAllUser();
@@ -117,7 +123,13 @@ export class IndicifualPontsService {
       if (!allVisitante) {
          allVisitante = await this.repoConv.listAll();
 
-         await this.cache.save('visitante', allPadrinho);
+         await this.cache.save('convidado', allVisitante);
+      }
+
+      if (!allDonates) {
+         allDonates = await this.repoDon.listMany();
+
+         await this.cache.save('donate', allDonates);
       }
 
       const Concumo = ListAllusers!
@@ -316,14 +328,53 @@ export class IndicifualPontsService {
 
       const convidado = ListAllusers!
          .map(user => {
-            const allP = allVisitante!.filter(h => h.fk_user_id === user.id);
+            const allP = allVisitante!.filter(h => {
+               if (h.fk_user_id === user.id && h.approved === true) {
+                  return h;
+               }
+            });
 
-            const pt = allP.length;
+            const pt = allP.length * 10;
 
             const send = {
                id: user.id,
                nome: user.nome,
-               pontos: pt * 10,
+               pontos: pt,
+            };
+            return {
+               send,
+            };
+         })
+         .sort((a, b) => {
+            if (a.send.nome > b.send.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.send.pontos - a.send.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h.send,
+               rank: i + 1,
+            };
+         });
+
+      const donates = ListAllusers!
+         .map(user => {
+            const allP = allDonates!.filter(h => {
+               if (h.fk_id_user === user.id && h.approved === true) {
+                  return h;
+               }
+            });
+
+            const pt = allP.length * 50;
+
+            const send = {
+               id: user.id,
+               nome: user.nome,
+               pontos: pt,
             };
             return {
                send,
@@ -353,23 +404,25 @@ export class IndicifualPontsService {
          b2b: B2,
          padrinho,
          convidado,
+         donates,
       };
 
       let dados = await this.cache.recover<any>(`individualPonts:${user_id}`);
 
-      if (!dados) {
-         dados = {
-            compras: relatori.compras.find(h => h.id === user_id),
-            vendas: relatori.vendas.find(h => h.id === user_id),
-            presenca: relatori.presenca.find(h => h.id === user_id),
-            indication: relatori.indication.find(h => h.id === user_id),
-            b2b: relatori.b2b.find(h => h.id === user_id),
-            padrinho: relatori.padrinho.find(h => h.id === user_id),
-            convidado: relatori.convidado.find(h => h.id === user_id),
-         };
+      // if (!dados) {
+      dados = {
+         compras: relatori.compras.find(h => h.id === user_id),
+         vendas: relatori.vendas.find(h => h.id === user_id),
+         presenca: relatori.presenca.find(h => h.id === user_id),
+         indication: relatori.indication.find(h => h.id === user_id),
+         b2b: relatori.b2b.find(h => h.id === user_id),
+         padrinho: relatori.padrinho.find(h => h.id === user_id),
+         convidado: relatori.convidado.find(h => h.id === user_id),
+         donates: relatori.donates.find(h => h.id === user_id),
+      };
 
-         await this.cache.save(`individualPonts:${user_id}`, dados);
-      }
+      // await this.cache.save(`individualPonts:${user_id}`, dados);
+      // }
 
       return dados;
    }

@@ -14,6 +14,10 @@ interface Props {
    name_convidado: string;
 }
 
+interface IProps {
+   id: string;
+}
+
 @injectable()
 export class CreateConvidadoService {
    constructor(
@@ -33,5 +37,11 @@ export class CreateConvidadoService {
       await this.cache.invalidate('convidado');
 
       return create;
+   }
+
+   async delete({ id }: IProps): Promise<void> {
+      const create = await this.convidadoRepo.delete(id);
+
+      await this.cache.invalidate('convidado');
    }
 }

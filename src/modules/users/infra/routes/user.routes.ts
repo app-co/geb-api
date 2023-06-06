@@ -40,6 +40,9 @@ user.get('/global-rank-ind', control.rankIndividual);
 
 //! ! PADRINHO
 user.post('/create-padrinho', control.createPadrinho);
+user.get('/padrinho/', control.listAllPadrinho);
+user.get('/padrinho/:id', control.listByPadrinho);
+user.delete('/padrinho/:id', control.deletePadrinho);
 
 // user.get('/find', Auth, control.findUnicUser);
 // user.put('/upToken', Auth, control.updateToken);

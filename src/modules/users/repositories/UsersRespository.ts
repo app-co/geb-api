@@ -278,8 +278,8 @@ export class UsersRespository implements IUsersRepository {
       return find;
    }
 
-   async findPadrinhoByUserId(user_id: string): Promise<Padrinho | null> {
-      const find = await prisma.padrinho.findFirst({
+   async findPadrinhoByUserId(user_id: string): Promise<Padrinho[]> {
+      const find = await prisma.padrinho.findMany({
          where: { user_id },
       });
 

@@ -2,6 +2,8 @@ import { B2bRepository } from '@modules/B2b/repositories/B2bRepository';
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
 import { ConvidadoPrisma } from '@modules/convidado/repositories/prisma';
+import { IDonateRepository } from '@modules/Donate/repositories/IRepository/IDonateRepository';
+import { DonatePrismaRepository } from '@modules/Donate/repositories/models/DonatePrismaRepository';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IndicationRepository } from '@modules/indication/infra/repositories/IndicationRepository';
 import { ILinksRepository } from '@modules/Links/repositories/IRepository/ILinksRepository';
@@ -74,3 +76,7 @@ container.registerSingleton<ISituationPrisma>(
 );
 
 container.registerSingleton<ILinksRepository>('Link', LinksPrismaRepository);
+container.registerSingleton<IDonateRepository>(
+   'donate',
+   DonatePrismaRepository,
+);

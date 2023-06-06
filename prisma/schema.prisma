@@ -96,12 +96,14 @@ model Like {
 }
 
 model Padrinho {
-   id               String @id @default(uuid())
+   id               String   @id @default(uuid())
    user_id          String
    apadrinhado_name String
    apadrinhado_id   String
-   qnt              Int    @default(0)
-   user             User?  @relation(references: [id], fields: [user_id])
+   qnt              Int      @default(0)
+   user             User?    @relation(references: [id], fields: [user_id])
+   created_at       DateTime @default(now())
+   updated_at       DateTime @default(now()) @updatedAt
 }
 
 model Links {
@@ -112,12 +114,13 @@ model Links {
 }
 
 model Presenca {
-   id        String   @id @default(uuid())
-   user_id   String
+   id         String   @id @default(uuid())
+   user_id    String
    // user                    User?                   @relation(references: [id], fields: [user_id])
-   presenca  Boolean  @default(false)
-   nome      String
-   createdAt DateTime @default(now())
+   presenca   Boolean  @default(false)
+   nome       String
+   createdAt  DateTime @default(now())
+   updated_at DateTime @default(now()) @updatedAt
 }
 
 model OrderPresenca {
@@ -167,6 +170,7 @@ model Transaction {
    prestador_name  String?
    valor           Int
    descricao       String
+   updated_at      DateTime @default(now()) @updatedAt
    created_at      DateTime @default(now())
 }
 
@@ -189,6 +193,7 @@ model B2b {
    assunto      String
    appointment  String?
    createdAt    DateTime @default(now())
+   updated_at   DateTime @default(now()) @updatedAt
    validate     Boolean  @default(false)
 }
 
@@ -202,6 +207,7 @@ model Indication {
    phone_number_client Int
    description         String
    createdAt           DateTime @default(now())
+   updated_at          DateTime @default(now()) @updatedAt
    validate            Boolean  @default(false)
 }
 
@@ -228,6 +234,15 @@ model Convidado {
    user           User     @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
    created_at     DateTime @default(now())
    updated_at     DateTime @default(now()) @updatedAt
+}
+
+model Donate {
+   id         String   @id @default(uuid())
+   fk_id_user String
+   approved   Boolean  @default(false)
+   itens      String
+   created_at DateTime @default(now())
+   updated_at DateTime @default(now()) @updatedAt
 }
 
 model midia {

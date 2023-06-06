@@ -8,5 +8,6 @@ export interface starPont {
 export interface IConvidadoPrisma {
    create(data: IConvidadoDto): Promise<Convidado>;
    listAll(): Promise<Convidado[]>;
-   update(id: string, approved: boolean): Promise<Convidado>;
+   delete(id: string): Promise<void>;
+   update(id: string): Promise<Convidado>;
 }

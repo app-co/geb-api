@@ -30,9 +30,18 @@ export class ConvidadoController {
 
    async update(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(UpdateConvidadoService);
-      const { id, approved } = req.body;
+      const { id } = req.params;
 
-      const list = await serv.exec(id, approved);
+      const list = await serv.exec({ id: String(id) });
+
+      return res.json(list);
+   }
+
+   async delete(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreateConvidadoService);
+      const { id } = req.params;
+
+      const list = await serv.delete({ id: String(id) });
 
       return res.json(list);
    }

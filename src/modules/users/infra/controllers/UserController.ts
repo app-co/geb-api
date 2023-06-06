@@ -250,6 +250,62 @@ export class UserController {
       return res.json(ex);
    }
 
+   async createPadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
+
+      const user_id = req.user.id;
+      const ex = await serv.execute({
+         user_id,
+         apadrinhado_name,
+         apadrinhado_id,
+         qnt,
+      });
+
+      return res.json(ex);
+   }
+
+   async createPadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
+
+      const user_id = req.user.id;
+      const ex = await serv.execute({
+         user_id,
+         apadrinhado_name,
+         apadrinhado_id,
+         qnt,
+      });
+
+      return res.json(ex);
+   }
+
+   async listAllPadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+
+      const ex = await serv.listAll();
+
+      return res.json(ex);
+   }
+
+   async listByPadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+
+      const { id } = req.user;
+      const ex = await serv.listByPadrinho({ id: String(id) });
+
+      return res.json(ex);
+   }
+
+   async deletePadrinho(req: Request, res: Response): Promise<Response> {
+      const serv = container.resolve(CreatePadrinhoService);
+
+      const { id } = req.params;
+      const ex = await serv.listByPadrinho({ id: String(id) });
+
+      return res.json(ex);
+   }
+
    async clearCash(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(clearCacheService);
 

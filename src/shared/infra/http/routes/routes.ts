@@ -1,6 +1,7 @@
 import { b2bRoute } from '@modules/B2b/infra/routes';
 import { ConsumoRoute } from '@modules/consumo/infra/routes/index.routes';
 import { routeGuest } from '@modules/convidado/infra/routes';
+import { DonateRoute } from '@modules/Donate/http/routes';
 import { IndicationRoute } from '@modules/indication/infra/routes';
 import { LinksRoute } from '@modules/Links/http/routes';
 import { postRoute } from '@modules/posts/http/routes/routes';
@@ -24,5 +25,6 @@ routes.use(RouteStar);
 routes.use(routeGuest);
 routes.use(situationRoute);
 routes.use(LinksRoute);
+routes.use(DonateRoute);
 
 export { routes };

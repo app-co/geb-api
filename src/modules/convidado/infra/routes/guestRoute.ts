@@ -9,6 +9,7 @@ const controler = new ConvidadoController();
 guest.use(Auth);
 guest.post('/create-guest', controler.create);
 guest.get('/', controler.listAll);
-guest.put('/up-guest', controler.update);
+guest.delete('/:id', controler.delete);
+guest.put('/up-guest/:id', controler.update);
 
 export { guest };
