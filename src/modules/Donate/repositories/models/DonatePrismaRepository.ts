@@ -4,9 +4,9 @@ import { Donate, Prisma } from '@prisma/client';
 import { prisma } from '../../../../utils/prisma';
 import { IDonateRepository } from '../IRepository/IDonateRepository';
 
-interface props {
+export interface IPropsDonate {
    fk_id_user: string;
-   itens: string[];
+   itens: [];
 }
 
 export class DonatePrismaRepository implements IDonateRepository {
@@ -25,7 +25,7 @@ export class DonatePrismaRepository implements IDonateRepository {
       await prisma.donate.delete({ where: { id } });
    }
 
-   public async create(data: props): Promise<Donate> {
+   public async create(data: IPropsDonate): Promise<Donate> {
       const create = await prisma.donate.create({ data });
 
       return create;

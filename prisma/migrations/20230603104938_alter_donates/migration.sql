@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Donate" ALTER COLUMN "itens" SET NOT NULL,
-ALTER COLUMN "itens" SET DATA TYPE TEXT;

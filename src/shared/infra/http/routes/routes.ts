@@ -6,6 +6,7 @@ import { IndicationRoute } from '@modules/indication/infra/routes';
 import { LinksRoute } from '@modules/Links/http/routes';
 import { postRoute } from '@modules/posts/http/routes/routes';
 import { PresensaRoute } from '@modules/presensa/infra/routes';
+import { relationship } from '@modules/relationship/infra/routes';
 import { situationRoute } from '@modules/situation/infra/routes';
 import { RouteStar } from '@modules/starts/infra/routes';
 import { TransactionRoute } from '@modules/transaction/infra/routes/routes.routes';
@@ -26,5 +27,6 @@ routes.use(routeGuest);
 routes.use(situationRoute);
 routes.use(LinksRoute);
 routes.use(DonateRoute);
+routes.use(relationship);
 
 export { routes };

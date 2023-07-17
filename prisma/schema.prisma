@@ -34,10 +34,11 @@ model User {
    // pontos                  Pontos[]
    Stars Stars[]
 
-   DadosFire  DadosFire?
-   Padrinho   Padrinho[]
-   Convidados Convidado[]
-   midia      midia[]
+   DadosFire    DadosFire?
+   Padrinho     Padrinho[]
+   Convidados   Convidado[]
+   midia        midia[]
+   RelationShip RelationShip[]
 }
 
 model Profile {
@@ -251,4 +252,30 @@ model midia {
    link       String
    fk_user_id String
    user       User   @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
+}
+
+enum RelationType {
+   B2B
+   CONSUMO_IN
+   CONSUMO_OUT
+   APADRINAHMENTO
+   PRESENCA
+   INDICATION
+   DONATE
+   INVIT
+}
+
+model RelationShip {
+   id           String  @id @default(uuid())
+   objto        Json
+   situation    Boolean @default(false)
+   ponts        Int
+   fk_user_id   String
+   prestador_id String?
+   client_id    String?
+
+   type       RelationType @default(CONSUMO_IN)
+   user       User         @relation(fields: [fk_user_id], references: [id])
+   created_at DateTime     @default(now())
+   updated_at DateTime     @updatedAt
 }

@@ -15,7 +15,7 @@ consumo.get('/find-all-order', Auth, control.findAllOrder);
 consumo.delete('/delete-order/:id', Auth, control.deleteOrder);
 
 // consumo.post('/cons', Auth, control.createConsumidor);
-// consumo.get('/listAll', Auth, control.listAll);
+consumo.get('/listAll', Auth, control.findAllOrder);
 // consumo.get('/listValorP', Auth, control.listValorP);
 // consumo.get('/listValorC', Auth, control.listValorC);
 

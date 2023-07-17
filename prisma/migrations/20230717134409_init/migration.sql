@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "RelationType" AS ENUM ('B2B', 'CONSUMO_IN', 'CONSUMO_OUT', 'APADRINAHMENTO', 'PRESENCA', 'INDICATION', 'DONATE', 'INVIT');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -79,6 +82,8 @@ CREATE TABLE "Padrinho" (
     "apadrinhado_name" TEXT NOT NULL,
     "apadrinhado_id" TEXT NOT NULL,
     "qnt" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Padrinho_pkey" PRIMARY KEY ("id")
 );
@@ -100,6 +105,7 @@ CREATE TABLE "Presenca" (
     "presenca" BOOLEAN NOT NULL DEFAULT false,
     "nome" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Presenca_pkey" PRIMARY KEY ("id")
 );
@@ -163,6 +169,7 @@ CREATE TABLE "Transaction" (
     "prestador_name" TEXT,
     "valor" INTEGER NOT NULL,
     "descricao" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
@@ -190,6 +197,7 @@ CREATE TABLE "B2b" (
     "assunto" TEXT NOT NULL,
     "appointment" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "validate" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "B2b_pkey" PRIMARY KEY ("id")
@@ -206,6 +214,7 @@ CREATE TABLE "Indication" (
     "phone_number_client" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "validate" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Indication_pkey" PRIMARY KEY ("id")
@@ -233,9 +242,49 @@ CREATE TABLE "Convidado" (
     "id" TEXT NOT NULL,
     "fk_user_id" TEXT NOT NULL,
     "name_convidado" TEXT NOT NULL,
+    "approved" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Convidado_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Donate" (
+    "id" TEXT NOT NULL,
+    "fk_id_user" TEXT NOT NULL,
+    "approved" BOOLEAN NOT NULL DEFAULT false,
+    "itens" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Donate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "midia" (
+    "id" TEXT NOT NULL,
+    "nome" TEXT NOT NULL,
+    "link" TEXT NOT NULL,
+    "fk_user_id" TEXT NOT NULL,
+
+    CONSTRAINT "midia_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "RelationShip" (
+    "id" TEXT NOT NULL,
+    "objto" JSONB NOT NULL,
+    "situation" BOOLEAN NOT NULL DEFAULT false,
+    "ponts" INTEGER NOT NULL,
+    "fk_user_id" TEXT NOT NULL,
+    "prestador_id" TEXT,
+    "client_id" TEXT,
+    "type" "RelationType" NOT NULL DEFAULT 'CONSUMO_IN',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "RelationShip_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -269,9 +318,6 @@ ALTER TABLE "Like" ADD CONSTRAINT "Like_fk_id_post_fkey" FOREIGN KEY ("fk_id_pos
 ALTER TABLE "Padrinho" ADD CONSTRAINT "Padrinho_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Links" ADD CONSTRAINT "Links_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "DadosFire" ADD CONSTRAINT "DadosFire_fk_id_user_fkey" FOREIGN KEY ("fk_id_user") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -279,3 +325,9 @@ ALTER TABLE "Stars" ADD CONSTRAINT "Stars_fk_id_user_fkey" FOREIGN KEY ("fk_id_u
 
 -- AddForeignKey
 ALTER TABLE "Convidado" ADD CONSTRAINT "Convidado_fk_user_id_fkey" FOREIGN KEY ("fk_user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "midia" ADD CONSTRAINT "midia_fk_user_id_fkey" FOREIGN KEY ("fk_user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RelationShip" ADD CONSTRAINT "RelationShip_fk_user_id_fkey" FOREIGN KEY ("fk_user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
