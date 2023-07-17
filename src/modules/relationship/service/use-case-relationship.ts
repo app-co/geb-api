@@ -131,7 +131,7 @@ export class UseCasesRelationship implements IRepoRelationship {
             situation: h.validate,
             type: RelationType.B2B,
             ponts: 20,
-            prestador: h.recevid_id,
+            prestador_id: h.recevid_id,
             client_id: h.send_id,
             fk_user_id: h.send_id,
          };
@@ -140,30 +140,30 @@ export class UseCasesRelationship implements IRepoRelationship {
          console.log(dt);
       });
 
-      ind.forEach(async h => {
-         const objto = {
-            quemIndicaou_name: h.quemIndicou_name,
-            client_name: h.client_name,
-            phone_number_client: h.phone_number_client,
-            description: h.description,
-         };
+      // ind.forEach(async h => {
+      //    const objto = {
+      //       quemIndicaou_name: h.quemIndicou_name,
+      //       client_name: h.client_name,
+      //       phone_number_client: h.phone_number_client,
+      //       description: h.description,
+      //    };
 
-         const dt = {
-            objto,
-            created_at: new Date(h.createdAt),
-            updated_at: new Date(h.updated_at),
-            situation: h.validate,
-            type: RelationType.INDICATION,
-            ponts: 15,
-            fk_user_id: h.quemIndicou_id,
-            client_id: h.quemIndicou_id,
-            prestador_id: h.indicado_id,
-         };
+      //    const dt = {
+      //       objto,
+      //       created_at: new Date(h.createdAt),
+      //       updated_at: new Date(h.updated_at),
+      //       situation: h.validate,
+      //       type: RelationType.INDICATION,
+      //       ponts: 15,
+      //       fk_user_id: h.quemIndicou_id,
+      //       client_id: h.quemIndicou_id,
+      //       prestador_id: h.indicado_id,
+      //    };
 
-         console.log(dt);
+      //    console.log(dt);
 
-         await this.repoRelation.create(dt);
-      });
+      //    await this.repoRelation.create(dt);
+      // });
 
       // donate.forEach(async h => {
       //    const objto = {
