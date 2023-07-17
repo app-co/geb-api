@@ -8,8 +8,8 @@ import { ITransactionRepository } from '@modules/transaction/repositories/ITrans
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
 import { RelationShip, RelationType } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
-import { pontos } from '@utils/index';
 
+import { pontos } from '../../../utils/pontos';
 import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 

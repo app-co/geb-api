@@ -1,6 +1,6 @@
 import { RelationShip } from '@prisma/client';
-import { prisma } from '@utils/prisma';
 
+import { prisma } from '../../../utils/prisma';
 import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from './repo-relationship';
 
