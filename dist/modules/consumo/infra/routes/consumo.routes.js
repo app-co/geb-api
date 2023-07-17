@@ -19,6 +19,6 @@ consumo.get('/find-order-prestador', _Auth.Auth, control.findOrderPrestador);
 consumo.get('/find-order-consumidor', _Auth.Auth, control.findOrderConsumidor);
 consumo.get('/find-all-order', _Auth.Auth, control.findAllOrder);
 consumo.delete('/delete-order/:id', _Auth.Auth, control.deleteOrder); // consumo.post('/cons', Auth, control.createConsumidor);
-// consumo.get('/listAll', Auth, control.listAll);
-// consumo.get('/listValorP', Auth, control.listValorP);
+
+consumo.get('/listAll', _Auth.Auth, control.findAllOrder); // consumo.get('/listValorP', Auth, control.listValorP);
 // consumo.get('/listValorC', Auth, control.listValorC);
