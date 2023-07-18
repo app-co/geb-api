@@ -53,15 +53,7 @@ export class IndicifualPontsService {
       const relations = await this.repoRelation.listAll();
       const users = await this.userRepository.listAllUser();
 
-      users.forEach(user => {
-         const dt = {
-            type: '',
-            pontos: 0,
-         };
-         relations.forEach(client => {
-            console.log(client);
-         });
-      });
+      const consumo = users.map(user => {});
 
       return 'dados';
    }
