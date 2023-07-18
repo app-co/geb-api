@@ -3,6 +3,7 @@ import { clearCacheService } from '@modules/users/service/clearCacheService';
 import { CreateLink } from '@modules/users/service/createLink';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
 import { DeleteUserService } from '@modules/users/service/DeleteUserService';
+import { makeUser } from '@modules/users/service/factories/make-user';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
 import { CreatePadrinhoService } from '@modules/users/service/Padrinho/createPadrinhoService';
@@ -225,10 +226,10 @@ export class UserController {
    }
 
    async rankIndividual(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(IndicifualPontsService);
+      const serv = makeUser();
 
       const user_id = req.user.id;
-      const ex = await serv.execute(user_id);
+      const ex = await serv.selfPonts.execute(user_id);
 
       return res.json(ex);
    }
