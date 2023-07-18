@@ -7,7 +7,7 @@ export interface IRepoRelationship {
    delete(id: string): Promise<void>;
    update(data: IRelashionshipUpdate): Promise<RelationShip>;
    listAll(): Promise<RelationShip[]>;
-   listByMembro(membro: string): Promise<RelationShip[]>;
-   listByUserId(fk_user_id: string): Promise<RelationShip[]>;
+   listByClient(client_id: string): Promise<RelationShip[]>;
+   listByPrestador(prestador_id: string): Promise<RelationShip[]>;
    findById(id: string): Promise<RelationShip | null>;
 }

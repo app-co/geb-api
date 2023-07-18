@@ -9,7 +9,6 @@ import { IUsersRepository } from '@modules/users/repositories/IUsersRespository'
 import { RelationShip, RelationType } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
 
-import { pontos } from '../../../utils/pontos';
 import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 
@@ -28,13 +27,13 @@ export class UseCasesRelationship implements IRepoRelationship {
    ) {}
 
    async create(data: IRelashionship): Promise<RelationShip> {
-      const findMembro = await this.repoUser.findById(data.membro_id);
+      const findMembro = await this.repoUser.findById(data.prestador_id);
 
       if (!findMembro) {
-         throw new Err('Membro não encontrado');
+         throw new Err('Prestador não encontrado');
       }
 
-      if (data.fk_user_id === data.membro_id) {
+      if (data.fk_user_id === data.prestador_id) {
          throw new Err('Você não pode fazer negócios com você mesmo');
       }
 
@@ -49,17 +48,17 @@ export class UseCasesRelationship implements IRepoRelationship {
 
    async update(data: IRelashionshipUpdate): Promise<RelationShip> {
       const findRelation = await this.repoRelation.findById(data.id);
-      const membro = await this.repoUser.findById(data.membro_id);
+      const prestador = await this.repoUser.findById(data.prestador_id);
 
-      if (!membro) {
-         throw new Err('Membro não encontrado');
+      if (!prestador) {
+         throw new Err('Prestador não encontrado');
       }
 
       if (!findRelation) {
          throw new Err('Relacionament não encontrado');
       }
 
-      if (findRelation.membro_id !== data.membro_id) {
+      if (findRelation.prestador_id !== data.prestador_id) {
          throw new Err('Você não pode validar esse relacionamento');
       }
 
@@ -83,21 +82,14 @@ export class UseCasesRelationship implements IRepoRelationship {
       return list;
    }
 
-   async listByMembro(membro: string): Promise<RelationShip[]> {
-      const list = await this.repoRelation.listByMembro(membro);
+   async listByPrestador(prestador_id: string): Promise<RelationShip[]> {
+      const list = await this.repoRelation.listByPrestador(prestador_id);
 
-      const consumoIn = list.map(h => {
-         return {
-            ...h,
-            type: 'CONSUMO_IN',
-         };
-      });
-
-      return consumoIn;
+      return list;
    }
 
-   async listByUserId(fk_user_id: string): Promise<RelationShip[]> {
-      const list = await this.repoRelation.listByUserId(fk_user_id);
+   async listByClient(client_id: string): Promise<RelationShip[]> {
+      const list = await this.repoRelation.listByClient(client_id);
 
       return list;
    }
@@ -199,7 +191,7 @@ export class UseCasesRelationship implements IRepoRelationship {
       //       type: RelationType.CONSUMO_OUT,
       //       ponts: pontos.consumo,
       //       fk_user_id: h.consumidor_id,
-      //       membro_id: h.prestador_id,
+      //       prestador_id: h.prestador_id,
       //    };
 
       //    console.log(dt);

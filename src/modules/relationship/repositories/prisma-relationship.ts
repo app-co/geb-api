@@ -29,16 +29,16 @@ export class PrismaRelationship implements IRepoRelationship {
       return lis;
    }
 
-   async listByMembro(membro: string): Promise<RelationShip[]> {
+   async listByPrestador(prestador_id: string): Promise<RelationShip[]> {
       const fin = await prisma.relationShip.findMany({
-         where: { membro_id: membro },
+         where: { prestador_id },
       });
       return fin;
    }
 
-   async listByUserId(fk_user_id: string): Promise<RelationShip[]> {
+   async listByClient(client_id: string): Promise<RelationShip[]> {
       const fin = await prisma.relationShip.findMany({
-         where: { fk_user_id },
+         where: { client_id },
       });
       return fin;
    }

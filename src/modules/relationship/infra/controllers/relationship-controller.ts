@@ -6,7 +6,7 @@ export class RelationshipController {
    async create(req: Request, res: Response): Promise<Response> {
       const scheme = z.object({
          situation: z.boolean().default(false),
-         membro_id: z.string(),
+         prestador_id: z.string(),
          ponts: z.number(),
          type: z
             .enum([
@@ -46,19 +46,7 @@ export class RelationshipController {
    async update(req: Request, res: Response): Promise<Response> {
       const scheme = z.object({
          id: z.string(),
-         situation: z.boolean(),
-         ponts: z.number(),
-         type: z
-            .enum([
-               'B2B',
-               'CONSUMO_IN',
-               'CONSUMO_OUT',
-               'APADRINAHMENTO',
-               'INDICATION',
-               'DONATE',
-               'INVIT',
-            ])
-            .default('CONSUMO_OUT'),
+         situation: z.boolean().default(true),
       });
 
       const data = scheme.parse(req.body);
@@ -66,7 +54,7 @@ export class RelationshipController {
 
       const dt = {
          ...data,
-         membro_id: id,
+         prestador_id: id,
       };
 
       try {
@@ -92,12 +80,12 @@ export class RelationshipController {
       }
    }
 
-   async listByUserId(req: Request, res: Response): Promise<Response> {
+   async listByClient(req: Request, res: Response): Promise<Response> {
       try {
          const make = makeRelationship();
          const { id } = req.user;
 
-         const create = await make.listByUserId(id);
+         const create = await make.listByClient(id);
 
          return res.json(create);
       } catch (error) {
@@ -105,16 +93,12 @@ export class RelationshipController {
       }
    }
 
-   async listByMembro(req: Request, res: Response): Promise<Response> {
-      const scheme = z.object({
-         membro_id: z.string(),
-      });
-
-      const { membro_id } = scheme.parse(req.params);
+   async listByPrestador(req: Request, res: Response): Promise<Response> {
+      const { id } = req.user;
       try {
          const make = makeRelationship();
 
-         const create = await make.listByMembro(membro_id);
+         const create = await make.listByPrestador(id);
 
          return res.json(create);
       } catch (error) {

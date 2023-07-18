@@ -7,12 +7,14 @@ const relationship = Router();
 const controler = new RelationshipController();
 
 relationship.use(Auth);
-relationship.put('/relation-update', controler.update);
-relationship.post('/relation-create', controler.create);
-relationship.delete('/relation-delete', controler.delete);
-relationship.get('/relation', controler.listAll);
-relationship.get('/relation/:membro_id', controler.listByMembro);
-relationship.get('/relation/selfe', controler.listByUserId);
 relationship.post('/relation/data', controler.data);
+relationship.post('/relation-create', controler.create);
+
+relationship.put('/relation-update', controler.update);
+relationship.delete('/relation-delete/:id', controler.delete);
+
+relationship.get('/relation', controler.listAll);
+relationship.get('/relation/prestador', controler.listByPrestador);
+relationship.get('/relation/client', controler.listByClient);
 
 export { relationship };
