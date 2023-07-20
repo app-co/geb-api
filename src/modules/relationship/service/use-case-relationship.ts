@@ -130,6 +130,7 @@ export class UseCasesRelationship implements IRepoRelationship {
             fk_user_id: h.send_id,
          };
          await this.repoRelation.create(dt);
+         console.log(dt);
       });
 
       // ind.forEach(async h => {
