@@ -129,7 +129,7 @@ export class UseCasesRelationship implements IRepoRelationship {
             prestador_id: h.recevid_id,
             fk_user_id: h.send_id,
          };
-         await this.repoRelation.create(dt);
+         // await this.repoRelation.create(dt);
          console.log(dt);
       });
 
