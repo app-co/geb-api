@@ -27,14 +27,17 @@ export class UseCasesRelationship implements IRepoRelationship {
    ) {}
 
    async create(data: IRelashionship): Promise<RelationShip> {
-      const findMembro = await this.repoUser.findById(data.prestador_id);
-
-      if (!findMembro) {
-         throw new Err('Prestador não encontrado');
+      if (data.prestador_id) {
+         const prestador = await this.repoUser.findById(data.prestador_id);
+         if (!prestador) {
+            throw new Err('Prestador não encontrado');
+         }
       }
 
-      if (data.fk_user_id === data.prestador_id) {
-         throw new Err('Você não pode fazer negócios com você mesmo');
+      if (!data.client_id && data.type === 'CONSUMO_OUT') {
+         if (data.fk_user_id === data.prestador_id) {
+            throw new Err('Você não pode fazer negócios com você mesmo');
+         }
       }
 
       const create = await this.repoRelation.create(data);
@@ -124,12 +127,9 @@ export class UseCasesRelationship implements IRepoRelationship {
             type: RelationType.B2B,
             ponts: 20,
             prestador_id: h.recevid_id,
-            client_id: h.send_id,
             fk_user_id: h.send_id,
          };
-         console.log(dt);
          await this.repoRelation.create(dt);
-         console.log(dt);
       });
 
       // ind.forEach(async h => {

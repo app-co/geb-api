@@ -6,17 +6,19 @@ export class RelationshipController {
    async create(req: Request, res: Response): Promise<Response> {
       const scheme = z.object({
          situation: z.boolean().default(false),
-         prestador_id: z.string(),
+         prestador_id: z.string().optional(),
+         client_id: z.string().optional(),
          ponts: z.number(),
          type: z
             .enum([
                'B2B',
                'CONSUMO_IN',
                'CONSUMO_OUT',
-               'APADRINAHMENTO',
+               'PADRINHO',
                'INDICATION',
                'DONATE',
                'INVIT',
+               'PRESENCA',
             ])
             .default('CONSUMO_OUT'),
       });

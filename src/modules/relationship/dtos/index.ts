@@ -4,7 +4,7 @@ type T =
    | 'B2B'
    | 'CONSUMO_IN'
    | 'CONSUMO_OUT'
-   | 'APADRINAHMENTO'
+   | 'PADRINHO'
    | 'INDICATION'
    | 'DONATE'
    | 'INVIT'
