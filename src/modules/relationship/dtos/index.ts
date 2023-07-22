@@ -26,7 +26,7 @@ export interface IRelashionshipUpdate {
    objto?: object;
    fk_user_id?: string;
    situation?: boolean;
-   prestador_id: string;
+   prestador_id?: string;
    client_id?: string;
    ponts?: number;
    type?: T;

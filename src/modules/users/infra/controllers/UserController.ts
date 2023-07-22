@@ -43,7 +43,9 @@ export class UserController {
    async updateMembro(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateMembroService);
 
-      const { membro, nome, id, senha, token, adm } = req.body;
+      const { membro, nome, senha, token, adm } = req.body;
+
+      const { id } = req.user;
 
       const sess = await service.execute({
          membro,
@@ -218,9 +220,9 @@ export class UserController {
    //! pntos
 
    async rank(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(GlobalPontsService);
+      const serv = makeUser();
 
-      const ex = await serv.execute();
+      const ex = await serv.globalPonts.execute();
 
       return res.json(ex);
    }

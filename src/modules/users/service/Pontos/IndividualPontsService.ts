@@ -76,7 +76,7 @@ export class IndicifualPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons!.length * ponts.consumo,
+               pontos: cons!.length * 10,
                valor,
             };
             return {
@@ -204,7 +204,7 @@ export class IndicifualPontsService {
          .map((h, i) => {
             return {
                ...h,
-               ranck: i + 1,
+               rank: i + 1,
             };
          });
 

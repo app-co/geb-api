@@ -8,7 +8,6 @@ export class RelationshipController {
          situation: z.boolean().default(false),
          prestador_id: z.string().optional(),
          client_id: z.string().optional(),
-         ponts: z.number(),
          type: z
             .enum([
                'B2B',
@@ -52,11 +51,9 @@ export class RelationshipController {
       });
 
       const data = scheme.parse(req.body);
-      const { id } = req.user;
 
       const dt = {
          ...data,
-         prestador_id: id,
       };
 
       try {
@@ -66,7 +63,8 @@ export class RelationshipController {
 
          return res.json(create);
       } catch (error) {
-         return res.send(error);
+         console.log(error);
+         return res.send(error).status(401);
       }
    }
 
@@ -121,6 +119,7 @@ export class RelationshipController {
 
          return res.json(create);
       } catch (error) {
+         console.log(error);
          return res.send(error);
       }
    }

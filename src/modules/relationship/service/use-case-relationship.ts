@@ -9,6 +9,7 @@ import { IUsersRepository } from '@modules/users/repositories/IUsersRespository'
 import { RelationShip, RelationType } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
 
+import { prisma } from '../../../lib';
 import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 
@@ -34,13 +35,78 @@ export class UseCasesRelationship implements IRepoRelationship {
          }
       }
 
-      if (!data.client_id && data.type === 'CONSUMO_OUT') {
+      if (data.client_id === data.prestador_id && data.type === 'CONSUMO_OUT') {
          if (data.fk_user_id === data.prestador_id) {
             throw new Err('Você não pode fazer negócios com você mesmo');
          }
       }
 
-      const create = await this.repoRelation.create(data);
+      const ponts = {
+         B2B: 20,
+         CONSUMO_IN: 10,
+         CONSUMO_OUT: 10,
+         PADRINHO: 35,
+         PRESENCA: 10,
+         INDICATION: 15,
+         DONATE: 50,
+         INVIT: 10,
+      };
+
+      const dt = {
+         ...data,
+         ponts: ponts[data.type],
+      };
+
+      let create = {} as RelationShip;
+
+      if (data.type === 'PADRINHO') {
+         if (data.fk_user_id === data.objto.apadrinhado_id) {
+            throw new Err('Você não pode se alto apadrinhar', 401);
+         }
+         const findSituation = await prisma.situationUser.findUnique({
+            where: { fk_id_user: data.objto!.apadrinhado_id },
+         });
+         const findRelation = await prisma.relationShip.findFirst({
+            where: {
+               objto: {
+                  equals: data.objto,
+               },
+            },
+         });
+
+         if (!findSituation) {
+            throw new Err('Usuário não encontrado', 401);
+         }
+
+         if (findRelation) {
+            await this.repoUser.updateSituation({
+               id: findSituation.id,
+               firstLogin: findSituation.firstLogin,
+               apadrinhado: !findSituation.apadrinhado,
+               inativo: findSituation.inativo,
+            });
+
+            const up = {
+               ...dt,
+               id: findRelation.id,
+               situation: !findRelation.situation,
+            };
+
+            create = await this.repoRelation.update(up);
+            console.log('up relation');
+         } else {
+            await this.repoUser.updateSituation({
+               id: findSituation.id,
+               firstLogin: findSituation.firstLogin,
+               apadrinhado: !findSituation.apadrinhado,
+               inativo: findSituation.inativo,
+            });
+
+            create = await this.repoRelation.create(dt);
+         }
+      } else {
+         create = await this.repoRelation.create(dt);
+      }
 
       return create;
    }
@@ -51,30 +117,47 @@ export class UseCasesRelationship implements IRepoRelationship {
 
    async update(data: IRelashionshipUpdate): Promise<RelationShip> {
       const findRelation = await this.repoRelation.findById(data.id);
-      const prestador = await this.repoUser.findById(data.prestador_id);
 
-      if (!prestador) {
-         throw new Err('Prestador não encontrado');
-      }
+      const type =
+         'B2B' ||
+         'CONSUMO_IN' ||
+         'CONSUMO_OUT' ||
+         'PADRINHO' ||
+         'PRESENCA' ||
+         'INDICATION' ||
+         'DONATE' ||
+         'INVIT';
 
       if (!findRelation) {
          throw new Err('Relacionament não encontrado');
       }
 
-      if (findRelation.prestador_id !== data.prestador_id) {
-         throw new Err('Você não pode validar esse relacionamento');
+      if (findRelation.situation) {
+         throw new Err('Relacionamento já validado', 401);
       }
 
-      if (findRelation.situation) {
-         throw new Err('Relacionamento já validado');
+      if (findRelation.fk_user_id === data.prestador_id) {
+         throw new Err('Você não pode validar esse relacionamento', 401);
       }
 
       const pt = findRelation.ponts;
 
+      const ponts = {
+         B2B: 20,
+         CONSUMO_IN: 10,
+         CONSUMO_OUT: 10,
+         PADRINHO: 35,
+         PRESENCA: 10,
+         INDICATION: 15,
+         DONATE: 50,
+         INVIT: 10,
+      };
+
       const dt = {
          ...data,
-         ponts: pt + data.ponts,
+         ponts: pt + ponts[findRelation.type],
       };
+
       const up = await this.repoRelation.update(dt);
 
       return up;

@@ -4,6 +4,7 @@
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
 import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
+import { IRepoRelationship } from '@modules/relationship/repositories/repo-relationship';
 import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
 import {
    B2b,
@@ -44,67 +45,29 @@ interface PropsTotalPontos {
 @injectable()
 export class GlobalPontsService {
    constructor(
-      @inject('PrismaUser')
       private userRepository: IUsersRepository,
-
-      @inject('PrismaTransaction')
-      private repoTransaction: ITransactionRepository,
-
-      @inject('Presenca')
-      private presencaRepository: IPresencaRespository,
-
-      @inject('PrismaIndication')
-      private indRepo: IIndicationRepository,
-
-      @inject('PrismaB2b')
-      private repoB2b: IB2bRepository,
-
-      @inject('Cache')
-      private cache: ICacheProvider,
+      private repoRelation: IRepoRelationship,
    ) {}
 
    async execute(): Promise<any> {
-      let ListAllusers = await this.cache.recover<User[]>('users');
-      let transaction = await this.cache.recover<Transaction[]>('transaction');
-      let listAllPresenca = await this.cache.recover<Presenca[]>('presenca');
-      let indi = await this.cache.recover<Indication[]>('indication');
-      let b2b = await this.cache.recover<B2b[]>('b2b');
-      let allPadrinho = await this.cache.recover<Padrinho[]>('padrinho');
+      const relation = await this.repoRelation.listAll();
+      const users = await this.userRepository.listAllUser();
 
-      if (!ListAllusers) {
-         ListAllusers = await this.userRepository.listAllUser();
-         await this.cache.save('users', ListAllusers);
-      }
+      const validRelation = relation.filter(h => h.situation === true);
 
-      if (!transaction) {
-         transaction = await this.repoTransaction.listAllTransaction();
-         await this.cache.save('transaction', transaction);
-      }
-
-      if (!listAllPresenca) {
-         listAllPresenca = await this.presencaRepository.listAllPresenca();
-         await this.cache.save('presenca', listAllPresenca);
-      }
-
-      if (!indi) {
-         indi = await this.indRepo.listAll();
-         await this.cache.save('indication', indi);
-      }
-
-      if (!b2b) {
-         b2b = await this.repoB2b.listAllB2b();
-         await this.cache.save('b2b', b2b);
-      }
-
-      if (!allPadrinho) {
-         allPadrinho = await this.userRepository.listAllPadrinho();
-
-         await this.cache.save('padrinho', allPadrinho);
-      }
-
-      const Concumo = ListAllusers!
+      const Concumo = users
          .map((user, index) => {
-            const cons = transaction!.filter(h => h.consumidor_id === user.id);
+            const cons = validRelation
+               .filter(h => h.client_id === user.id && h.type === 'CONSUMO_OUT')
+               .map(h => {
+                  const { value } = h.objto;
+
+                  return {
+                     ...h,
+                     valor: value,
+                  };
+               });
+
             const valor =
                cons.reduce((ac, i) => {
                   return ac + Number(i.valor);
@@ -113,7 +76,7 @@ export class GlobalPontsService {
             const consumo = {
                id: user.id,
                nome: user.nome,
-               pontos: cons!.length * ponts.consumo,
+               pontos: cons!.length * 10,
                valor,
             };
             return {
@@ -136,9 +99,20 @@ export class GlobalPontsService {
             };
          });
 
-      const Vendas = ListAllusers!
+      const Vendas = users
          .map((user, index) => {
-            const cons = transaction!.filter(h => h.prestador_id === user.id);
+            const cons = validRelation
+               .filter(
+                  h => h.prestador_id === user.id && h.type === 'CONSUMO_OUT',
+               )
+               .map(h => {
+                  const { value } = h.objto;
+
+                  return {
+                     ...h,
+                     valor: value,
+                  };
+               });
 
             const valor =
                cons.reduce((ac, i) => {
@@ -171,10 +145,10 @@ export class GlobalPontsService {
             };
          });
 
-      const Pres = ListAllusers!
+      const Pres = users
          .map(user => {
-            const userPresenca = listAllPresenca!.filter(
-               h => h.user_id === user.id,
+            const userPresenca = validRelation.filter(
+               h => h.fk_user_id === user.id && h.type === 'PRESENCA',
             );
 
             const qnt = userPresenca.length;
@@ -202,10 +176,10 @@ export class GlobalPontsService {
             };
          });
 
-      const Ind = ListAllusers!
+      const Ind = users
          .map(user => {
-            const fil = indi!.filter(
-               h => h.quemIndicou_id === user.id && h.validate === true,
+            const fil = validRelation.filter(
+               h => h.fk_user_id === user.id && h.type === 'INDICATION',
             );
 
             const pt = fil.length;
@@ -230,14 +204,14 @@ export class GlobalPontsService {
          .map((h, i) => {
             return {
                ...h,
-               ranck: i + 1,
+               rank: i + 1,
             };
          });
 
-      const B2 = ListAllusers!
+      const B2 = users
          .map(user => {
-            const cons = b2b!.filter(
-               h => h.send_id === user.id && h.validate === true,
+            const cons = validRelation.filter(
+               h => h.fk_user_id === user.id && h.type === 'B2B',
             );
 
             const send = {
@@ -265,12 +239,11 @@ export class GlobalPontsService {
             };
          });
 
-      const padrinho = ListAllusers!
+      const padrinho = users
          .map(user => {
-            let allP = [];
-            if (allPadrinho) {
-               allP = allPadrinho.filter(h => h.user_id === user.id);
-            }
+            const allP = validRelation.filter(
+               h => h.fk_user_id === user.id && h.type === 'PADRINHO',
+            );
 
             const pt = allP.length;
 
@@ -299,9 +272,77 @@ export class GlobalPontsService {
             };
          });
 
+      const convidado = users
+         .map(user => {
+            const allP = validRelation.filter(
+               h => h.fk_user_id === user.id && h.type === 'INVIT',
+            );
+
+            const pt = allP.length * 10;
+
+            const send = {
+               id: user.id,
+               nome: user.nome,
+               pontos: pt,
+            };
+            return {
+               send,
+            };
+         })
+         .sort((a, b) => {
+            if (a.send.nome > b.send.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.send.pontos - a.send.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h.send,
+               rank: i + 1,
+            };
+         });
+
+      const donates = users
+         .map(user => {
+            const allP = validRelation.filter(h => {
+               if (h.fk_user_id === user.id && h.type === 'DONATE') {
+                  return h;
+               }
+            });
+
+            const pt = allP.length * 50;
+
+            const send = {
+               id: user.id,
+               nome: user.nome,
+               pontos: pt,
+            };
+            return {
+               send,
+            };
+         })
+         .sort((a, b) => {
+            if (a.send.nome > b.send.nome) {
+               return -0;
+            }
+            return -1;
+         })
+         .sort((a, b) => {
+            return b.send.pontos - a.send.pontos;
+         })
+         .map((h, i) => {
+            return {
+               ...h.send,
+               rank: i + 1,
+            };
+         });
+
       const Total: PropsTotalPontos[] = [];
 
-      ListAllusers.forEach(user => {
+      users.forEach(user => {
          let pt = {
             nome: '',
             totalPontos: 0,
@@ -361,6 +402,24 @@ export class GlobalPontsService {
             }
          });
 
+         convidado.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
+         donates.forEach(c => {
+            if (c.id === user.id) {
+               pt = {
+                  nome: c.nome,
+                  totalPontos: pt.totalPontos + c.pontos,
+               };
+            }
+         });
+
          Total.push(pt);
       });
 
@@ -379,6 +438,8 @@ export class GlobalPontsService {
          indication: Ind,
          b2b: B2,
          padrinho,
+         convidado,
+         donates,
       };
 
       return relatori;

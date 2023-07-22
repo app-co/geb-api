@@ -24,13 +24,7 @@ export class ListAllUser {
    async execute(): Promise<User[]> {
       let users = await this.cache.recover<User[]>('users');
 
-      if (!users) {
-         users = await this.userRepository.listAllUser();
-
-         await this.cache.save(`users`, users);
-
-         console.log('banco list all users');
-      }
+      users = await this.userRepository.listAllUser();
 
       return users;
    }

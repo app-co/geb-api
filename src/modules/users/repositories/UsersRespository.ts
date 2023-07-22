@@ -67,11 +67,11 @@ export class UsersRespository implements IUsersRepository {
       const us = prisma.user.update({
          where: { id: data.id },
          data: {
-            nome: data.nome,
-            membro: data.membro,
-            senha: data.senha,
-            adm: data.adm,
-            token: data.token,
+            nome: data?.nome,
+            membro: data?.membro,
+            senha: data?.senha,
+            adm: data?.adm,
+            token: data?.token,
          },
       });
 
