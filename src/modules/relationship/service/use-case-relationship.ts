@@ -13,6 +13,17 @@ import { prisma } from '../../../lib';
 import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 
+const ponts = {
+   B2B: 20,
+   CONSUMO_IN: 10,
+   CONSUMO_OUT: 10,
+   PADRINHO: 35,
+   PRESENCA: 10,
+   INDICATION: 15,
+   DONATE: 50,
+   INVIT: 10,
+};
+
 export class UseCasesRelationship implements IRepoRelationship {
    constructor(
       private repoRelation: IRepoRelationship,
@@ -40,17 +51,6 @@ export class UseCasesRelationship implements IRepoRelationship {
             throw new Err('Você não pode fazer negócios com você mesmo');
          }
       }
-
-      const ponts = {
-         B2B: 20,
-         CONSUMO_IN: 10,
-         CONSUMO_OUT: 10,
-         PADRINHO: 35,
-         PRESENCA: 10,
-         INDICATION: 15,
-         DONATE: 50,
-         INVIT: 10,
-      };
 
       const dt = {
          ...data,
@@ -196,33 +196,10 @@ export class UseCasesRelationship implements IRepoRelationship {
       const presencaO = await this.repoPresenca.listAllOrder();
       const presenca = await this.repoPresenca.listAllPresenca();
 
-      b2b.forEach(async h => {
-         const objto = {
-            description: h.assunto,
-            send_name: h.send_name,
-         };
-
-         const dt = {
-            objto,
-            created_at: new Date(h.createdAt),
-            updated_at: new Date(h.updated_at),
-            situation: h.validate,
-            type: RelationType.B2B,
-            ponts: 20,
-            prestador_id: h.recevid_id,
-            fk_user_id: h.send_id,
-         };
-         await this.repoRelation.create(dt).then(h => {
-            console.log(dt);
-         });
-      });
-
-      // ind.forEach(async h => {
+      // b2b.forEach(async h => {
       //    const objto = {
-      //       quemIndicaou_name: h.quemIndicou_name,
-      //       client_name: h.client_name,
-      //       phone_number_client: h.phone_number_client,
-      //       description: h.description,
+      //       description: h.assunto,
+      //       send_name: h.send_name,
       //    };
 
       //    const dt = {
@@ -230,17 +207,40 @@ export class UseCasesRelationship implements IRepoRelationship {
       //       created_at: new Date(h.createdAt),
       //       updated_at: new Date(h.updated_at),
       //       situation: h.validate,
-      //       type: RelationType.INDICATION,
-      //       ponts: 15,
-      //       fk_user_id: h.quemIndicou_id,
-      //       client_id: h.quemIndicou_id,
-      //       prestador_id: h.indicado_id,
+      //       type: RelationType.B2B,
+      //       ponts: 20,
+      //       prestador_id: h.recevid_id,
+      //       fk_user_id: h.send_id,
       //    };
-
-      //    console.log(dt);
-
-      //    await this.repoRelation.create(dt);
+      //    await this.repoRelation.create(dt).then(h => {
+      //       console.log(dt);
+      //    });
       // });
+
+      ind.forEach(async h => {
+         const objto = {
+            quemIndicaou_name: h.quemIndicou_name,
+            client_name: h.client_name,
+            phone_number_client: h.phone_number_client,
+            description: h.description,
+         };
+
+         const dt = {
+            objto,
+            created_at: new Date(h.createdAt),
+            updated_at: new Date(h.updated_at),
+            situation: h.validate,
+            type: RelationType.INDICATION,
+            ponts: ponts[RelationType.INDICATION],
+            fk_user_id: h.quemIndicou_id,
+            client_id: h.quemIndicou_id,
+            prestador_id: h.indicado_id,
+         };
+
+         await this.repoRelation.create(dt).then(() => {
+            console.log(dt);
+         });
+      });
 
       // donate.forEach(async h => {
       //    const objto = {
