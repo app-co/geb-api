@@ -5,6 +5,22 @@ import { IRelashionship, IRelashionshipUpdate } from '../dtos';
 import { IRepoRelationship } from './repo-relationship';
 
 export class PrismaRelationship implements IRepoRelationship {
+   async listValidated(): Promise<RelationShip[]> {
+      const list = await prisma.relationShip.findMany({
+         where: { situation: true },
+      });
+
+      return list;
+   }
+
+   async listPending(): Promise<RelationShip[]> {
+      const list = await prisma.relationShip.findMany({
+         where: { situation: false },
+      });
+
+      return list;
+   }
+
    async create(data: IRelashionship): Promise<RelationShip> {
       const create = await prisma.relationShip.create({ data });
 

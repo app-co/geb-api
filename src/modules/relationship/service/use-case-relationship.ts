@@ -10,7 +10,11 @@ import { RelationShip, RelationType } from '@prisma/client';
 import { Err } from '@shared/errors/AppError';
 
 import { prisma } from '../../../lib';
-import { IRelashionship, IRelashionshipUpdate } from '../dtos';
+import {
+   IRelashionship,
+   IRelashionshipConsumo,
+   IRelashionshipUpdate,
+} from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 
 const ponts = {
@@ -24,7 +28,20 @@ const ponts = {
    INVIT: 10,
 };
 
-export class UseCasesRelationship implements IRepoRelationship {
+interface IResponse {
+   consumo: IRelashionshipConsumo[];
+   venda: IRelashionshipConsumo[];
+   b2b: IRelashionship[];
+   donate: IRelashionship[];
+   indication: IRelashionship[];
+   padrinho: IRelashionship[];
+   presenca: IRelashionship[];
+   totalConsumo: number;
+   totalVenda: number;
+   invit: IRelashionship[];
+}
+
+export class UseCasesRelationship {
    constructor(
       private repoRelation: IRepoRelationship,
 
@@ -37,6 +54,124 @@ export class UseCasesRelationship implements IRepoRelationship {
       private repoInvit: IConvidadoPrisma,
       private repoPresenca: IPresencaRespository,
    ) {}
+
+   async extratoPending(user_id: string): Promise<IResponse> {
+      const order = await this.repoRelation.listPending();
+
+      const consumo = order.filter(
+         h => h.client_id === user_id && h.type === 'CONSUMO_OUT',
+      ) as unknown as IRelashionshipConsumo[];
+
+      const venda = order.filter(
+         h => h.prestador_id === user_id && h.type === 'CONSUMO_OUT',
+      ) as unknown as IRelashionshipConsumo[];
+
+      const b2b = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'B2B',
+      );
+
+      const invit = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'INVIT',
+      );
+
+      const donate = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'DONATE',
+      );
+
+      const indication = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'INDICATION',
+      );
+
+      const padrinho = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'PADRINHO',
+      );
+
+      const presenca = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'PRESENCA',
+      );
+
+      const totalConsumo = consumo.reduce((ac, i) => {
+         return ac + i.objto.valor;
+      }, 0);
+
+      const totalVenda = venda.reduce((ac, i) => {
+         return ac + i.objto.valor;
+      }, 0);
+
+      const resonse = {
+         consumo,
+         venda,
+         b2b,
+         donate,
+         indication,
+         padrinho,
+         presenca,
+         totalConsumo,
+         totalVenda,
+         invit,
+      };
+
+      return resonse;
+   }
+
+   async extratoValid(user_id: string): Promise<IResponse> {
+      const order = await this.repoRelation.listValidated();
+
+      const consumo = order.filter(
+         h => h.client_id === user_id && h.type === 'CONSUMO_OUT',
+      ) as unknown as IRelashionshipConsumo[];
+
+      const venda = order.filter(
+         h => h.prestador_id === user_id && h.type === 'CONSUMO_OUT',
+      ) as unknown as IRelashionshipConsumo[];
+
+      const b2b = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'B2B',
+      );
+
+      const invit = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'INVIT',
+      );
+
+      const donate = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'DONATE',
+      );
+
+      const indication = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'INDICATION',
+      );
+
+      const padrinho = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'PADRINHO',
+      );
+
+      const presenca = order.filter(
+         h => h.fk_user_id === user_id && h.type === 'PRESENCA',
+      );
+
+      const totalConsumo = consumo.reduce((ac, i) => {
+         return ac + i.objto.valor;
+      }, 0);
+
+      const totalVenda = venda.reduce((ac, i) => {
+         return ac + i.objto.valor;
+      }, 0);
+
+      const resonse = {
+         consumo,
+         venda,
+         b2b,
+         donate,
+         indication,
+         padrinho,
+         presenca,
+         totalConsumo,
+         totalVenda,
+         invit,
+      };
+
+      return resonse;
+   }
 
    async create(data: IRelashionship): Promise<RelationShip> {
       if (data.prestador_id) {
@@ -276,46 +411,46 @@ export class UseCasesRelationship implements IRepoRelationship {
       //    await this.repoRelation.create(dt).then(h => console.log(dt));
       // });
 
-      consumo.forEach(async h => {
-         const objto = {
-            client_name: h?.consumidor_name ? h.consumidor_name : '',
-            valor: h.valor,
-            descricao: h.descricao,
-         };
+      // consumo.forEach(async h => {
+      //    const objto = {
+      //       client_name: h?.consumidor_name ? h.consumidor_name : '',
+      //       valor: h.valor,
+      //       descricao: h.descricao,
+      //    };
 
-         const dt = {
-            objto,
-            created_at: new Date(h.created_at),
-            updated_at: new Date(h.updated_at),
-            situation: true,
-            type: RelationType.CONSUMO_OUT,
-            ponts: ponts[RelationType.CONSUMO_OUT],
-            client_id: h?.consumidor_id ? h?.consumidor_id : '',
-            prestador_id: h.prestador_id,
-            fk_user_id: h?.consumidor_id ? h?.consumidor_id : h.prestador_id,
-         };
+      //    const dt = {
+      //       objto,
+      //       created_at: new Date(h.created_at),
+      //       updated_at: new Date(h.updated_at),
+      //       situation: true,
+      //       type: RelationType.CONSUMO_OUT,
+      //       ponts: ponts[RelationType.CONSUMO_OUT],
+      //       client_id: h?.consumidor_id ? h?.consumidor_id : '',
+      //       prestador_id: h.prestador_id,
+      //       fk_user_id: h?.consumidor_id ? h?.consumidor_id : h.prestador_id,
+      //    };
 
-         await this.repoRelation.create(dt).then(h => console.log(dt));
-      });
+      //    await this.repoRelation.create(dt).then(h => console.log(dt));
+      // });
 
-      padrinho.forEach(async h => {
-         const objto = {
-            apadrinhado_name: h.apadrinhado_name,
-            apadrinhado_id: h.apadrinhado_id,
-         };
+      // padrinho.forEach(async h => {
+      //    const objto = {
+      //       apadrinhado_name: h.apadrinhado_name,
+      //       apadrinhado_id: h.apadrinhado_id,
+      //    };
 
-         const dt = {
-            objto,
-            created_at: new Date(h.created_at),
-            updated_at: new Date(h.updated_at),
-            situation: true,
-            type: RelationType.PADRINHO,
-            ponts: ponts[RelationType.PADRINHO],
-            fk_user_id: h.user_id,
-         };
+      //    const dt = {
+      //       objto,
+      //       created_at: new Date(h.created_at),
+      //       updated_at: new Date(h.updated_at),
+      //       situation: true,
+      //       type: RelationType.PADRINHO,
+      //       ponts: ponts[RelationType.PADRINHO],
+      //       fk_user_id: h.user_id,
+      //    };
 
-         await this.repoRelation.create(dt).then(h => console.log(dt));
-      });
+      //    await this.repoRelation.create(dt).then(h => console.log(dt));
+      // });
 
       // invit.forEach(async h => {
       //    const objto = {

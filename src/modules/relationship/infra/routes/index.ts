@@ -16,5 +16,7 @@ relationship.delete('/relation-delete/:id', controler.delete);
 relationship.get('/relation', controler.listAll);
 relationship.get('/relation/prestador', controler.listByPrestador);
 relationship.get('/relation/client', controler.listByClient);
+relationship.get('/relation/extrato-peding', controler.extratoPeding);
+relationship.get('/relation/extrato-valid', controler.extratoValid);
 
 export { relationship };

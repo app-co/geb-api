@@ -9,5 +9,7 @@ export interface IRepoRelationship {
    listAll(): Promise<RelationShip[]>;
    listByClient(client_id: string): Promise<RelationShip[]>;
    listByPrestador(prestador_id: string): Promise<RelationShip[]>;
+   listValidated(): Promise<RelationShip[]>;
+   listPending(): Promise<RelationShip[]>;
    findById(id: string): Promise<RelationShip | null>;
 }

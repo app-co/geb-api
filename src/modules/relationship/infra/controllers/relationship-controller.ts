@@ -136,4 +136,32 @@ export class RelationshipController {
          return res.send(error);
       }
    }
+
+   async extratoPeding(req: Request, res: Response): Promise<Response> {
+      const { id } = req.user;
+      try {
+         const make = makeRelationship();
+
+         const create = await make.extratoPending(id);
+
+         return res.json(create);
+      } catch (error) {
+         console.log(error);
+         return res.send(error);
+      }
+   }
+
+   async extratoValid(req: Request, res: Response): Promise<Response> {
+      const { id } = req.user;
+      try {
+         const make = makeRelationship();
+
+         const create = await make.extratoValid(id);
+
+         return res.json(create);
+      } catch (error) {
+         console.log(error);
+         return res.send(error);
+      }
+   }
 }

@@ -60,11 +60,11 @@ export class IndicifualPontsService {
             const cons = validRelation
                .filter(h => h.client_id === user.id && h.type === 'CONSUMO_OUT')
                .map(h => {
-                  const { value } = h.objto;
+                  const { valor } = h.objto;
 
                   return {
                      ...h,
-                     valor: value,
+                     valor,
                   };
                });
 
@@ -106,11 +106,11 @@ export class IndicifualPontsService {
                   h => h.prestador_id === user.id && h.type === 'CONSUMO_OUT',
                )
                .map(h => {
-                  const { value } = h.objto;
+                  const { valor } = h.objto;
 
                   return {
                      ...h,
-                     valor: value,
+                     valor,
                   };
                });
 

@@ -21,6 +21,21 @@ export interface IRelashionship {
    type: T;
 }
 
+export interface IRelashionshipConsumo {
+   id: string;
+   objto: {
+      valor: number;
+      description: string;
+      consumidor_name: string;
+   };
+   fk_user_id: string;
+   situation: boolean;
+   prestador_id: string;
+   client_id: string;
+   ponts: number;
+   type: T;
+}
+
 export interface IRelashionshipUpdate {
    id: string;
    objto?: object;
