@@ -307,13 +307,20 @@ export class GlobalPontsService {
 
       const donates = users
          .map(user => {
-            const allP = validRelation.filter(h => {
-               if (h.fk_user_id === user.id && h.type === 'DONATE') {
-                  return h;
-               }
-            });
+            const itens = [];
+            validRelation
+               .filter(h => {
+                  if (h.fk_user_id === user.id && h.type === 'DONATE') {
+                     return h;
+                  }
+               })
+               .forEach(h => {
+                  h.objto?.itens.forEach(p => {
+                     itens.push(p);
+                  });
+               });
 
-            const pt = allP.length * 50;
+            const pt = itens.length * 10;
 
             const send = {
                id: user.id,
