@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js add zod
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add .
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC
 
 Yarn version: 
   1.22.19
@@ -37,7 +37,8 @@ npm manifest:
         "type": "ts-node-dev  -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
         "test": "jest",
         "pp": "yarn plop --plopfile ./generators/plopfile.cjs",
-        "bd": "prisma migrate dev"
+        "bd": "prisma migrate dev",
+        "studio": "prisma studio"
      },
      "dependencies": {
         "@prisma/client": "^4.12.0",
@@ -74,7 +75,8 @@ npm manifest:
         "tsyringe": "^4.5.0",
         "typeorm": "^0.2.32",
         "typescript": "^4.2.4",
-        "uuidv4": "^6.2.7"
+        "uuidv4": "^6.2.7",
+        "zod": "^3.21.4"
      },
      "devDependencies": {
         "@babel/cli": "^7.16.8",
@@ -6357,3 +6359,8 @@ Lockfile:
     version "0.8.15"
     resolved "https://registry.npmjs.org/zen-observable/-/zen-observable-0.8.15.tgz"
     integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
+  
+  zod@^3.21.4:
+    version "3.21.4"
+    resolved "https://registry.npmjs.org/zod/-/zod-3.21.4.tgz"
+    integrity sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==
