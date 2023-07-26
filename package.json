@@ -9,7 +9,8 @@
       "type": "ts-node-dev  -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
       "test": "jest",
       "pp": "yarn plop --plopfile ./generators/plopfile.cjs",
-      "bd": "prisma migrate dev"
+      "bd": "prisma migrate dev",
+      "studio": "prisma studio"
    },
    "dependencies": {
       "@prisma/client": "^4.12.0",
