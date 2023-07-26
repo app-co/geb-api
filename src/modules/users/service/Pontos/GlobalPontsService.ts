@@ -315,7 +315,7 @@ export class GlobalPontsService {
                   }
                })
                .forEach(h => {
-                  h.objto?.itens.forEach(p => {
+                  h.objto?.itens?.forEach(p => {
                      itens.push(p);
                   });
                });
