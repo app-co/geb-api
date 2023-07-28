@@ -43,9 +43,7 @@ export class UserController {
    async updateMembro(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(UpdateMembroService);
 
-      const { membro, nome, senha, token, adm } = req.body;
-
-      const { id } = req.user;
+      const { membro, nome, senha, token, id, adm } = req.body;
 
       const sess = await service.execute({
          membro,
