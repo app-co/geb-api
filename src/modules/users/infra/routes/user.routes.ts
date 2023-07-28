@@ -15,7 +15,7 @@ user.post('/create-user', control.create);
 user.post('/session', control.session);
 
 user.use(Auth);
-user.put('/update-membro', control.updateMembro);
+user.patch('/update-membro', control.updateMembro);
 
 // user.patch('/avatar', img.single('avatar'), control.updateAvatar);
 // user.patch('/logo', img.single('logo'), control.updateLogo);
