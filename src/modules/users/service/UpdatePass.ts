@@ -8,7 +8,7 @@ import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface Props {
    membro: string;
-   senha: string;
+   senha?: string;
 }
 
 @injectable()
@@ -25,14 +25,23 @@ export class UpdateSenha {
          throw new Err('Membro nao encontrado');
       }
 
-      const has = await hash(senha, 8);
+      let data = null;
 
-      const data = {
-         nome: find.nome,
-         membro,
-         senha: has,
-         adm: find.adm,
-      };
+      if (senha) {
+         const has = await hash(senha, 8);
+         data = {
+            nome: find.nome,
+            membro,
+            senha: has,
+            adm: find.adm,
+         };
+      } else {
+         data = {
+            nome: find.nome,
+            membro,
+            adm: find.adm,
+         };
+      }
 
       const user = await this.userRepository.updateUser(data, find.id);
 
