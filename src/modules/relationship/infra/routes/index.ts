@@ -8,7 +8,7 @@ const controler = new RelationshipController();
 
 relationship.use(Auth);
 relationship.post('/relation/data', controler.data);
-relationship.post('/relation-create', controler.create);
+relationship.post('/relation-create/', controler.create);
 
 relationship.put('/relation-update', controler.update);
 relationship.delete('/relation-delete/:id', controler.delete);

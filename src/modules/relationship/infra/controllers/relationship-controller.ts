@@ -23,6 +23,10 @@ export class RelationshipController {
       });
 
       const { id } = req.user;
+      const schemeToken = z.object({
+         token: z.string().optional(),
+      });
+      const { token } = schemeToken.parse(req.body);
       const data = scheme.parse(req.body);
       const { objto } = req.body;
 
@@ -35,7 +39,7 @@ export class RelationshipController {
       try {
          const make = makeRelationship();
 
-         const create = await make.create(dt);
+         const create = await make.create(dt, token);
 
          return res.json(create);
       } catch (error) {

@@ -13,6 +13,21 @@ export interface IUserDtos {
    region?: IRegion;
 }
 
+export interface IUserUpdate {
+   id: string;
+   nome?: string;
+   membro?: string;
+   senha?: string;
+   adm?: boolean;
+   token?: string;
+
+   //! ! FK_USERS
+   situation?: ISituationUser;
+   profile?: IProfileDto;
+   links?: ILinkDto;
+   region?: IRegion;
+}
+
 export interface IMembro {
    id: string;
    nome: string;

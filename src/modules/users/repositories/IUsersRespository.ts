@@ -13,6 +13,7 @@ import {
    ISituationUser,
    IPadrinhoDto,
    IMembro,
+   IUserUpdate,
 } from '@shared/dtos';
 
 export interface IUsersRepository {
@@ -25,7 +26,7 @@ export interface IUsersRepository {
    findByMembro(membro: string): Promise<User | null>;
    findById(user_id: string): Promise<User | null>;
    listAllUser(): Promise<User[]>;
-   updateUser(data: IUserDtos, id: string): Promise<User>;
+   updateUser(data: IUserUpdate): Promise<User>;
    updateToken(id: string, token: string): Promise<User>;
    updateSenha(senha: string, membro: string): Promise<User>;
    deleteUser(membro: string): Promise<User>;

@@ -1,5 +1,3 @@
-import { PrismaClient, User } from '@prisma/client';
-import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { inject, injectable } from 'tsyringe';
@@ -30,6 +28,7 @@ export class UpdateSenha {
       if (senha) {
          const has = await hash(senha, 8);
          data = {
+            id: find.id,
             nome: find.nome,
             membro,
             senha: has,
@@ -37,13 +36,14 @@ export class UpdateSenha {
          };
       } else {
          data = {
+            id: find.id,
             nome: find.nome,
             membro,
             adm: find.adm,
          };
       }
 
-      const user = await this.userRepository.updateUser(data, find.id);
+      const user = await this.userRepository.updateUser(data);
 
       return user;
    }

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js add .
+  /usr/bin/node /usr/share/yarn/bin/yarn.js add axios
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC
