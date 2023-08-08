@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/bin/node /usr/share/yarn/bin/yarn.js add axios
+  /usr/bin/node /usr/share/yarn/bin/yarn.js
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC:/home/app-c/Android/Sdk/emulator:/home/app-c/Android/Sdk/tools:/home/app-c/Android/Sdk/tools/bin:/home/app-c/Android/Sdk/platform-tools:/home/app-c/android-studio/bin:/home/app-c/MAC
 
 Yarn version: 
   1.22.19
@@ -46,6 +46,7 @@ npm manifest:
         "@types/date-fns": "^2.6.0",
         "@types/ioredis": "^4.26.1",
         "aws-sdk": "^2.1004.0",
+        "axios": "^1.4.0",
         "bcryptjs": "^2.4.3",
         "celebrate": "^14.0.0",
         "class-transformer": "^0.4.0",
@@ -1760,6 +1761,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/astral-regex/-/astral-regex-2.0.0.tgz"
     integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
   
+  asynckit@^0.4.0:
+    version "0.4.0"
+    resolved "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
+    integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
+  
   aws-sdk@*, aws-sdk@^2.1004.0:
     version "2.1004.0"
     resolved "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.1004.0.tgz"
@@ -1774,6 +1780,15 @@ Lockfile:
       url "0.10.3"
       uuid "3.3.2"
       xml2js "0.4.19"
+  
+  axios@^1.4.0:
+    version "1.4.0"
+    resolved "https://registry.npmjs.org/axios/-/axios-1.4.0.tgz"
+    integrity sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==
+    dependencies:
+      follow-redirects "^1.15.0"
+      form-data "^4.0.0"
+      proxy-from-env "^1.1.0"
   
   babel-plugin-dynamic-import-node@^2.3.3:
     version "2.3.3"
@@ -2242,6 +2257,13 @@ Lockfile:
       color-convert "^2.0.1"
       color-string "^1.6.0"
   
+  combined-stream@^1.0.8:
+    version "1.0.8"
+    resolved "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz"
+    integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
+    dependencies:
+      delayed-stream "~1.0.0"
+  
   commander@^4.0.1:
     version "4.1.1"
     resolved "https://registry.npmjs.org/commander/-/commander-4.1.1.tgz"
@@ -2481,6 +2503,11 @@ Lockfile:
       p-map "^4.0.0"
       rimraf "^3.0.2"
       slash "^3.0.0"
+  
+  delayed-stream@~1.0.0:
+    version "1.0.0"
+    resolved "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
+    integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
   
   delegates@^1.0.0:
     version "1.0.0"
@@ -3168,6 +3195,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/flatted/-/flatted-3.1.1.tgz"
     integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
   
+  follow-redirects@^1.15.0:
+    version "1.15.2"
+    resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
+    integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+  
   for-in@^1.0.1:
     version "1.0.2"
     resolved "https://registry.npmjs.org/for-in/-/for-in-1.0.2.tgz"
@@ -3179,6 +3211,15 @@ Lockfile:
     integrity sha512-0OABksIGrxKK8K4kynWkQ7y1zounQxP+CWnyclVwj81KW3vlLlGUx57DKGcP/LH216GzqnstnPocF16Nxs0Ycg==
     dependencies:
       for-in "^1.0.1"
+  
+  form-data@^4.0.0:
+    version "4.0.0"
+    resolved "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz"
+    integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
+    dependencies:
+      asynckit "^0.4.0"
+      combined-stream "^1.0.8"
+      mime-types "^2.1.12"
   
   forwarded@~0.1.2:
     version "0.1.2"
@@ -4165,7 +4206,7 @@ Lockfile:
     resolved "https://registry.npmjs.org/mime-db/-/mime-db-1.47.0.tgz"
     integrity sha512-QBmA/G2y+IfeS4oktet3qRZ+P5kPhCKRXxXnQEudYqUaEioAU1/Lq2us3D/t1Jfo4hE9REQPrbB7K5sOczJVIw==
   
-  mime-types@~2.1.24:
+  mime-types@^2.1.12, mime-types@~2.1.24:
     version "2.1.30"
     resolved "https://registry.npmjs.org/mime-types/-/mime-types-2.1.30.tgz"
     integrity sha512-crmjA4bLtR8m9qLpHvgxSChT+XoSlZi8J4n/aIdn3z92e/U47Z0V/yl+Wh9W046GgFVAmoNR/fmdbZYcSSIUeg==
@@ -4943,6 +4984,11 @@ Lockfile:
     dependencies:
       forwarded "~0.1.2"
       ipaddr.js "1.9.1"
+  
+  proxy-from-env@^1.1.0:
+    version "1.1.0"
+    resolved "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+    integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
   
   pump@^3.0.0:
     version "3.0.0"
