@@ -283,6 +283,8 @@ export class UseCasesRelationship {
          currency: 'BRL',
       });
 
+      console.log('server');
+
       const resonse = {
          consumo,
          venda,
