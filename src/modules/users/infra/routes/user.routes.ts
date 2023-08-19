@@ -1,7 +1,7 @@
+import multer from 'multer';
 import upload from '@config/upload';
 import { Auth } from '@shared/midle/Auth';
 import { Router } from 'express';
-import multer from 'multer';
 
 import { UserController } from '../controllers/UserController';
 
@@ -13,6 +13,7 @@ const img = multer(upload);
 user.post('/update-pass', control.updateSenha);
 user.post('/create-user', control.create);
 user.post('/session', control.session);
+user.post('/refresh-token', control.refreshToken);
 
 user.use(Auth);
 user.patch('/update-membro', control.updateMembro);

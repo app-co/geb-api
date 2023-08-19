@@ -31,6 +31,6 @@ export function Auth(req: Request, res: Response, next: NextFunction) {
 
       return next();
    } catch (err) {
-      throw new Err('token invalido');
+      throw new Err('token inválido');
    }
 }

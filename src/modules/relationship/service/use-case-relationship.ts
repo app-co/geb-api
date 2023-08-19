@@ -1,3 +1,4 @@
+import { RelationShip, RelationType } from '@prisma/client';
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
 import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
@@ -6,7 +7,6 @@ import { IIndicationRepository } from '@modules/indication/infra/repositories/II
 import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
 import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
-import { RelationShip, RelationType } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import axios from 'axios';

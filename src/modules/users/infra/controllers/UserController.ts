@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { container } from 'tsyringe';
 import { clearCacheService } from '@modules/users/service/clearCacheService';
 import { CreateLink } from '@modules/users/service/createLink';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
@@ -16,8 +17,8 @@ import { SessionService } from '@modules/users/service/SessionService.service';
 import { UpdateMembroService } from '@modules/users/service/UpdateMembroService';
 import { UpdateSenha } from '@modules/users/service/UpdatePass';
 import { Request, Response } from 'express';
-import { container } from 'tsyringe';
 
+import { RefreshToken } from '@modules/users/service/refresh-token-service';
 import { UpdateAvatar } from '../../service/Profile/UpdateAvatar';
 
 export class UserController {
@@ -96,6 +97,14 @@ export class UserController {
       const rs = await serv.execute({ membro, senha });
 
       return res.json(rs);
+   }
+
+   async refreshToken(req: Request, res: Response): Promise<Response> {
+      const { refresh_token } = req.body;
+
+      const token = await RefreshToken(refresh_token);
+
+      return res.json(token);
    }
 
    // async updateAvatar(req: Request, res: Response): Promise<Response> {}

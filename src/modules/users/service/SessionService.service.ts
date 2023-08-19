@@ -1,10 +1,13 @@
-import auth from '@config/auth';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Err } from '@shared/errors/AppError';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
+import { Err } from '@shared/errors/AppError';
+import auth from '@config/auth';
+import { prisma } from '@utils/prisma';
 
+import { GenerateRefreshToken } from '../providers/generate-refresh-token';
+import { tokenProvider } from '../providers/generate-token-provider';
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface IRequest {
@@ -19,6 +22,7 @@ interface IResponse {
       adm: boolean;
    };
    token: string;
+   refreshToken: string;
 }
 @injectable()
 export class SessionService {
@@ -29,20 +33,31 @@ export class SessionService {
 
    async execute({ membro, senha }: IRequest): Promise<IResponse> {
       const findUser = await this.userRepository.findByMembro(membro);
+      const genarateRefreshToken = new GenerateRefreshToken();
 
       if (!findUser) {
          throw new Err('usuario nao encontrado');
       }
+      const findRefreshToken = await prisma.refreshToken.findUnique({
+         where: { userId: findUser.id },
+      });
 
       const compareHash = await compare(senha, findUser.senha!);
+
       if (!compareHash) {
          throw new Err('senha invalida');
       }
+
       const { secret, expiresIn } = auth.jwt;
-      const token = sign({}, secret, {
-         subject: findUser.id,
-         expiresIn,
-      });
+
+      const token = await tokenProvider(findUser.id);
+      let refreshToken = {};
+
+      if (findRefreshToken) {
+         refreshToken = await genarateRefreshToken.update(findUser.id);
+      } else {
+         refreshToken = await genarateRefreshToken.execute(findUser.id);
+      }
 
       // const awsUrl = process.env.AWS_URL;
 
@@ -57,6 +72,7 @@ export class SessionService {
             nome,
             adm: findUser.adm,
          },
+         refreshToken,
          token,
       };
 
