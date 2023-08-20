@@ -1,3 +1,4 @@
+import { container } from 'tsyringe';
 import { B2bRepository } from '@modules/B2b/repositories/B2bRepository';
 import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
 import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
@@ -18,7 +19,6 @@ import { IUsersRepository } from '@modules/users/repositories/IUsersRespository'
 import { UsersRespository } from '@modules/users/repositories/UsersRespository';
 import { S3Storage } from '@shared/StorageProvider/implementations/S3Storage';
 import IStorageProvider from '@shared/StorageProvider/models/IStorageProviders';
-import { container } from 'tsyringe';
 
 import { ConsumoRepository } from '../../modules/consumo/repositories/ConsumoRepository';
 import { IConsumoRepository } from '../../modules/consumo/repositories/IConsumoRepository';

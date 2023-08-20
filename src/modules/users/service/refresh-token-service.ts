@@ -1,8 +1,8 @@
 import { addDays } from "date-fns";
-import { Err } from "@shared/errors/AppError";
-import { prisma } from "@utils/prisma";
 import dayjs from 'dayjs';
+import { Err } from "@shared/errors/AppError";
 
+import { prisma } from '../../../lib';
 import { tokenProvider } from '../providers/generate-token-provider';
 
 export async function RefreshToken(refresh_token: string): Promise<any> {

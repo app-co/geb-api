@@ -1,6 +1,6 @@
-import { prisma } from '@utils/prisma';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
+import { prisma } from '../../../lib';
 
 export class GenerateRefreshToken {
    async execute(userId: string): Promise<any> {

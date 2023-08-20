@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Err } from '@shared/errors/AppError';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
-import { Err } from '@shared/errors/AppError';
 import auth from '@config/auth';
-import { prisma } from '@utils/prisma';
 
+import { prisma } from '../../../lib';
 import { GenerateRefreshToken } from '../providers/generate-refresh-token';
 import { tokenProvider } from '../providers/generate-token-provider';
 import { IUsersRepository } from '../repositories/IUsersRespository';
