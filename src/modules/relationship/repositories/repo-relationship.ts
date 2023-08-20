@@ -1,11 +1,11 @@
 import { RelationShip } from '@prisma/client';
 
-import { IRelashionship, IRelashionshipUpdate } from '../dtos';
+import { IRelationship, IRelationshipUpdate } from '../dtos';
 
 export interface IRepoRelationship {
-   create(data: IRelashionship): Promise<RelationShip>;
+   create(data: IRelationship): Promise<RelationShip>;
    delete(id: string): Promise<void>;
-   update(data: IRelashionshipUpdate): Promise<RelationShip>;
+   update(data: IRelationshipUpdate): Promise<RelationShip>;
    listAll(): Promise<RelationShip[]>;
    listByClient(client_id: string): Promise<RelationShip[]>;
    listByPrestador(prestador_id: string): Promise<RelationShip[]>;

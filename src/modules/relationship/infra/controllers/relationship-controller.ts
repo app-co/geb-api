@@ -1,6 +1,6 @@
+import { z } from 'zod';
 import { makeRelationship } from '@modules/relationship/service/factories';
 import { Request, Response } from 'express';
-import { z } from 'zod';
 
 export class RelationshipController {
    async create(req: Request, res: Response): Promise<Response> {
@@ -24,7 +24,7 @@ export class RelationshipController {
 
       const { id } = req.user;
       const schemeToken = z.object({
-         token: z.string().optional(),
+         token: z.string().optional().default('expo'),
       });
       const { token } = schemeToken.parse(req.body);
       const data = scheme.parse(req.body);
@@ -43,7 +43,7 @@ export class RelationshipController {
 
          return res.json(create);
       } catch (error) {
-         console.log(error);
+         console.log(error, 'request');
          return res.send(error);
       }
    }

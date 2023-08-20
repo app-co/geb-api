@@ -1,7 +1,7 @@
 import { RelationShip } from '@prisma/client';
 
 import { prisma } from '../../../utils/prisma';
-import { IRelashionship, IRelashionshipUpdate } from '../dtos';
+import { IRelationship, IRelationshipUpdate } from '../dtos';
 import { IRepoRelationship } from './repo-relationship';
 
 export class PrismaRelationship implements IRepoRelationship {
@@ -21,7 +21,7 @@ export class PrismaRelationship implements IRepoRelationship {
       return list;
    }
 
-   async create(data: IRelashionship): Promise<RelationShip> {
+   async create(data: IRelationship): Promise<RelationShip> {
       const create = await prisma.relationShip.create({ data });
 
       return create;
@@ -31,7 +31,7 @@ export class PrismaRelationship implements IRepoRelationship {
       await prisma.relationShip.delete({ where: { id } });
    }
 
-   async update(data: IRelashionshipUpdate): Promise<RelationShip> {
+   async update(data: IRelationshipUpdate): Promise<RelationShip> {
       const up = await prisma.relationShip.update({
          where: { id: data.id },
          data,

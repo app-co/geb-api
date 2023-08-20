@@ -12,7 +12,7 @@ type T =
    | 'INVIT'
    | 'PRESENCA';
 
-export interface IRelashionship {
+export interface IRelationship {
    id?: string;
    objto: {
       token: string;
@@ -36,7 +36,7 @@ export interface IRelashionship {
    type: T;
 }
 
-export interface IRelashionshipUpdate {
+export interface IRelationshipUpdate {
    id: string;
    objto?: object;
    fk_user_id?: string;

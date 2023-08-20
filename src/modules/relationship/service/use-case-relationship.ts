@@ -12,7 +12,7 @@ import { Err } from '@shared/errors/AppError';
 import axios from 'axios';
 
 import { prisma } from '../../../lib';
-import { IRelashionship, IRelashionshipUpdate } from '../dtos';
+import { IRelationship, IRelationshipUpdate } from '../dtos';
 import { IRepoRelationship } from '../repositories/repo-relationship';
 
 const ponts = {
@@ -27,16 +27,16 @@ const ponts = {
 };
 
 interface IResponse {
-   consumo: IRelashionship[];
-   venda: IRelashionship[];
-   b2b: IRelashionship[];
-   donate: IRelashionship[];
-   indication: IRelashionship[];
-   padrinho: IRelashionship[];
-   presenca: IRelashionship[];
+   consumo: IRelationship[];
+   venda: IRelationship[];
+   b2b: IRelationship[];
+   donate: IRelationship[];
+   indication: IRelationship[];
+   padrinho: IRelationship[];
+   presenca: IRelationship[];
    totalConsumo: number;
    totalVenda: number;
-   invit: IRelashionship[];
+   invit: IRelationship[];
 }
 
 const msn = {
@@ -102,8 +102,19 @@ export class UseCasesRelationship {
    ) {}
 
    async extratoPending(user_id: string): Promise<IResponse> {
-      const order =
-         (await this.repoRelation.listPending()) as unknown as IRelashionship[];
+      let order = await this.repoCache.recover<IRelationship[]>(
+         `relation-peding:${user_id}`,
+      );
+
+      console.log({ extrato_peding: 'passou pelo cache' }, !!order);
+
+      if (!order) {
+         order =
+            (await this.repoRelation.listPending()) as unknown as IRelationship[];
+
+         await this.repoCache.save(`relation-peding:${user_id}`, order);
+         console.log({ extrato_peding: 'passou pelo banco' }, order[0]?.id);
+      }
 
       const consumo = order
          .filter(h => h.client_id === user_id && h.type === 'CONSUMO_OUT')
@@ -200,8 +211,19 @@ export class UseCasesRelationship {
    }
 
    async extratoValid(user_id: string): Promise<IResponse> {
-      const order =
-         (await this.repoRelation.listValidated()) as unknown as IRelashionship[];
+      let order = await this.repoCache.recover<IRelationship[]>(
+         `relation-valid:${user_id}`,
+      );
+
+      console.log({ valid: 'passou pelo cache' });
+
+      if (!order) {
+         order =
+            (await this.repoRelation.listPending()) as unknown as IRelationship[];
+
+         console.log({ valid: 'passou pelo banco' });
+         await this.repoCache.save(`relation-valid:${user_id}`, order);
+      }
 
       const consumo = order
          .filter(h => h.client_id === user_id && h.type === 'CONSUMO_OUT')
@@ -283,8 +305,6 @@ export class UseCasesRelationship {
          currency: 'BRL',
       });
 
-      console.log('server');
-
       const resonse = {
          consumo,
          venda,
@@ -301,7 +321,7 @@ export class UseCasesRelationship {
       return resonse;
    }
 
-   async create(data: IRelashionship, token: string): Promise<RelationShip> {
+   async create(data: IRelationship, token: string): Promise<RelationShip> {
       if (data.prestador_id) {
          const prestador = await this.repoUser.findById(data.prestador_id);
          if (!prestador) {
@@ -375,8 +395,6 @@ export class UseCasesRelationship {
             body: msn[data.type].message,
          };
 
-         console.log(token);
-
          await axios
             .post('https://exp.host/--/api/v2/push/send', message)
             .then(h => console.log(h.data))
@@ -384,13 +402,18 @@ export class UseCasesRelationship {
          create = await this.repoRelation.create(dt);
       }
 
+      await this.repoCache.invalidate('relation-ship');
+      await this.repoCache.invalidatePrefix('relation-peding');
+      await this.repoCache.invalidatePrefix('relation-valid');
+      await this.repoCache.invalidatePrefix(`relation-prestador`);
+
       return create;
    }
 
    async delete(id: string): Promise<void> {
       const find = (await this.repoRelation.findById(
          id,
-      )) as unknown as IRelashionship;
+      )) as unknown as IRelationship;
 
       if (!find) {
          throw new Err('Relacionament não encontrado');
@@ -409,14 +432,16 @@ export class UseCasesRelationship {
          .catch(h => console.log(h.response.data.errors, 'erro'));
 
       await this.repoRelation.delete(id);
+      await this.repoCache.invalidate('relation-ship');
+      await this.repoCache.invalidatePrefix('relation-peding');
+      await this.repoCache.invalidatePrefix('relation-valid');
+      await this.repoCache.invalidatePrefix(`relation-prestador`);
    }
 
-   async update(data: IRelashionshipUpdate): Promise<RelationShip> {
+   async update(data: IRelationshipUpdate): Promise<RelationShip> {
       const findRelation = (await this.repoRelation.findById(
          data.id,
-      )) as unknown as IRelashionship;
-
-      console.log(findRelation);
+      )) as unknown as IRelationship;
 
       const type =
          'B2B' ||
@@ -472,6 +497,11 @@ export class UseCasesRelationship {
          .then(h => console.log(h.data))
          .catch(h => console.log(h.response.data.errors, 'erro'));
 
+      await this.repoCache.invalidate('relation-ship');
+      await this.repoCache.invalidatePrefix('relation-peding');
+      await this.repoCache.invalidatePrefix('relation-valid');
+      await this.repoCache.invalidatePrefix(`relation-prestador`);
+
       return up;
    }
 
@@ -481,10 +511,20 @@ export class UseCasesRelationship {
    }
 
    async listByPrestador(prestador_id: string): Promise<RelationShip[]> {
-      const list = (await this.repoRelation.listByPrestador(
-         prestador_id,
-      )) as unknown as IRelashionship[];
-      await this.repoCache.save('relation-prestador', list);
+      let list = await this.repoCache.recover<IRelationship[]>(
+         `relation-prestador:${prestador_id}`,
+      );
+
+      console.log({ prestador: 'passou pelo cashe' });
+
+      if (!list) {
+         list = (await this.repoRelation.listByPrestador(
+            prestador_id,
+         )) as unknown as IRelationship[];
+
+         console.log({ prestador: 'passou pelo banco' });
+         await this.repoCache.save(`relation-prestador:${prestador_id}`, list);
+      }
 
       let currency = '';
       let totalValor = 0;
@@ -527,8 +567,16 @@ export class UseCasesRelationship {
       return rs;
    }
 
-   async listByClient(client_id: string): Promise<RelationShip[]> {
-      const list = await this.repoRelation.listByClient(client_id);
+   async listByClient(client_id: string): Promise<IRelationship[]> {
+      let list = await this.repoCache.recover<IRelationship[]>(`${client_id}`);
+
+      if (!list) {
+         list = (await this.repoRelation.listByClient(
+            client_id,
+         )) as unknown as IRelationship[];
+
+         await this.repoCache.save(`${client_id}`, list);
+      }
 
       return list;
    }

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IRelashionship } from '@modules/relationship/dtos';
-import { IRepoRelationship } from '@modules/relationship/repositories/repo-relationship';
 import {
    Profile,
    Transaction,
@@ -14,6 +12,8 @@ import {
    Convidado,
    Donate,
 } from '@prisma/client';
+import { IRelationship } from '@modules/relationship/dtos';
+import { IRepoRelationship } from '@modules/relationship/repositories/repo-relationship';
 import { Err } from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 
