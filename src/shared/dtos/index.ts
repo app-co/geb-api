@@ -48,12 +48,12 @@ export interface ISituationUser {
 export interface IProfileDto {
    id?: string;
    fk_id_user: string;
-   whats: string;
-   workName: string;
-   CNPJ: string;
-   CPF: string;
-   ramo: string;
-   enquadramento: string;
+   whats?: string;
+   workName?: string;
+   CNPJ?: string;
+   CPF?: string;
+   ramo?: string;
+   enquadramento?: string;
    email: string;
    insta?: string;
    web?: string;
