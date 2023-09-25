@@ -29,6 +29,7 @@ export class UpdateProfileService {
       logo,
       avatar,
    }: IProfileDto): Promise<Profile> {
+      console.log(avatar);
       const user = await this.userRepository.findById(fk_id_user);
       const profile = await this.userRepository.findByIdProfile(fk_id_user);
 
