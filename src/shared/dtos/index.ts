@@ -1,3 +1,5 @@
+import { HUB } from '@prisma/client';
+
 export interface IUserDtos {
    id?: string;
    nome: string;
@@ -5,6 +7,7 @@ export interface IUserDtos {
    senha: string;
    adm: boolean;
    token?: string;
+   hub: HUB;
 
    //! ! FK_USERS
    situation?: ISituationUser;

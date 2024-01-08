@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
    DadosFire,
-   Links,
    Padrinho,
-   PrismaClient,
    Profile,
    SituationUser,
    User,
 } from '@prisma/client';
 import {
-   ILinkDto,
    IMembro,
    IPadrinhoDto,
    IProfileDto,
@@ -31,6 +28,7 @@ export class UsersRespository implements IUsersRepository {
          data: {
             nome: data.nome,
             membro: data.membro,
+            hub: data.hub,
             adm: data.adm,
             senha: data.senha!,
             situation: {

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { container } from 'tsyringe';
 import { clearCacheService } from '@modules/users/service/clearCacheService';
 import { CreateLink } from '@modules/users/service/createLink';
 import { CreateUserService } from '@modules/users/service/CreateUserService';
@@ -8,25 +7,33 @@ import { makeUser } from '@modules/users/service/factories/make-user';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
 import { CreatePadrinhoService } from '@modules/users/service/Padrinho/createPadrinhoService';
-import { GlobalPontsService } from '@modules/users/service/Pontos/GlobalPontsService';
-import { IndicifualPontsService } from '@modules/users/service/Pontos/IndividualPontsService';
 import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
 import { UpdateLogo } from '@modules/users/service/Profile/UpdateLogo';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
+import { RefreshToken } from '@modules/users/service/refresh-token-service';
 import { SessionService } from '@modules/users/service/SessionService.service';
 import { UpdateMembroService } from '@modules/users/service/UpdateMembroService';
 import { UpdateSenha } from '@modules/users/service/UpdatePass';
+import { HUB } from '@prisma/client';
 import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 
-import { RefreshToken } from '@modules/users/service/refresh-token-service';
 import { UpdateAvatar } from '../../service/Profile/UpdateAvatar';
 
 export class UserController {
    async create(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(CreateUserService);
 
-      const { nome, membro, senha, adm, apadrinhado, firstLogin, inativo } =
-         req.body;
+      const {
+         nome,
+         membro,
+         senha,
+         adm,
+         apadrinhado,
+         firstLogin,
+         inativo,
+         hub,
+      } = req.body;
 
       const user = await service.execute({
          nome,
@@ -36,6 +43,7 @@ export class UserController {
          apadrinhado,
          firstLogin,
          inativo,
+         hub,
       });
 
       return res.json(user);
@@ -113,8 +121,11 @@ export class UserController {
 
    async listAll(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(ListAllUser);
+      const { hub } = req.params;
 
-      const list = await service.execute();
+      console.log(hub);
+
+      const list = await service.execute({ hub: String(hub) as HUB });
 
       return res.json(list);
    }
@@ -244,36 +255,6 @@ export class UserController {
    }
 
    //! ! PADRINNHO
-
-   async createPadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
-
-      const user_id = req.user.id;
-      const ex = await serv.execute({
-         user_id,
-         apadrinhado_name,
-         apadrinhado_id,
-         qnt,
-      });
-
-      return res.json(ex);
-   }
-
-   async createPadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
-
-      const user_id = req.user.id;
-      const ex = await serv.execute({
-         user_id,
-         apadrinhado_name,
-         apadrinhado_id,
-         qnt,
-      });
-
-      return res.json(ex);
-   }
 
    async createPadrinho(req: Request, res: Response): Promise<Response> {
       const serv = container.resolve(CreatePadrinhoService);

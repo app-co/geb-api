@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IStarRepository } from '@modules/starts/repositories/IStarRespository';
-import { Profile, User } from '@prisma/client';
+import { HUB, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
-import { IUserDtos, IProfileDto, IStarDto } from '@shared/dtos';
-import { Err } from '@shared/errors/AppError';
+import { prisma } from '@utils/prisma';
 import { inject, injectable } from 'tsyringe';
 
 import { IUsersRepository } from '../repositories/IUsersRespository';
+
+interface IListUser {
+   hub: HUB;
+}
 
 @injectable()
 export class ListAllUser {
@@ -19,12 +22,26 @@ export class ListAllUser {
 
       @inject('Cache')
       private cache: ICacheProvider,
-   ) {}
+   ) { }
 
-   async execute(): Promise<User[]> {
-      let users = await this.cache.recover<User[]>('users');
+   async execute({ hub = 'GEB' }: IListUser): Promise<User[]> {
+      let users = await this.cache.recover<User[]>('get-users');
 
-      users = await this.userRepository.listAllUser();
+      if (!users) {
+         users = await prisma.user.findMany({
+            where: { hub },
+            include: {
+               situation: true,
+               profile: true,
+               region: true,
+               DadosFire: true,
+               Stars: true,
+               midia: true,
+               Convidados: true,
+            },
+            orderBy: { nome: 'asc' },
+         });
+      }
 
       return users;
    }

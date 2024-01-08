@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { HUB, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
@@ -9,6 +9,7 @@ import { IUsersRepository } from '../repositories/IUsersRespository';
 interface Props {
    nome: string;
    membro: string;
+   hub: HUB;
    senha: string;
    adm: boolean;
    apadrinhado?: boolean;
@@ -24,7 +25,7 @@ export class CreateUserService {
 
       @inject('Cache')
       private cache: ICacheProvider,
-   ) {}
+   ) { }
 
    async execute({
       nome,
@@ -34,6 +35,7 @@ export class CreateUserService {
       apadrinhado,
       firstLogin,
       inativo,
+      hub = 'GEB',
    }: Props): Promise<User> {
       const find = await this.userRepository.findByMembro(membro);
 
@@ -42,7 +44,7 @@ export class CreateUserService {
       }
 
       const has = await hash(senha, 8);
-      const data = { nome, membro, senha: has, adm };
+      const data = { nome, membro, senha: has, adm, hub };
 
       const user = await this.userRepository.create(
          data,
@@ -51,7 +53,7 @@ export class CreateUserService {
          inativo,
       );
 
-      await this.cache.invalidate('users');
+      await this.cache.invalidate('get-users');
       await this.cache.invalidatePrefix(`individualPonts`);
 
       return user;

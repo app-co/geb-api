@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "HUB" AS ENUM ('GEB', 'CLUB_MENTORIA');
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "hub" "HUB" NOT NULL DEFAULT 'GEB';
