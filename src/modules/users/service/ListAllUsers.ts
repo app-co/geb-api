@@ -2,9 +2,9 @@
 import { IStarRepository } from '@modules/starts/repositories/IStarRespository';
 import { HUB, User } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
-import { prisma } from '@utils/prisma';
 import { inject, injectable } from 'tsyringe';
 
+import { prisma } from '../../../utils/prisma';
 import { IUsersRepository } from '../repositories/IUsersRespository';
 
 interface IListUser {
