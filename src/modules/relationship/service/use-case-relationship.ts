@@ -1,15 +1,9 @@
-import { IB2bRepository } from '@modules/B2b/repositories/IB2bRepository';
-import { IConsumoRepository } from '@modules/consumo/repositories/IConsumoRepository';
-import { IConvidadoPrisma } from '@modules/convidado/repositories/IConvidadoPrisma';
-import { IDonateRepository } from '@modules/Donate/repositories/IRepository/IDonateRepository';
-import { IIndicationRepository } from '@modules/indication/infra/repositories/IIndicationRepository';
-import { IPresencaRespository } from '@modules/presensa/repositories/IPresençaRepository';
-import { ITransactionRepository } from '@modules/transaction/repositories/ITransactionRespository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRespository';
-import { RelationShip, RelationType } from '@prisma/client';
+import { RelationShip } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 import { prisma } from '../../../lib';
 import { IRelationship, IRelationshipUpdate } from '../dtos';
@@ -99,21 +93,18 @@ export class UseCasesRelationship {
       private repoRelation: IRepoRelationship,
       private repoUser: IUsersRepository,
       private repoCache: ICacheProvider,
-   ) {}
+   ) { }
 
    async extratoPending(user_id: string): Promise<IResponse> {
       let order = await this.repoCache.recover<IRelationship[]>(
-         `relation-peding:${user_id}`,
+         `relation-pedding:${user_id}`,
       );
-
-      console.log({ extrato_peding: 'passou pelo cache' }, !!order);
 
       if (!order) {
          order =
             (await this.repoRelation.listPending()) as unknown as IRelationship[];
 
-         await this.repoCache.save(`relation-peding:${user_id}`, order);
-         console.log({ extrato_peding: 'passou pelo banco' }, order[0]?.id);
+         await this.repoCache.save(`relation-pedding:${user_id}`, order);
       }
 
       const consumo = order
@@ -212,17 +203,14 @@ export class UseCasesRelationship {
 
    async extratoValid(user_id: string): Promise<IResponse> {
       let order = await this.repoCache.recover<IRelationship[]>(
-         `relation-valid:${user_id}`,
+         `relation-validd:${user_id}`,
       );
-
-      console.log({ valid: 'passou pelo cache' });
 
       if (!order) {
          order =
             (await this.repoRelation.listValidated()) as unknown as IRelationship[];
 
-         console.log({ valid: 'passou pelo banco' });
-         await this.repoCache.save(`relation-valid:${user_id}`, order);
+         await this.repoCache.save(`relation-validd:${user_id}`, order);
       }
 
       const consumo = order
@@ -385,7 +373,7 @@ export class UseCasesRelationship {
             });
 
             create = await this.repoRelation.create(dt);
-            await this.repoCache.invalidate('relation-prestador');
+            await this.repoCache.invalidate('relation-prest');
          }
       } else {
          const message = {
@@ -395,17 +383,14 @@ export class UseCasesRelationship {
             body: msn[data.type].message,
          };
 
-         await axios
-            .post('https://exp.host/--/api/v2/push/send', message)
-            .then(h => console.log(h.data))
-            .catch(h => console.log(h.response.data.errors, 'erro'));
+         await axios.post('https://exp.host/--/api/v2/push/send', message);
          create = await this.repoRelation.create(dt);
       }
 
-      await this.repoCache.invalidate('relation-ship');
-      await this.repoCache.invalidatePrefix('relation-peding');
-      await this.repoCache.invalidatePrefix('relation-valid');
-      await this.repoCache.invalidatePrefix(`relation-prestador`);
+      await this.repoCache.invalidate('relation-shipp');
+      await this.repoCache.invalidatePrefix('relation-pedding');
+      await this.repoCache.invalidatePrefix('relation-validd');
+      await this.repoCache.invalidatePrefix(`relation-prest`);
 
       return create;
    }
@@ -426,16 +411,13 @@ export class UseCasesRelationship {
          body: msn[find.type].reject,
       };
 
-      await axios
-         .post('https://exp.host/--/api/v2/push/send', message)
-         .then(h => console.log(h.data))
-         .catch(h => console.log(h.response.data.errors, 'erro'));
+      await axios.post('https://exp.host/--/api/v2/push/send', message);
 
       await this.repoRelation.delete(id);
-      await this.repoCache.invalidate('relation-ship');
-      await this.repoCache.invalidatePrefix('relation-peding');
-      await this.repoCache.invalidatePrefix('relation-valid');
-      await this.repoCache.invalidatePrefix(`relation-prestador`);
+      await this.repoCache.invalidate('relation');
+      await this.repoCache.invalidatePrefix('relation-pedding');
+      await this.repoCache.invalidatePrefix('relation-validd');
+      await this.repoCache.invalidatePrefix(`relation-prest`);
    }
 
    async update(data: IRelationshipUpdate): Promise<RelationShip> {
@@ -497,10 +479,10 @@ export class UseCasesRelationship {
          .then(h => console.log(h.data))
          .catch(h => console.log(h.response.data.errors, 'erro'));
 
-      await this.repoCache.invalidate('relation-ship');
-      await this.repoCache.invalidatePrefix('relation-peding');
-      await this.repoCache.invalidatePrefix('relation-valid');
-      await this.repoCache.invalidatePrefix(`relation-prestador`);
+      await this.repoCache.invalidate('relation');
+      await this.repoCache.invalidatePrefix('relation-pedding');
+      await this.repoCache.invalidatePrefix('relation-validd');
+      await this.repoCache.invalidatePrefix(`relation-prest`);
 
       return up;
    }
@@ -512,18 +494,15 @@ export class UseCasesRelationship {
 
    async listByPrestador(prestador_id: string): Promise<RelationShip[]> {
       let list = await this.repoCache.recover<IRelationship[]>(
-         `relation-prestador:${prestador_id}`,
+         `relation-prest:${prestador_id}`,
       );
-
-      console.log({ prestador: 'passou pelo cashe' });
 
       if (!list) {
          list = (await this.repoRelation.listByPrestador(
             prestador_id,
          )) as unknown as IRelationship[];
 
-         console.log({ prestador: 'passou pelo banco' });
-         await this.repoCache.save(`relation-prestador:${prestador_id}`, list);
+         await this.repoCache.save(`relation-prest:${prestador_id}`, list);
       }
 
       let currency = '';
@@ -585,6 +564,63 @@ export class UseCasesRelationship {
       const find = await this.repoRelation.findById(id);
 
       return find;
+   }
+
+   async metrics() {
+      const allRelationValidate =
+         (await prisma.relationShip.findMany({
+            where: {
+               type: 'CONSUMO_OUT',
+               situation: true,
+            },
+         })) || [];
+
+      const allRelationPedding =
+         (await prisma.relationShip.findMany({
+            where: {
+               type: 'CONSUMO_OUT',
+               situation: false,
+            },
+         })) || [];
+
+      const allUsers = await prisma.user.findMany();
+
+      const usersUp = allUsers.length;
+
+      let metricValidByMonth = 0;
+
+      const currentDate = format(new Date(), 'MM-yy');
+
+      allRelationValidate.forEach(h => {
+         const relatinMonthDate = format(new Date(h.created_at), 'MM-yy');
+         const isValidMonth = currentDate === relatinMonthDate;
+
+         if (isValidMonth) {
+            metricValidByMonth = h.objto.valor + metricValidByMonth;
+         }
+      });
+
+      const metricValidByYear = allRelationValidate.reduce((acc, item) => {
+         return acc + Number(item.objto.valor) ?? 0;
+      }, 0);
+
+      const metricPeddingByYear = allRelationPedding.reduce((acc, item) => {
+         return acc + Number(item.objto.valor) ?? 0;
+      }, 0);
+
+      const valid_media_transaction =
+         metricValidByYear / allRelationValidate.length;
+
+      const padding_media_transaction =
+         metricPeddingByYear / allRelationPedding.length || 0;
+
+      return {
+         usersUp,
+         metricValidByYear,
+         metricValidByMonth,
+         padding_media_transaction,
+         valid_media_transaction,
+      };
    }
 
    async data(): Promise<void> {

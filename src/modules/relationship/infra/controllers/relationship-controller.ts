@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import { makeRelationship } from '@modules/relationship/service/factories';
 import { Request, Response } from 'express';
+import { z } from 'zod';
 
 export class RelationshipController {
    async create(req: Request, res: Response): Promise<Response> {
@@ -43,7 +43,6 @@ export class RelationshipController {
 
          return res.json(create);
       } catch (error) {
-         console.log(error, 'request');
          return res.send(error);
       }
    }
@@ -79,6 +78,18 @@ export class RelationshipController {
          const create = await make.listAll();
 
          return res.json(create);
+      } catch (error) {
+         return res.send(error);
+      }
+   }
+
+   async metric(req: Request, res: Response): Promise<Response> {
+      try {
+         const make = makeRelationship();
+
+         const getMetric = await make.metrics();
+
+         return res.json(getMetric);
       } catch (error) {
          return res.send(error);
       }
