@@ -28,9 +28,10 @@ interface IResponse {
    indication: IRelationship[];
    padrinho: IRelationship[];
    presenca: IRelationship[];
-   totalConsumo: number;
-   totalVenda: number;
+   totalConsumo: string;
+   totalVenda: string;
    invit: IRelationship[];
+   allRelation: [];
 }
 
 const msn = {
@@ -293,6 +294,16 @@ export class UseCasesRelationship {
          currency: 'BRL',
       });
 
+      const allRelation = [
+         ...consumo,
+         ...venda,
+         ...donate,
+         ...indication,
+         ...padrinho,
+         ...presenca,
+         ...invit,
+      ];
+
       const resonse = {
          consumo,
          venda,
@@ -304,6 +315,7 @@ export class UseCasesRelationship {
          totalConsumo: currencyConcumo,
          totalVenda: currencyVenda,
          invit,
+         allRelation,
       };
 
       return resonse;
