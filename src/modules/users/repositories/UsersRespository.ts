@@ -109,6 +109,10 @@ export class UsersRespository implements IUsersRepository {
             Stars: true,
             midia: true,
             Convidados: true,
+            RelationShip: true,
+         },
+         orderBy: {
+            nome: 'asc',
          },
       });
       return find;

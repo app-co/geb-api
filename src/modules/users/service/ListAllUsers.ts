@@ -38,6 +38,7 @@ export class ListAllUser {
                Stars: true,
                midia: true,
                Convidados: true,
+               RelationShip: true,
             },
             orderBy: { nome: 'asc' },
          });
