@@ -179,4 +179,18 @@ export class RelationshipController {
          return res.send(error);
       }
    }
+
+   async extratoPainelValid(req: Request, res: Response): Promise<Response> {
+      const { id } = req.params;
+      try {
+         const make = makeRelationship();
+
+         const create = await make.extratoValid(id);
+
+         return res.json(create);
+      } catch (error) {
+         console.log(error);
+         return res.send(error);
+      }
+   }
 }
