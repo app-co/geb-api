@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Auth } from '@shared/midle/Auth';
 import { Router } from 'express';
 
@@ -19,6 +20,10 @@ relationship.get('/relation/client', controler.listByClient);
 relationship.get('/relation/extrato-peding', controler.extratoPeding);
 relationship.get('/relation/extrato-valid', controler.extratoValid);
 relationship.get('/relation/extrato-valid/:id', controler.extratoPainelValid);
+relationship.get(
+  '/relation/extrato-pedding/:id',
+  controler.extratoPainelPedding,
+);
 relationship.get('/relation/metric', controler.metric);
 
 export { relationship };
