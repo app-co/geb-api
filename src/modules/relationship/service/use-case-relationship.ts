@@ -186,6 +186,16 @@ export class UseCasesRelationship {
          currency: 'BRL',
       });
 
+      const allRelation = [
+         ...consumo,
+         ...venda,
+         ...donate,
+         ...indication,
+         ...padrinho,
+         ...presenca,
+         ...invit,
+      ];
+
       const resonse = {
          consumo,
          venda,
@@ -197,6 +207,7 @@ export class UseCasesRelationship {
          totalConsumo: currencyConcumo,
          totalVenda: currencyVenda,
          invit,
+         allRelation,
       };
 
       return resonse;
