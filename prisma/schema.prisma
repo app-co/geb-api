@@ -69,7 +69,7 @@ model Profile {
 model RefreshToken {
    id        String @id @default(uuid())
    expiresIn Int
-   user      User   @relation(fields: [userId], references: [id])
+   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
    userId    String @unique
 }
 
@@ -105,7 +105,7 @@ model Like {
    id         String @id @default(uuid())
    like       Int    @default(0)
    user_id    String
-   post       Post   @relation(fields: [fk_id_post], references: [id])
+   post       Post   @relation(fields: [fk_id_post], references: [id], onDelete: Cascade)
    fk_id_post String
 }
 
@@ -115,7 +115,7 @@ model Padrinho {
    apadrinhado_name String
    apadrinhado_id   String
    qnt              Int      @default(0)
-   user             User?    @relation(references: [id], fields: [user_id])
+   user             User?    @relation(references: [id], fields: [user_id], onDelete: Cascade)
    created_at       DateTime @default(now())
    updated_at       DateTime @default(now()) @updatedAt
 }
