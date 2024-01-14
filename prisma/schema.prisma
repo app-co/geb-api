@@ -293,3 +293,8 @@ model RelationShip {
    created_at DateTime     @default(now())
    updated_at DateTime     @updatedAt
 }
+
+model accumulated {
+   id     Int @id @default(autoincrement())
+   amount Int
+}
