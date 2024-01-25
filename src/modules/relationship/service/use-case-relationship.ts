@@ -627,6 +627,10 @@ export class UseCasesRelationship {
          return acc + Number(item.objto.valor) ?? 0;
       }, 0);
 
+      const amoutLastYear = await prisma.accumulated.findFirst();
+
+      const amount_accumulated = metricValidByYear + amoutLastYear!.amount ?? 0;
+
       const metricPeddingByYear = allRelationPedding.reduce((acc, item) => {
          return acc + Number(item.objto.valor) ?? 0;
       }, 0);
@@ -643,6 +647,7 @@ export class UseCasesRelationship {
          metricValidByMonth,
          padding_media_transaction,
          valid_media_transaction,
+         amount_accumulated,
       };
    }
 
