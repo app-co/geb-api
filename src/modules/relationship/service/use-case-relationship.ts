@@ -406,8 +406,8 @@ export class UseCasesRelationship {
             body: msn[data.type].message,
          };
 
-         await axios.post('https://exp.host/--/api/v2/push/send', message);
          create = await this.repoRelation.create(dt);
+         await axios.post('https://exp.host/--/api/v2/push/send', message);
       }
 
       await this.repoCache.invalidate('relation-shipp');
