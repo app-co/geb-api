@@ -29,7 +29,7 @@ export class ListAllUser {
 
       if (!users) {
          users = await prisma.user.findMany({
-            where: { hub },
+            where: { hub: { in: ['CLUB_MENTORIA', 'GEB'] } },
             include: {
                situation: true,
                profile: true,
