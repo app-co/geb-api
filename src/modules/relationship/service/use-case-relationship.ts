@@ -410,10 +410,7 @@ export class UseCasesRelationship {
          await axios.post('https://exp.host/--/api/v2/push/send', message);
       }
 
-      await this.repoCache.invalidate('relation-shipp');
-      await this.repoCache.invalidatePrefix('relation-pedding');
-      await this.repoCache.invalidatePrefix('relation-validd');
-      await this.repoCache.invalidatePrefix(`relation-prest`);
+      await this.repoCache.removeAll();
 
       return create;
    }
@@ -433,10 +430,10 @@ export class UseCasesRelationship {
          title: msn[find.type].title,
          body: msn[find.type].reject,
       };
+      await this.repoRelation.delete(id);
 
       await axios.post('https://exp.host/--/api/v2/push/send', message);
 
-      await this.repoRelation.delete(id);
       await this.repoCache.invalidate('relation');
       await this.repoCache.invalidatePrefix('relation-pedding');
       await this.repoCache.invalidatePrefix('relation-validd');

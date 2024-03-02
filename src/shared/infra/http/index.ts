@@ -1,18 +1,15 @@
 /* eslint-disable import-helpers/order-imports */
-import 'reflect-metadata';
-import rateLimiter from '@shared/midle/rateLimit';
 import { errors } from 'celebrate';
 import cors from 'cors';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
 import { createServer } from 'http';
+import 'reflect-metadata';
 import socket from 'socket.io';
-import multer from 'multer';
-import fs from 'fs';
-import { parse } from 'csv-parse';
 
 import path from 'path';
 
+import { ZodError } from 'zod';
 import { Route } from './routes/index.routes';
 
 import '@shared/container';
@@ -69,6 +66,13 @@ app.use((err: Error, req: Request, res: Response, _: NextFunction) => {
       return res.status(err.statusCode).json({
          status: 'error',
          message: err.message,
+      });
+   }
+
+   if (err instanceof ZodError) {
+      return res.status(409).json({
+         status: 'error',
+         message: `Erro de validação: ${err.errors[0].path[0]} ${err.errors[0].message}`,
       });
    }
 
