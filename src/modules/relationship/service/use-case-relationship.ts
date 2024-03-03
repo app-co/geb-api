@@ -431,13 +431,9 @@ export class UseCasesRelationship {
          body: msn[find.type].reject,
       };
       await this.repoRelation.delete(id);
+      await this.repoCache.removeAll();
 
       await axios.post('https://exp.host/--/api/v2/push/send', message);
-
-      await this.repoCache.invalidate('relation');
-      await this.repoCache.invalidatePrefix('relation-pedding');
-      await this.repoCache.invalidatePrefix('relation-validd');
-      await this.repoCache.invalidatePrefix(`relation-prest`);
    }
 
    async update(data: IRelationshipUpdate): Promise<RelationShip> {

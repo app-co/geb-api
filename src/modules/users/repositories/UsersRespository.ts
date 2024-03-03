@@ -1,18 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-   DadosFire,
-   Padrinho,
-   Profile,
-   SituationUser,
-   User,
-} from '@prisma/client';
-import {
-   IMembro,
-   IPadrinhoDto,
-   IProfileDto,
-   ISituationUser,
-   IUserDtos,
-} from '@shared/dtos';
+import { DadosFire, Profile, SituationUser, User } from '@prisma/client';
+import { IMembro, IProfileDto, ISituationUser, IUserDtos } from '@shared/dtos';
 
 import { prisma } from '../../../utils/prisma';
 import { IUsersRepository } from './IUsersRespository';
@@ -108,7 +96,6 @@ export class UsersRespository implements IUsersRepository {
             DadosFire: true,
             Stars: true,
             midia: true,
-            Convidados: true,
             RelationShip: true,
          },
          orderBy: {
@@ -258,46 +245,6 @@ export class UsersRespository implements IUsersRepository {
    }
 
    // !! PADRINHO
-
-   async createPadrinho(data: IPadrinhoDto): Promise<Padrinho> {
-      const cre = await prisma.padrinho.create({
-         data: {
-            apadrinhado_id: data.apadrinhado_id,
-            apadrinhado_name: data.apadrinhado_name,
-            user_id: data.user_id,
-            qnt: data.qnt,
-         },
-      });
-
-      return cre;
-   }
-
-   async findPadrinhoById(id: string): Promise<Padrinho | null> {
-      const find = await prisma.padrinho.findUnique({
-         where: { id },
-      });
-
-      return find;
-   }
-
-   async findPadrinhoByUserId(user_id: string): Promise<Padrinho[]> {
-      const find = await prisma.padrinho.findMany({
-         where: { user_id },
-      });
-
-      return find;
-   }
-
-   async listAllPadrinho(): Promise<Padrinho[]> {
-      const all = await prisma.padrinho.findMany();
-      return all;
-   }
-
-   async deletePadrinho(id: string): Promise<void> {
-      await prisma.padrinho.delete({
-         where: { id },
-      });
-   }
 
    //! ! DADOS FIRE
 

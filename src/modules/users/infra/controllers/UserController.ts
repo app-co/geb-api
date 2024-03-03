@@ -6,7 +6,6 @@ import { DeleteUserService } from '@modules/users/service/DeleteUserService';
 import { makeUser } from '@modules/users/service/factories/make-user';
 import { findUserByIdService } from '@modules/users/service/findUserByIdService';
 import { ListAllUser } from '@modules/users/service/ListAllUsers';
-import { CreatePadrinhoService } from '@modules/users/service/Padrinho/createPadrinhoService';
 import { CreateProfi } from '@modules/users/service/Profile/CreateProfile';
 import { UpdateLogo } from '@modules/users/service/Profile/UpdateLogo';
 import { UpdateProfileService } from '@modules/users/service/Profile/UpdateProfileService';
@@ -255,47 +254,6 @@ export class UserController {
    }
 
    //! ! PADRINNHO
-
-   async createPadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-      const { apadrinhado_name, apadrinhado_id, qnt } = req.body;
-
-      const user_id = req.user.id;
-      const ex = await serv.execute({
-         user_id,
-         apadrinhado_name,
-         apadrinhado_id,
-         qnt,
-      });
-
-      return res.json(ex);
-   }
-
-   async listAllPadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-
-      const ex = await serv.listAll();
-
-      return res.json(ex);
-   }
-
-   async listByPadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-
-      const { id } = req.user;
-      const ex = await serv.listByPadrinho({ id: String(id) });
-
-      return res.json(ex);
-   }
-
-   async deletePadrinho(req: Request, res: Response): Promise<Response> {
-      const serv = container.resolve(CreatePadrinhoService);
-
-      const { id } = req.params;
-      const ex = await serv.listByPadrinho({ id: String(id) });
-
-      return res.json(ex);
-   }
 
    async clearCash(req: Request, res: Response): Promise<Response> {
       const service = container.resolve(clearCacheService);

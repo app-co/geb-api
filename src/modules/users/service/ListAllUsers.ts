@@ -37,7 +37,6 @@ export class ListAllUser {
                DadosFire: true,
                Stars: true,
                midia: true,
-               Convidados: true,
                RelationShip: true,
             },
             orderBy: { nome: 'asc' },

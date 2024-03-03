@@ -29,19 +29,10 @@ model User {
    situation  SituationUser?
    region     Region?
    hub        HUB            @default(GEB)
-   // post                    Post           @relation(fields: [fk_id_post], references: [id])
-   // fk_id_post              String         @unique
 
-   // padrinho                Padrinho[]                  
-   // post                    Post[]      
-   // feed                    Feed[]      
-   // presenca                Presenca[]
-   // pontos                  Pontos[]
    Stars Stars[]
 
    DadosFire    DadosFire?
-   Padrinho     Padrinho[]
-   Convidados   Convidado[]
    midia        midia[]
    RelationShip RelationShip[]
    RefreshToken RefreshToken?
@@ -109,39 +100,11 @@ model Like {
    fk_id_post String
 }
 
-model Padrinho {
-   id               String   @id @default(uuid())
-   user_id          String
-   apadrinhado_name String
-   apadrinhado_id   String
-   qnt              Int      @default(0)
-   user             User?    @relation(references: [id], fields: [user_id], onDelete: Cascade)
-   created_at       DateTime @default(now())
-   updated_at       DateTime @default(now()) @updatedAt
-}
-
 model Links {
    id      String @id @default(uuid())
    nome    String
    link    String
    user_id String
-}
-
-model Presenca {
-   id         String   @id @default(uuid())
-   user_id    String
-   // user                    User?                   @relation(references: [id], fields: [user_id])
-   presenca   Boolean  @default(false)
-   nome       String
-   createdAt  DateTime @default(now())
-   updated_at DateTime @default(now()) @updatedAt
-}
-
-model OrderPresenca {
-   id        String   @id @default(uuid())
-   user_id   String
-   nome      String
-   createdAt DateTime @default(now())
 }
 
 model Feed {
@@ -155,39 +118,6 @@ model Feed {
    created_at DateTime
 }
 
-model OrderTransaction {
-   id              String   @id @default(uuid())
-   consumidor_name String
-   consumidor_id   String
-   prestador_id    String
-   prestador_name  String
-   valor           Int
-   descricao       String
-   created_at      DateTime @default(now())
-}
-
-model Consumo {
-   id            String   @id @default(uuid())
-   consumidor_id String?
-   presstador_id String?
-   type          String
-   valor         String
-   descricao     String
-   created_at    DateTime @default(now())
-}
-
-model Transaction {
-   id              String   @id @default(uuid())
-   consumidor_name String?
-   consumidor_id   String?
-   prestador_id    String?
-   prestador_name  String?
-   valor           Int
-   descricao       String
-   updated_at      DateTime @default(now()) @updatedAt
-   created_at      DateTime @default(now())
-}
-
 model Pontos {
    id       String @id @default(uuid())
    presenca Int    @default(0)
@@ -196,33 +126,6 @@ model Pontos {
    venda    Int    @default(0)
    user_id  String
    // user           User?                   @relation(references: [id], fields: [user_id])
-}
-
-model B2b {
-   id           String   @id @default(uuid())
-   send_id      String
-   send_name    String
-   recevid_name String
-   recevid_id   String
-   assunto      String
-   appointment  String?
-   createdAt    DateTime @default(now())
-   updated_at   DateTime @default(now()) @updatedAt
-   validate     Boolean  @default(false)
-}
-
-model Indication {
-   id                  String   @id @default(uuid())
-   indicado_id         String
-   indicado_name       String
-   quemIndicou_id      String
-   quemIndicou_name    String
-   client_name         String
-   phone_number_client Int
-   description         String
-   createdAt           DateTime @default(now())
-   updated_at          DateTime @default(now()) @updatedAt
-   validate            Boolean  @default(false)
 }
 
 model DadosFire {
@@ -238,25 +141,6 @@ model Stars {
    star       Int    @default(0)
    user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
    valiador   String
-}
-
-model Convidado {
-   id             String   @id @default(uuid())
-   fk_user_id     String
-   name_convidado String
-   approved       Boolean  @default(false)
-   user           User     @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
-   created_at     DateTime @default(now())
-   updated_at     DateTime @default(now()) @updatedAt
-}
-
-model Donate {
-   id         String   @id @default(uuid())
-   fk_id_user String
-   approved   Boolean  @default(false)
-   itens      String
-   created_at DateTime @default(now())
-   updated_at DateTime @default(now()) @updatedAt
 }
 
 model midia {

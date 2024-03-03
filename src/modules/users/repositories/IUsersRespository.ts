@@ -1,18 +1,9 @@
+import { DadosFire, Profile, SituationUser, User } from '@prisma/client';
 import {
-   DadosFire,
-   Links,
-   Padrinho,
-   Profile,
-   SituationUser,
-   User,
-} from '@prisma/client';
-import {
-   ILinkDto,
-   IProfileDto,
-   IUserDtos,
-   ISituationUser,
-   IPadrinhoDto,
    IMembro,
+   IProfileDto,
+   ISituationUser,
+   IUserDtos,
    IUserUpdate,
 } from '@shared/dtos';
 
@@ -45,13 +36,6 @@ export interface IUsersRepository {
    updateSituation(data: ISituationUser): Promise<SituationUser>;
    findSituation(id: string): Promise<SituationUser | null>;
    listAllSituation(): Promise<SituationUser[]>;
-
-   //! ! PADRINHO
-   createPadrinho(data: IPadrinhoDto): Promise<Padrinho>;
-   findPadrinhoById(id: string): Promise<Padrinho | null>;
-   findPadrinhoByUserId(user_id: string): Promise<Padrinho[]>;
-   listAllPadrinho(): Promise<Padrinho[]>;
-   deletePadrinho(id: string): Promise<void>;
 
    //! ! DATA FIRE
    listAllDataFire(): Promise<DadosFire[]>;
