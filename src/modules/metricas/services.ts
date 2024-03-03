@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
 import { IUserDtos } from '@shared/dtos';
-import { prisma } from '@utils/prisma';
 import { getWeek } from 'date-fns';
 
+import { prisma } from '../../utils/prisma';
 import { IMetricUser, TClassification } from './dtos';
 
 const sgmests = [
@@ -174,6 +174,6 @@ export class MetricService {
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation).reduce((ac, i) => ac + i.objto.valor, 0)
 
     // 1058153178
-    return { consumoTotal: currency((consumoTotal) / 100) }
+    return { consumoTotal: currency((consumoTotal + 1058153178) / 100) }
   }
 }
