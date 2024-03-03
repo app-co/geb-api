@@ -174,10 +174,10 @@ export class MetricService {
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation)
       .reduce((ac, i) => ac + i.objto.valor, 0) + 119184707 + 1058153178
 
-    // const consumoTotal = (119184707 + 1058153178 + 111075052)
+    const total = (consumoTotal + 1058153178 + 111075052)
 
     // 1058153178
     // 1.191.847,07
-    return { consumoTotal: currency(consumoTotal / 100) }
+    return { consumoTotal: currency(total / 100) }
   }
 }
