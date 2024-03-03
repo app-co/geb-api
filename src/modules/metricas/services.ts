@@ -172,11 +172,11 @@ export class MetricService {
     const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation)
-      .reduce((ac, i) => ac + i.objto.valor, 0) + 10581531.78 / 100
+      .reduce((ac, i) => ac + i.objto.valor, 0)
 
     const ac = (128841293700 - consumoTotal)
     console.log(ac)
     // 1058153178
-    return { consumoTotal: currency(consumoTotal) }
+    return { consumoTotal: currency(consumoTotal / 100) }
   }
 }
