@@ -1,14 +1,11 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
-import RedisCacheProvider from '@shared/container/providers/implementations/RedisCachProvider';
 import { IUserDtos } from '@shared/dtos';
 import { prisma } from '@utils/prisma';
 import { getWeek } from 'date-fns';
 
 import { IMetricUser, TClassification } from './dtos';
-
-const redis = new RedisCacheProvider()
 
 const sgmests = [
   'CONSUMO_IN'
@@ -41,19 +38,8 @@ function currency(i: number) {
 export class MetricService {
 
   async user(userId: string): Promise<IMetricUser> {
-    await redis.removeAll()
-    let relations = await redis.recover<IRelationship[]>(`relations:${userId}`)
-    let users = await redis.recover<IUserDtos[]>('users')
-
-    if (!users) {
-      users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
-      redis.save('users', users)
-    }
-
-    if (!relations) {
-      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
-      await redis.save(`relations:${userId}`, relations)
-    }
+    const users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
+    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
     let totalPonts = 0 // feito
     let totalVendas = 0 //
@@ -167,8 +153,6 @@ export class MetricService {
     const handshak = relations
       .filter(h => !h.situation && h.type !== 'INVIT' && h.type !== 'PRESENCA' && h.type !== 'DONATE' && h.prestador_id === userId).length
 
-    console.log(handshak)
-
     return {
       totalPendente,
       totalVendas, satisfiedPresence, IdealPresence: currencyWeek,
@@ -185,13 +169,7 @@ export class MetricService {
   }
 
   async global(): Promise<any> {
-    let relations = await redis.recover<IRelationship[]>('relations')
-
-    if (!relations) {
-      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
-      await redis.save(`relations`, relations)
-
-    }
+    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation).reduce((ac, i) => ac + i.objto.valor, 0)
 
