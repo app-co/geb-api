@@ -112,7 +112,7 @@ export class MetricService {
       })
 
       totalPendente += totalPendente + pending
-      // console.log({ pontos })
+      console.log({ pontos })
       totalPonts += pontos
 
     })
@@ -166,7 +166,6 @@ export class MetricService {
 
     })
 
-    console.log({ totalPonts })
 
 
     const currencyWeek = getWeek(new Date());
