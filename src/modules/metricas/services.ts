@@ -113,14 +113,14 @@ export class MetricService {
       })
 
       totalPendente += totalPendente + pending
-      console.log({ pontos, seg: ponts[s] })
-      totalPonts += pontos
 
     })
 
     // totalPonts = presenca + indication + venda + compra + b2b + padrinho + convidado + donates
 
     satisfiedPorcentege = Number((valorV / 1500 * 100).toFixed(0))
+
+
 
     sgmests.forEach((s, index) => {
       const mapin = users!.map(user => {
@@ -167,7 +167,9 @@ export class MetricService {
 
     })
 
-
+    totalPonts = classification.map(h => {
+      return h.ponts
+    }).reduce((ac, i) => ac + i, 0)
 
     const currencyWeek = getWeek(new Date());
     const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0))
@@ -176,6 +178,7 @@ export class MetricService {
       .filter(h => !h.situation && h.type !== 'INVIT' && h.type !== 'PRESENCA' && h.type !== 'DONATE' && h.prestador_id === userId).length
 
     return {
+      totalPonts,
       totalPendente,
       totalVendas, satisfiedPresence, IdealPresence: currencyWeek,
       currencyVendas, handshak,
@@ -186,7 +189,6 @@ export class MetricService {
       satisfiedPorcentege,
       totalCompras,
       totalPresence,
-      totalPonts,
     };
   }
 
