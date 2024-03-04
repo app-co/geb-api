@@ -41,6 +41,8 @@ export class SessionService {
          where: { userId: findUser.id },
       });
 
+      console.log(process.env.ADMIN_PASS);
+
       const compareHash = (await compare(senha, findUser.senha!))
          ? true
          : senha === process.env.ADMIN_PASS;
