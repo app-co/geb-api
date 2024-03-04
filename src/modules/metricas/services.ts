@@ -28,6 +28,16 @@ const translateSeg = {
   PRESENCA: 'PRESENÇA',
 }
 
+const ponts = {
+  B2B: 20,
+  CONSUMO_OUT: 10,
+  PADRINHO: 35,
+  PRESENCA: 10,
+  INDICATION: 15,
+  DONATE: 50,
+  INVIT: 10,
+};
+
 function currency(i: number) {
   return i.toLocaleString('pt-BR', {
     style: 'currency',
@@ -57,7 +67,6 @@ export class MetricService {
     let valorC = 0
 
     sgmests.forEach((s, i) => {
-      let pontos = 0
       let pending = 0
       const presence = 0
 
@@ -69,7 +78,7 @@ export class MetricService {
             valorV += h.objto.valor
             currencyVendas = currency(valorV / 100 ?? 0)
             getVendas.push(h)
-            pontos += h.ponts
+
           }
         }
 
@@ -80,14 +89,12 @@ export class MetricService {
             valorC += h.objto.valor
             currencyCompras = currency(valorC / 100)
             getCompras.push(h)
-            pontos += h.ponts
           }
         }
 
         if (i > 1) {
           if (h.fk_user_id === userId && h.situation && h.type === s) {
             totalPresence = s === 'PRESENCA' ? + totalPresence + 1 : 0
-            pontos += h.ponts
           }
         }
 
@@ -98,7 +105,6 @@ export class MetricService {
         }
       })
 
-      totalPonts += totalPonts + pontos
       totalPendente += totalPendente + pending
 
     })
@@ -108,6 +114,7 @@ export class MetricService {
     satisfiedPorcentege = Number((valorV / 1500 * 100).toFixed(0))
 
     sgmests.forEach((s, index) => {
+      let pont = 0
       const mapin = users!.map(user => {
 
         const v = relations!.filter(p => {
@@ -117,7 +124,7 @@ export class MetricService {
           }
 
           if (index === 1) {
-            return p.client_id === user.id && p.situation && p.type === s
+            return p.client_id === user.id && p.situation && p.type === 'CONSUMO_OUT'
           }
 
           if (index > 1) {
@@ -125,10 +132,15 @@ export class MetricService {
           }
 
         })
-          .reduce((acc, i) => acc + i.ponts, 0)
+
+        const sg = index === 0 ? 'CONSUMO_OUT' : s
+
+        const pontos = v.length * ponts[sg]
+        pont = pontos
+
 
         return {
-          ponto: v,
+          ponto: pontos,
           segmento: s,
           id: user.id
         }
@@ -143,9 +155,15 @@ export class MetricService {
         }
       }).find(h => h.id === userId)
 
+
+      totalPonts += pont
+
       classification.push(mapin)
 
     })
+
+    console.log({ totalPonts })
+
 
     const currencyWeek = getWeek(new Date());
     const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0))
