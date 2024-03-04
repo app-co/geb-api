@@ -69,8 +69,9 @@ export class MetricService {
     sgmests.forEach((s, i) => {
       let pending = 0
       const presence = 0
+      let pontos = 0
 
-      relations!.forEach(h => {
+      relations!.forEach((h, index) => {
 
         if (i === 0) {
           if (h.prestador_id === userId && h.situation && h.type === 'CONSUMO_OUT') {
@@ -78,7 +79,7 @@ export class MetricService {
             valorV += h.objto.valor
             currencyVendas = currency(valorV / 100 ?? 0)
             getVendas.push(h)
-
+            pontos += ponts[s]
           }
         }
 
@@ -89,12 +90,16 @@ export class MetricService {
             valorC += h.objto.valor
             currencyCompras = currency(valorC / 100)
             getCompras.push(h)
+            pontos += ponts[s]
+
+
           }
         }
 
         if (i > 1) {
           if (h.fk_user_id === userId && h.situation && h.type === s) {
             totalPresence = s === 'PRESENCA' ? + totalPresence + 1 : 0
+            pontos += ponts[s]
           }
         }
 
@@ -102,10 +107,13 @@ export class MetricService {
 
         if (h.fk_user_id === userId && !h.situation) {
           pending += 1
+          pontos += ponts[s]
         }
       })
 
       totalPendente += totalPendente + pending
+      // console.log({ pontos })
+      totalPonts += pontos
 
     })
 
@@ -114,7 +122,6 @@ export class MetricService {
     satisfiedPorcentege = Number((valorV / 1500 * 100).toFixed(0))
 
     sgmests.forEach((s, index) => {
-      let pont = 0
       const mapin = users!.map(user => {
 
         const v = relations!.filter(p => {
@@ -136,8 +143,6 @@ export class MetricService {
         const sg = index === 0 ? 'CONSUMO_OUT' : s
 
         const pontos = v.length * ponts[sg]
-        pont = pontos
-
 
         return {
           ponto: pontos,
@@ -156,7 +161,6 @@ export class MetricService {
       }).find(h => h.id === userId)
 
 
-      totalPonts += pont
 
       classification.push(mapin)
 
