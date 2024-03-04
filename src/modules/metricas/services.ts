@@ -31,6 +31,7 @@ const translateSeg = {
 const ponts = {
   B2B: 20,
   CONSUMO_OUT: 10,
+  CONSUMO_IN: 10,
   PADRINHO: 35,
   PRESENCA: 10,
   INDICATION: 15,
@@ -112,7 +113,7 @@ export class MetricService {
       })
 
       totalPendente += totalPendente + pending
-      console.log({ pontos })
+      console.log({ pontos, seg: ponts[s] })
       totalPonts += pontos
 
     })
