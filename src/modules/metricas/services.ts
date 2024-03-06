@@ -182,7 +182,6 @@ export class MetricService {
 
     })
 
-    return transactions
 
     // totalPonts = classification.map(h => {
     //   return h.ponts
