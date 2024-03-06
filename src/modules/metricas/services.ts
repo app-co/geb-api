@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
+import RedisCacheProvider from '@shared/container/providers/implementations/RedisCachProvider';
 import { IUserDtos } from '@shared/dtos';
 import { getWeek } from 'date-fns';
 
@@ -18,14 +19,14 @@ const sgmests = [
   , 'PRESENCA']
 
 const translateSeg = {
-  CONSUMO_IN: 'COMPRAS',
-  CONSUMO_OUT: 'VENDAS',
-  B2B: 'B2B',
-  PADRINHO: 'PADRINHO',
-  INDICATION: 'INICAÇÕES',
-  DONATE: 'DONATIVOS',
-  INVIT: 'CONVIDADOS',
-  PRESENCA: 'PRESENÇA',
+  CONSUMO_OUT: 'consumo',
+  CONSUMO_IN: 'vendas',
+  B2B: 'b2b',
+  PADRINHO: 'padrinho',
+  INDICATION: 'indicações',
+  DONATE: 'donativos',
+  INVIT: 'vonvidados',
+  PRESENCA: 'presença',
 }
 
 const ponts = {
@@ -39,6 +40,16 @@ const ponts = {
   INVIT: 10,
 };
 
+interface ITrasaction {
+  seg: string
+  valido: number
+  pending: number
+  pontos: number
+  currency_venda: number
+  currency_compra: number
+  geb: number
+}
+
 function currency(i: number) {
   return i.toLocaleString('pt-BR', {
     style: 'currency',
@@ -48,79 +59,83 @@ function currency(i: number) {
 
 export class MetricService {
 
+
   async user(userId: string): Promise<IMetricUser> {
-    const users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
-    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
+    const cache = new RedisCacheProvider()
+
+    let users = await cache.recover<IUserDtos[]>('users')
+    let relations = await cache.recover<IRelationship[]>(`relations:${userId}`)
+
+    if (!users || !relations) {
+      users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
+      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
+
+      await cache.save('users', users)
+      await cache.save(`relations:${userId}`, relations)
+    }
 
     let totalPonts = 0 // feito
     let totalVendas = 0 //
     let totalCompras = 0 //
+    let currencyVendas = 'R$ 0,00' //
+    let currencyCompras = 'R$ 0,00' //
     let totalPresence = 0 //
     const classification: TClassification[] = []
     let satisfiedPorcentege = 0 //
-    const getVendas: IRelationship[] = [] //
-    const getCompras: IRelationship[] = [] //
-    let currencyVendas = 'R$ 0,00' //
-    let currencyCompras = '' //
+    let getVendas: IRelationship[] = [] //
+    let getCompras: IRelationship[] = [] //
     let totalPendente = 0
 
-    let valorV = 0
-    let valorC = 0
+    const valorV = 0
+    const valorC = 0
+
+    const transactions: ITrasaction[] = []
 
     sgmests.forEach((s, i) => {
-      let pending = 0
-      const presence = 0
-      let pontos = 0
+      let transaction: IRelationship[] = []
 
-      relations!.forEach((h, index) => {
+      if (i === 0) {
+        const get = relations!.filter(h => h.prestador_id === userId && h.type === 'CONSUMO_OUT')
+        getVendas = get
+        transaction = get
+      }
 
-        if (i === 0) {
-          if (h.prestador_id === userId && h.situation && h.type === 'CONSUMO_OUT') {
-            totalVendas += 1
-            valorV += h.objto.valor
-            currencyVendas = currency(valorV / 100 ?? 0)
-            getVendas.push(h)
-            pontos += ponts[s]
-          }
-        }
+      if (i === 1) {
+        const get = relations!.filter(h => h.client_id === userId && h.type === s)
+        getCompras = get
+        transaction = get
+      }
 
-        if (i === 1) {
+      if (i > 1) {
+        transaction = relations!.filter(h => h.fk_user_id === userId && h.type === s)
+      }
 
-          if (h.client_id === userId && h.situation && h.type === 'CONSUMO_OUT') {
-            totalCompras += 1
-            valorC += h.objto.valor
-            currencyCompras = currency(valorC / 100)
-            getCompras.push(h)
-            pontos += ponts[s]
+      const valido = transaction.filter(p => p.situation)
+      const dt = {
+        seg: s,
+        valido: valido.length,
+        pending: transaction.filter(p => !p.situation).length,
+        pontos: valido.length * ponts[s],
+        currency_venda: i === 0 ? valido.reduce((ac, item) => ac + item.objto.valor || 0, 0) / 100 : 0,
+        currency_compra: i === 1 ? valido.reduce((ac, item) => ac + item.objto.valor || 0, 0) / 100 : 0,
+        geb: i === 1 ? valido.filter(p => p.prestador_id === 'AlTHCu2ULagv43whGZTLYyY8Fro2').reduce((ac, item) => ac + item.objto.valor, 0) : 0
 
+      }
 
-          }
-        }
-
-        if (i > 1) {
-          if (h.fk_user_id === userId && h.situation && h.type === s) {
-            totalPresence = s === 'PRESENCA' ? + totalPresence + 1 : 0
-            pontos += ponts[s]
-          }
-        }
-
-
-
-        if (h.fk_user_id === userId && !h.situation) {
-          pending += 1
-          pontos += ponts[s]
-        }
-      })
-
-      totalPendente += totalPendente + pending
-
+      transactions.push(dt)
     })
 
+    totalCompras = transactions.reduce((ac, i) => ac + i.currency_compra, 0)
+    totalVendas = transactions.reduce((ac, i) => ac + i.currency_venda, 0)
+    totalPonts = transactions.reduce((ac, i) => ac + i.pontos, 0)
+    currencyCompras = currency(totalCompras)
+    currencyVendas = currency(totalVendas)
+    totalPresence = transactions.filter(h => h.seg === 'PRESENCA').reduce((ac, i) => ac + i.valido, 0)
+    totalPendente = transactions.reduce((ac, i) => ac + i.pending, 0)
+
     // totalPonts = presenca + indication + venda + compra + b2b + padrinho + convidado + donates
-
-    satisfiedPorcentege = Number((valorV / 1500 * 100).toFixed(0))
-
-
+    const amountGeb = transactions.reduce((acc, item) => acc + item.geb, 0) / 100
+    satisfiedPorcentege = Number((totalCompras / amountGeb * 100).toFixed(0))
 
     sgmests.forEach((s, index) => {
       const mapin = users!.map(user => {
@@ -167,9 +182,11 @@ export class MetricService {
 
     })
 
-    totalPonts = classification.map(h => {
-      return h.ponts
-    }).reduce((ac, i) => ac + i, 0)
+    return transactions
+
+    // totalPonts = classification.map(h => {
+    //   return h.ponts
+    // }).reduce((ac, i) => ac + i, 0)
 
     const currencyWeek = getWeek(new Date());
     const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0))
@@ -180,28 +197,36 @@ export class MetricService {
     return {
       totalPonts,
       totalPendente,
-      totalVendas, satisfiedPresence, IdealPresence: currencyWeek,
-      currencyVendas, handshak,
-      classification,
+      totalVendas,
+      totalCompras,
       currencyCompras,
+      currencyVendas,
+      satisfiedPorcentege,
+      totalPresence,
+      satisfiedPresence,
+      IdealPresence: currencyWeek,
+      handshak,
+      classification,
       getCompras,
       getVendas,
-      satisfiedPorcentege,
-      totalCompras,
-      totalPresence,
     };
   }
 
   async global(): Promise<any> {
-    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
+    const cache = new RedisCacheProvider()
+
+    let relations = await cache.recover<IRelationship[]>('relations')
+
+    if (!relations) {
+      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
+      await cache.save('relations', relations)
+    }
 
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation)
-      .reduce((ac, i) => ac + i.objto.valor, 0)
+      .reduce((ac, i) => ac + i.objto.valor, 111075052)
 
-    const total = (consumoTotal + 1058153178 + 111075052)
 
-    // 1058153178
-    // 1.191.847,07
+    const total = (consumoTotal + 1063581620)
     return { consumoTotal: currency(total / 100) }
   }
 }

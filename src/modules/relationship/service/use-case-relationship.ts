@@ -495,10 +495,7 @@ export class UseCasesRelationship {
          .then(h => console.log(h.data))
          .catch(h => console.log(h.response.data.errors, 'erro'));
 
-      await this.repoCache.invalidate('relation');
-      await this.repoCache.invalidatePrefix('relation-pedding');
-      await this.repoCache.invalidatePrefix('relation-validd');
-      await this.repoCache.invalidatePrefix(`relation-prest`);
+      await this.repoCache.removeAll();
 
       return up;
    }
