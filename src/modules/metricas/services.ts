@@ -19,14 +19,14 @@ const sgmests = [
   , 'PRESENCA']
 
 const translateSeg = {
-  CONSUMO_OUT: 'consumo',
-  CONSUMO_IN: 'vendas',
-  B2B: 'b2b',
-  PADRINHO: 'padrinho',
-  INDICATION: 'indicações',
-  DONATE: 'donativos',
-  INVIT: 'vonvidados',
-  PRESENCA: 'presença',
+  CONSUMO_OUT: 'Compras',
+  CONSUMO_IN: 'Vendas',
+  B2B: 'B2b',
+  PADRINHO: 'Padrinho',
+  INDICATION: 'Indicações',
+  DONATE: 'Donativos',
+  INVIT: 'Ponvidados',
+  PRESENCA: 'Presença',
 }
 
 const ponts = {
@@ -180,8 +180,8 @@ export class MetricService {
     //   return h.ponts
     // }).reduce((ac, i) => ac + i, 0)
 
-    const currencyWeek = getWeek(new Date());
-    const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0))
+    const currencyWeek = getWeek(new Date()) - 1;
+    const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0)) || 0
 
     const handshak = relations
       .filter(h => !h.situation && h.type !== 'INVIT' && h.type !== 'PRESENCA' && h.type !== 'DONATE' && h.prestador_id === userId).length
