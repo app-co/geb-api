@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
-import RedisCacheProvider from '@shared/container/providers/implementations/RedisCachProvider';
 import { IUserDtos } from '@shared/dtos';
 import { getWeek } from 'date-fns';
 
+import { injectable } from 'tsyringe';
 import { prisma } from '../../utils/prisma';
 import { IMetricUser, TClassification } from './dtos';
 
@@ -57,22 +57,15 @@ function currency(i: number) {
   })
 }
 
+@injectable()
 export class MetricService {
 
 
   async user(userId: string): Promise<IMetricUser> {
-    const cache = new RedisCacheProvider()
 
-    let users = await cache.recover<IUserDtos[]>('users')
-    let relations = await cache.recover<IRelationship[]>(`relations:${userId}`)
+    const users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
+    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
-    if (!users || !relations) {
-      users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
-      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
-
-      await cache.save('users', users)
-      await cache.save(`relations:${userId}`, relations)
-    }
 
     let totalPonts = 0 // feito
     let totalVendas = 0 //
@@ -212,14 +205,9 @@ export class MetricService {
   }
 
   async global(): Promise<any> {
-    const cache = new RedisCacheProvider()
 
-    let relations = await cache.recover<IRelationship[]>('relations')
 
-    if (!relations) {
-      relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
-      await cache.save('relations', relations)
-    }
+    const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation)
       .reduce((ac, i) => ac + i.objto.valor, 111075052)
