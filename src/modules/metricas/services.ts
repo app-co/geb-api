@@ -83,6 +83,7 @@ export class MetricService {
     const valorC = 0
 
     const transactions: ITrasaction[] = []
+    let lancamentos = 0
 
     sgmests.forEach((s, i) => {
       let transaction: IRelationship[] = []
@@ -91,16 +92,21 @@ export class MetricService {
         const get = relations!.filter(h => h.prestador_id === userId && h.type === 'CONSUMO_OUT')
         getVendas = get
         transaction = get
+        lancamentos += get.length
       }
 
       if (i === 1) {
         const get = relations!.filter(h => h.client_id === userId && h.type === s)
         getCompras = get
         transaction = get
+        lancamentos += get.length
+
       }
 
       if (i > 1) {
-        transaction = relations!.filter(h => h.fk_user_id === userId && h.type === s)
+        const get = relations!.filter(h => h.fk_user_id === userId && h.type === s)
+        transaction = get
+        lancamentos += get.length
       }
 
       const valido = transaction.filter(p => p.situation)
@@ -175,7 +181,6 @@ export class MetricService {
 
     })
 
-
     // totalPonts = classification.map(h => {
     //   return h.ponts
     // }).reduce((ac, i) => ac + i, 0)
@@ -183,13 +188,14 @@ export class MetricService {
     const currencyWeek = getWeek(new Date()) - 1;
     const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0)) || 0
 
+
     const handshak = relations
       .filter(h => !h.situation && h.type !== 'INVIT' && h.type !== 'PRESENCA' && h.type !== 'DONATE' && h.prestador_id === userId).length
 
     return {
       totalPonts,
       totalPendente,
-      totalVendas,
+      totalVendas: transactions.reduce((ac, i) => ac + i.valido, 0),
       totalCompras,
       currencyCompras,
       currencyVendas,
