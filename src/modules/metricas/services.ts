@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
 import { IUserDtos } from '@shared/dtos';
-import { getWeek } from 'date-fns';
-
+import { eachDayOfInterval, getWeek, isThursday } from 'date-fns';
 import { injectable } from 'tsyringe';
+
 import { prisma } from '../../utils/prisma';
 import { IMetricUser, TClassification } from './dtos';
 
@@ -25,7 +25,7 @@ const translateSeg = {
   PADRINHO: 'Padrinho',
   INDICATION: 'Indicações',
   DONATE: 'Donativos',
-  INVIT: 'Ponvidados',
+  INVIT: 'Convidados',
   PRESENCA: 'Presença',
 }
 
@@ -62,7 +62,6 @@ export class MetricService {
 
 
   async user(userId: string): Promise<IMetricUser> {
-
     const users = await prisma.user.findMany({ orderBy: { nome: 'asc' } }) as unknown as IUserDtos[]
     const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
 
@@ -134,6 +133,7 @@ export class MetricService {
 
     // totalPonts = presenca + indication + venda + compra + b2b + padrinho + convidado + donates
     const amountGeb = transactions.reduce((acc, item) => acc + item.geb, 0) / 100
+
     satisfiedPorcentege = Number((totalCompras / amountGeb * 100).toFixed(0))
 
     sgmests.forEach((s, index) => {
@@ -185,8 +185,21 @@ export class MetricService {
     //   return h.ponts
     // }).reduce((ac, i) => ac + i, 0)
 
+    const dataInicio = new Date(2024, 0, 1); // 1 de janeiro de 2024
+
+    const dataAtual = new Date(); // data atual
+
+    const semanas = eachDayOfInterval({
+      start: dataInicio,
+      end: dataAtual,
+    });
+
+    // Conta quantas quintas-feiras ocorreram
+    const quintas = semanas.filter(semana => isThursday(semana)).length - 1
+
+
     const currencyWeek = getWeek(new Date()) - 1;
-    const satisfiedPresence = Number((totalPresence / currencyWeek * 100).toFixed(0)) || 0
+    const satisfiedPresence = Number((totalPresence / quintas * 100).toFixed(0)) || 0
 
 
     const handshak = relations
