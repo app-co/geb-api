@@ -18,4 +18,11 @@ export class MetricController {
 
     return res.json(get);
   }
+
+  async pres(req: Request, res: Response): Promise<Response> {
+    const get = await metricService.pres();
+
+    return res.json(get);
+  }
+  
 }

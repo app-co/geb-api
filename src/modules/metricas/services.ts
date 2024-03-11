@@ -181,10 +181,6 @@ export class MetricService {
 
     })
 
-    // totalPonts = classification.map(h => {
-    //   return h.ponts
-    // }).reduce((ac, i) => ac + i, 0)
-
     const dataInicio = new Date(2024, 0, 1); // 1 de janeiro de 2024
 
     const dataAtual = new Date(); // data atual
@@ -196,6 +192,7 @@ export class MetricService {
 
     // Conta quantas quintas-feiras ocorreram
     const quintas = semanas.filter(semana => isThursday(semana)).length - 1
+
 
 
     const currencyWeek = getWeek(new Date()) - 1;
@@ -215,7 +212,7 @@ export class MetricService {
       satisfiedPorcentege,
       totalPresence,
       satisfiedPresence,
-      IdealPresence: currencyWeek,
+      IdealPresence: quintas,
       handshak,
       classification,
       getCompras,
@@ -234,5 +231,66 @@ export class MetricService {
 
     const total = (consumoTotal + 1063581620)
     return { consumoTotal: currency(total / 100) }
+  }
+
+  async pres() {
+    const names = [
+      'Adriana Serer',
+      'Bruno Rafael Moscatelli',
+      'Danilo Ravelli',
+      'Douglas Braz',
+      'Eduardo Plustag',
+      'Érica Neves',
+      'Felipe - Gigatron Botucatu',
+      'Vox2you',
+      'Marcos Oyan',
+      'Marcos Penteado',
+      'Mauro',
+      'Paulo Daniel',
+      'Pedro Souza',
+      'Rafael Araújo',
+      'Rafael Tomasini',
+      'Renato',
+      'Talitha',
+      'Erika Martins',
+      'Rayane Carvalho',
+    ]
+
+    // const redis = new RedisCacheProvider()
+
+    // const users = await redis.recover('users')
+
+    // if (!users) {
+
+    // }
+    const users = await prisma.user.findMany({
+      where: { membro: { in: names } }, orderBy: { nome: 'asc' }, include: { profile: true }
+    })
+
+
+
+    const dados = users.map(h => {
+      const dt = {
+        fk_user_id: h.id,
+        objto: {
+          nome: h.nome,
+          user_id: h.id,
+          avatar: h.profile!.avatar,
+          token: h.token,
+        },
+        ponts: 10,
+        type: 'PRESENCA',
+        situation: false,
+      }
+
+
+      return dt
+    })
+
+    await prisma.relationShip.createMany({
+      data: dados
+    })
+
+    return users.map(h => { return { name: h.nome, membro: h.membro } })
   }
 }
