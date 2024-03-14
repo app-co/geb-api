@@ -6,251 +6,251 @@ import { prisma } from '../../../utils/prisma';
 import { IUsersRepository } from './IUsersRespository';
 
 export class UsersRespository implements IUsersRepository {
-   public async create(
-      data: IUserDtos,
-      apadrinhado: boolean,
-      firstLogin: boolean,
-      inativo: boolean,
-   ): Promise<User> {
-      const user = await prisma.user.create({
-         data: {
-            nome: data.nome,
-            membro: data.membro,
-            hub: data.hub,
-            adm: data.adm,
-            senha: data.senha!,
-            situation: {
-               create: {
-                  apadrinhado,
-                  firstLogin,
-                  inativo,
-               },
-            },
-            region: {
-               create: {
-                  city: 'BOTUCATU',
-               },
-            },
+  public async create(
+    data: IUserDtos,
+    apadrinhado: boolean,
+    firstLogin: boolean,
+    inativo: boolean,
+  ): Promise<User> {
+    const user = await prisma.user.create({
+      data: {
+        nome: data.nome,
+        membro: data.membro,
+        hub: data.hub,
+        adm: data.adm,
+        senha: data.senha!,
+        situation: {
+          create: {
+            apadrinhado,
+            firstLogin,
+            inativo,
+          },
+        },
+        region: {
+          create: {
+            city: 'BOTUCATU',
+          },
+        },
 
-            profile: {
-               create: {
-                  whats: 'whats',
-                  workName: 'workName',
-                  CNPJ: 'CNPJ',
-                  CPF: 'CPF',
-                  ramo: 'ramo',
-                  enquadramento: 'enquadramento',
-                  email: 'email',
-               },
-            },
-         },
-      });
+        profile: {
+          create: {
+            whats: 'whats',
+            workName: 'workName',
+            CNPJ: 'CNPJ',
+            CPF: 'CPF',
+            ramo: 'ramo',
+            enquadramento: 'enquadramento',
+            email: 'email',
+          },
+        },
+      },
+    });
 
-      return user;
-   }
+    return user;
+  }
 
-   public async updateMembro(data: IMembro): Promise<User> {
-      const us = prisma.user.update({
-         where: { id: data.id },
-         data: {
-            nome: data?.nome,
-            membro: data?.membro,
-            senha: data?.senha,
-            adm: data?.adm,
-            token: data?.token,
-         },
-      });
+  public async updateMembro(data: IMembro): Promise<User> {
+    const us = prisma.user.update({
+      where: { id: data.id },
+      data: {
+        nome: data?.nome,
+        membro: data?.membro,
+        senha: data?.senha,
+        adm: data?.adm,
+        token: data?.token,
+      },
+    });
 
-      return us;
-   }
+    return us;
+  }
 
-   async findByMembro(membro: string): Promise<User | null> {
-      const find = await prisma.user.findUnique({
-         where: { membro },
-      });
+  async findByMembro(membro: string): Promise<User | null> {
+    const find = await prisma.user.findUnique({
+      where: { membro },
+    });
 
-      return find;
-   }
+    return find;
+  }
 
-   async findById(user_id: string): Promise<User | null> {
-      const find = await prisma.user.findUnique({
-         where: { id: user_id },
-         include: {
-            profile: true,
-            region: true,
-            situation: true,
-            Stars: true,
-            midia: true,
-         },
-      });
+  async findById(user_id: string): Promise<IUserDtos | null> {
+    const find = await prisma.user.findUnique({
+      where: { id: user_id },
+      include: {
+        profile: true,
+        region: true,
+        situation: true,
+        Stars: true,
+        midia: true,
+      },
+    });
 
-      return find;
-   }
+    return find;
+  }
 
-   async listAllUser(): Promise<User[]> {
-      const find = await prisma.user.findMany({
-         include: {
-            situation: true,
-            profile: true,
-            region: true,
-            DadosFire: true,
-            Stars: true,
-            midia: true,
-            RelationShip: true,
-         },
-         orderBy: {
-            nome: 'asc',
-         },
-      });
-      return find;
-   }
+  async listAllUser(): Promise<User[]> {
+    const find = await prisma.user.findMany({
+      include: {
+        situation: true,
+        profile: true,
+        region: true,
+        DadosFire: true,
+        Stars: true,
+        midia: true,
+        RelationShip: true,
+      },
+      orderBy: {
+        nome: 'asc',
+      },
+    });
+    return find;
+  }
 
-   async updateToken(id: string, token: string): Promise<User> {
-      const up = await prisma.user.update({
-         where: { id },
-         data: {
-            token,
-         },
-      });
+  async updateToken(id: string, token: string): Promise<User> {
+    const up = await prisma.user.update({
+      where: { id },
+      data: {
+        token,
+      },
+    });
 
-      return up;
-   }
+    return up;
+  }
 
-   async deleteUser(membro: string): Promise<User> {
-      const user = await prisma.user.delete({
-         where: { membro },
-      });
+  async deleteUser(membro: string): Promise<User> {
+    const user = await prisma.user.delete({
+      where: { membro },
+    });
 
-      return user;
-   }
+    return user;
+  }
 
-   //! !  LINKS
+  //! !  LINKS
 
-   // !!PROFILE  */
+  // !!PROFILE  */
 
-   async updateProfile(data: IProfileDto): Promise<Profile> {
-      const up = await prisma.profile.update({
-         where: { id: data.id },
-         data: {
-            whats: data.whats,
-            workName: data.workName,
-            CNPJ: data.CNPJ,
-            CPF: data.CPF,
-            ramo: data.ramo,
-            enquadramento: data.enquadramento,
-            email: data.email,
-            avatar: data.avatar,
-            logotipo: data.logo,
-            avatarPath: data.avatarPath,
-            logoPath: data.logoPath,
-         },
-      });
+  async updateProfile(data: IProfileDto): Promise<Profile> {
+    const up = await prisma.profile.update({
+      where: { id: data.id },
+      data: {
+        whats: data.whats,
+        workName: data.workName,
+        CNPJ: data.CNPJ,
+        CPF: data.CPF,
+        ramo: data.ramo,
+        enquadramento: data.enquadramento,
+        email: data.email,
+        avatar: data.avatar,
+        logotipo: data.logo,
+        avatarPath: data.avatarPath,
+        logoPath: data.logoPath,
+      },
+    });
 
-      return up;
-   }
+    return up;
+  }
 
-   async findByIdProfile(id: string): Promise<Profile | null> {
-      const find = await prisma.profile.findFirst({
-         where: { fk_id_user: id },
-      });
+  async findByIdProfile(id: string): Promise<Profile | null> {
+    const find = await prisma.profile.findFirst({
+      where: { fk_id_user: id },
+    });
 
-      return find;
-   }
+    return find;
+  }
 
-   async createProfile(data: IProfileDto): Promise<Profile> {
-      const create = await prisma.profile.create({
-         data: {
-            whats: data.whats,
-            workName: data.workName,
-            CNPJ: data.CNPJ,
-            CPF: data.CPF,
-            ramo: data.ramo,
-            enquadramento: data.enquadramento,
-            email: data.email,
-            logotipo: data.logo,
-            avatar: data.avatar,
-            fk_id_user: data.fk_id_user,
-         },
-      });
+  async createProfile(data: IProfileDto): Promise<Profile> {
+    const create = await prisma.profile.create({
+      data: {
+        whats: data.whats,
+        workName: data.workName,
+        CNPJ: data.CNPJ,
+        CPF: data.CPF,
+        ramo: data.ramo,
+        enquadramento: data.enquadramento,
+        email: data.email,
+        logotipo: data.logo,
+        avatar: data.avatar,
+        fk_id_user: data.fk_id_user,
+      },
+    });
 
-      return create;
-   }
+    return create;
+  }
 
-   async findProfileByUserId(fk_id_user: string): Promise<Profile | null> {
-      const find = await prisma.profile.findFirst({
-         where: { fk_id_user },
-      });
+  async findProfileByUserId(fk_id_user: string): Promise<Profile | null> {
+    const find = await prisma.profile.findFirst({
+      where: { fk_id_user },
+    });
 
-      return find;
-   }
+    return find;
+  }
 
-   async findAllProfile(): Promise<Profile[]> {
-      const fi = await prisma.profile.findMany();
-      return fi;
-   }
+  async findAllProfile(): Promise<Profile[]> {
+    const fi = await prisma.profile.findMany();
+    return fi;
+  }
 
-   async updateSenha(senha: string, membro: string): Promise<User> {
-      const user = await prisma.user.update({
-         where: { membro },
-         data: {
-            senha,
-         },
-      });
+  async updateSenha(senha: string, membro: string): Promise<User> {
+    const user = await prisma.user.update({
+      where: { membro },
+      data: {
+        senha,
+      },
+    });
 
-      return user;
-   }
+    return user;
+  }
 
-   async updateUser(data: IUserDtos, id: string): Promise<User> {
-      const up = await prisma.user.update({
-         where: { id },
-         data: {
-            nome: data.nome,
-            membro: data.membro,
-            adm: data.adm,
-            senha: data.senha,
-         },
-      });
+  async updateUser(data: IUserDtos, id: string): Promise<User> {
+    const up = await prisma.user.update({
+      where: { id },
+      data: {
+        nome: data.nome,
+        membro: data.membro,
+        adm: data.adm,
+        senha: data.senha,
+      },
+    });
 
-      return up;
-   }
+    return up;
+  }
 
-   // !! SITUATION
+  // !! SITUATION
 
-   async updateSituation(data: ISituationUser): Promise<SituationUser> {
-      const up = await prisma.situationUser.update({
-         where: { id: data.id },
-         data: {
-            fk_id_user: data.fk_id_user,
-            apadrinhado: data.apadrinhado,
-            firstLogin: data.firstLogin,
-            inativo: data.inativo,
-         },
-      });
+  async updateSituation(data: ISituationUser): Promise<SituationUser> {
+    const up = await prisma.situationUser.update({
+      where: { id: data.id },
+      data: {
+        fk_id_user: data.fk_id_user,
+        apadrinhado: data.apadrinhado,
+        firstLogin: data.firstLogin,
+        inativo: data.inativo,
+      },
+    });
 
-      return up;
-   }
+    return up;
+  }
 
-   async findSituation(id: string): Promise<SituationUser | null> {
-      const fin = await prisma.situationUser.findFirst({
-         where: { fk_id_user: id },
-      });
+  async findSituation(id: string): Promise<SituationUser | null> {
+    const fin = await prisma.situationUser.findFirst({
+      where: { fk_id_user: id },
+    });
 
-      return fin;
-   }
+    return fin;
+  }
 
-   async listAllSituation(): Promise<SituationUser[]> {
-      const l = await prisma.situationUser.findMany();
+  async listAllSituation(): Promise<SituationUser[]> {
+    const l = await prisma.situationUser.findMany();
 
-      return l;
-   }
+    return l;
+  }
 
-   // !! PADRINHO
+  // !! PADRINHO
 
-   //! ! DADOS FIRE
+  //! ! DADOS FIRE
 
-   async listAllDataFire(): Promise<DadosFire[]> {
-      const fire = prisma.dadosFire.findMany();
+  async listAllDataFire(): Promise<DadosFire[]> {
+    const fire = prisma.dadosFire.findMany();
 
-      return fire;
-   }
+    return fire;
+  }
 }

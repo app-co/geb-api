@@ -2,6 +2,7 @@ import { IUsersRepository } from '@modules/users/repositories/IUsersRespository'
 import { RelationShip } from '@prisma/client';
 import ICacheProvider from '@shared/container/providers/model/ICacheProvider';
 import { Err } from '@shared/errors/AppError';
+import { apiOnesignal } from '@shared/service/Onesignal-api';
 import axios from 'axios';
 import { format } from 'date-fns';
 
@@ -406,6 +407,24 @@ export class UseCasesRelationship {
       await axios.post('https://exp.host/--/api/v2/push/send', message);
     }
 
+    await apiOnesignal.post('/notifications', {
+      app_id: process.env.ONE_SIGNAL_APP_ID,
+      contents: {
+        en: 'Novo like no seu post',
+      },
+      headings: {
+        en: 'Alguem gostou do seu post',
+      },
+      filters: [
+        {
+          field: 'tag',
+          key: 'username',
+          relation: 'is',
+          value: token,
+        },
+      ],
+    });
+
     await this.repoCache.removeAll();
 
     return create;
@@ -433,6 +452,8 @@ export class UseCasesRelationship {
   }
 
   async update(data: IRelationshipUpdate): Promise<RelationShip> {
+    await this.repoCache.removeAll();
+
     const findRelation = (await this.repoRelation.findById(
       data.id,
     )) as unknown as IRelationship;
@@ -490,8 +511,6 @@ export class UseCasesRelationship {
       .post('https://exp.host/--/api/v2/push/send', message)
       .then(h => console.log(h.data))
       .catch(h => console.log(h.response.data.errors, 'erro'));
-
-    await this.repoCache.removeAll();
 
     return up;
   }

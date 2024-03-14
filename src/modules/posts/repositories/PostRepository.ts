@@ -54,6 +54,7 @@ export class PostRepository implements IPostsRepository {
          data: {
             user_id,
             fk_id_post,
+            liked: true,
          },
       });
 

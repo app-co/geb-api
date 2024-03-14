@@ -15,7 +15,7 @@ export interface IUsersRepository {
       inativo?: boolean,
    ): Promise<User>;
    findByMembro(membro: string): Promise<User | null>;
-   findById(user_id: string): Promise<User | null>;
+   findById(user_id: string): Promise<IUserDtos | null>;
    listAllUser(): Promise<User[]>;
    updateUser(data: IUserUpdate): Promise<User>;
    updateToken(id: string, token: string): Promise<User>;

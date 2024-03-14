@@ -93,10 +93,11 @@ model Post {
 }
 
 model Like {
-   id         String @id @default(uuid())
-   like       Int    @default(0)
+   id         String  @id @default(uuid())
+   like       Int     @default(0)
+   liked      Boolean @default(false)
    user_id    String
-   post       Post   @relation(fields: [fk_id_post], references: [id], onDelete: Cascade)
+   post       Post    @relation(fields: [fk_id_post], references: [id], onDelete: Cascade)
    fk_id_post String
 }
 
