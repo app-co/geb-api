@@ -46,23 +46,27 @@ export class LikeService {
 
     await this.cache.invalidate('posts');
 
-    await apiOnesignal.post('/notifications', {
-      app_id: process.env.ONE_SIGNAL_APP_ID,
-      contents: {
-        en: 'Novo like no seu post',
-      },
-      headings: {
-        en: 'Alguem gostou do seu post',
-      },
-      filters: [
-        {
-          field: 'tag',
-          key: 'username',
-          relation: 'is',
-          value: user.membro,
+    try {
+      await apiOnesignal.post('/notifications', {
+        app_id: process.env.ONE_SIGNAL_APP_ID,
+        contents: {
+          en: 'Novo like no seu post',
         },
-      ],
-    });
+        headings: {
+          en: 'Alguem gostou do seu post',
+        },
+        filters: [
+          {
+            field: 'tag',
+            key: 'username',
+            relation: 'is',
+            value: user.membro,
+          },
+        ],
+      });
+    } catch (error) {
+      console.log({ error });
+    }
 
     return lk;
   }
