@@ -10,6 +10,6 @@ metricRoute.get('/metric/user', Auth, controler.user);
 
 metricRoute.get('/metric', Auth, controler.global);
 
-metricRoute.get('/pres', controler.pres);
+metricRoute.post('/pres', controler.pres);
 
 export { metricRoute };

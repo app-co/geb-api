@@ -233,36 +233,9 @@ export class MetricService {
     return { consumoTotal: currency(total / 100) }
   }
 
-  async pres() {
-    const names = [
-      'Adriana Serer',
-      'Bruno Rafael Moscatelli',
-      'Danilo Ravelli',
-      'Douglas Braz',
-      'Eduardo Plustag',
-      'Érica Neves',
-      'Felipe - Gigatron Botucatu',
-      'Vox2you',
-      'Marcos Oyan',
-      'Marcos Penteado',
-      'Mauro',
-      'Paulo Daniel',
-      'Pedro Souza',
-      'Rafael Araújo',
-      'Rafael Tomasini',
-      'Renato',
-      'Talitha',
-      'Erika Martins',
-      'Rayane Carvalho',
-    ]
+  async pres(names: string[]) {
 
-    // const redis = new RedisCacheProvider()
 
-    // const users = await redis.recover('users')
-
-    // if (!users) {
-
-    // }
     const users = await prisma.user.findMany({
       where: { membro: { in: names } }, orderBy: { nome: 'asc' }, include: { profile: true }
     })
