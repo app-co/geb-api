@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
 import { IUserDtos } from '@shared/dtos';
-import { eachDayOfInterval, getWeek, isThursday } from 'date-fns';
+import { eachDayOfInterval, format, isThursday } from 'date-fns';
 import { injectable } from 'tsyringe';
 
 import { prisma } from '../../utils/prisma';
@@ -59,6 +59,22 @@ function currency(i: number) {
 
 @injectable()
 export class MetricService {
+
+  currentQuintas(): Promise<number> {
+
+    const dataInicio = new Date(2024, 0, 1); // 1 de janeiro de 2024
+
+    const dataAtual = new Date(); // data atual
+
+    const semanas = eachDayOfInterval({
+      start: dataInicio,
+      end: dataAtual,
+    });
+
+    const quintas = semanas.filter(semana => isThursday(semana)).length - 1
+
+    return quintas;
+  }
 
 
   async user(userId: string): Promise<IMetricUser> {
@@ -181,22 +197,10 @@ export class MetricService {
 
     })
 
-    const dataInicio = new Date(2024, 0, 1); // 1 de janeiro de 2024
 
-    const dataAtual = new Date(); // data atual
+    const saturday = this.currentQuintas()
 
-    const semanas = eachDayOfInterval({
-      start: dataInicio,
-      end: dataAtual,
-    });
-
-    // Conta quantas quintas-feiras ocorreram
-    const quintas = semanas.filter(semana => isThursday(semana)).length - 1
-
-
-
-    const currencyWeek = getWeek(new Date()) - 1;
-    const satisfiedPresence = Number((totalPresence / quintas * 100).toFixed(0)) || 0
+    const satisfiedPresence = Number((totalPresence / Number(saturday) * 100).toFixed(0)) || 0
 
 
     const handshak = relations
@@ -212,7 +216,7 @@ export class MetricService {
       satisfiedPorcentege,
       totalPresence,
       satisfiedPresence,
-      IdealPresence: quintas,
+      IdealPresence: Number(saturday),
       handshak,
       classification,
       getCompras,
@@ -224,13 +228,38 @@ export class MetricService {
 
 
     const relations = await prisma.relationShip.findMany() as unknown as IRelationship[];
+    const users = await prisma.user.findMany({
+      orderBy: { nome: 'asc' },
+      include: {
+        RelationShip: true
+      }
+    })
+
+    const getUsers = users.map(user => {
+      const presenca = user.RelationShip.filter(h => h.fk_user_id === user.id && h.type === 'PRESENCA' && h.situation)
+      const saturday = Number(this.currentQuintas())
+
+      const pres = `${saturday}/${presenca.length ?? 0}`
+      return {
+        id: user.id,
+        nome: user.nome,
+        membro: user.membro,
+        created: format(new Date(user.created_at), 'dd/MM/yy'),
+        presenca: pres
+      }
+    })
+
+    console.log(this.currentQuintas())
 
     const consumoTotal = relations.filter(h => h.type === 'CONSUMO_OUT' && h.situation)
       .reduce((ac, i) => ac + i.objto.valor, 111075052)
 
 
     const total = (consumoTotal + 1063581620)
-    return { consumoTotal: currency(total / 100) }
+    return {
+      consumoTotal: currency(total / 100),
+      getUsers
+    }
   }
 
   async pres(names: string[]) {
