@@ -231,29 +231,25 @@ export class MetricService {
     const users = await prisma.user.findMany({
       orderBy: { nome: 'asc' },
       include: {
-        RelationShip: {
-          where: {
-            situation: true,
-            type: 'PRESENCA'
-          },
-          select: { fk_user_id: true, type: true, situation: true }
-        },
         profile: true
       }
     })
 
     const getUsers = users.map(user => {
-      const presenca = user.RelationShip.filter(h => h.fk_user_id === user.id)
+      const relation = relations.filter(h => h.fk_user_id === user.id)
+
+
       const saturday = Number(this.currentQuintas())
 
-      const pres = `${saturday}/${presenca.length ?? 0}`
+      const pres = `${saturday}/${relation.filter(h => h.type === 'PRESENCA' && h.situation).length ?? 0}`
       return {
         id: user.id,
         nome: user.nome,
         membro: user.membro,
         created: format(new Date(user.created_at), 'dd/MM/yy'),
         workname: user.profile?.workName,
-        presenca: pres
+        presenca: pres,
+        relations: relation
       }
     })
 
