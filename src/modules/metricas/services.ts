@@ -236,12 +236,12 @@ export class MetricService {
     })
 
     const getUsers = users.map(user => {
-      const relation = relations.filter(h => h.fk_user_id === user.id)
+      const relation = relations.filter(h => h.fk_user_id === user.id && h.situation)
 
 
       const saturday = Number(this.currentQuintas())
 
-      const pres = `${saturday}/${relation.filter(h => h.type === 'PRESENCA' && h.situation).length ?? 0}`
+      const pres = `${saturday}/${relation.filter(h => h.type === 'PRESENCA').length ?? 0}`
       return {
         id: user.id,
         nome: user.nome,
