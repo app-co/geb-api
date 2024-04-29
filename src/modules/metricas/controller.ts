@@ -20,9 +20,9 @@ export class MetricController {
   }
 
   async pres(req: Request, res: Response): Promise<Response> {
-    const { names } = req.body;
+    const { userId } = req.body;
 
-    const get = await metricService.pres(names);
+    const get = await metricService.pres(userId);
 
     return res.json(get);
   }
