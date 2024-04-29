@@ -5,6 +5,7 @@ import { IUserDtos } from '@shared/dtos';
 import { eachDayOfInterval, format, isThursday } from 'date-fns';
 import { injectable } from 'tsyringe';
 
+import { Err } from '@shared/errors/AppError';
 import { prisma } from '../../utils/prisma';
 import { IMetricUser, TClassification } from './dtos';
 
@@ -265,37 +266,36 @@ export class MetricService {
     }
   }
 
-  async pres(names: string[]) {
+  async pres(userId: string) {
 
 
-    const users = await prisma.user.findMany({
-      where: { membro: { in: names } }, orderBy: { nome: 'asc' }, include: { profile: true }
+    const user = await prisma.user.findFirst({
+      where: { id: userId },
+      include: { profile: true }
     })
 
+    if (!user) {
+      throw new Err('user not found')
+    }
 
 
-    const dados = users.map(h => {
-      const dt = {
-        fk_user_id: h.id,
-        objto: {
-          nome: h.nome,
-          user_id: h.id,
-          avatar: h.profile!.avatar,
-          token: h.token,
-        },
-        ponts: 10,
-        type: 'PRESENCA',
-        situation: false,
-      }
+    const dt = {
+      fk_user_id: user.id,
+      objto: {
+        nome: user.nome,
+        user_id: user.id,
+        avatar: user.profile!.avatar,
+        token: user.token,
+      },
+      ponts: 10,
+      type: 'PRESENCA',
+      situation: true,
+    }
 
-
-      return dt
+    await prisma.relationShip.create({
+      data: dt
     })
 
-    await prisma.relationShip.createMany({
-      data: dados
-    })
-
-    return users.map(h => { return { name: h.nome, membro: h.membro } })
+    return dt
   }
 }
