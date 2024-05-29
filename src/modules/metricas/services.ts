@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { IRelationship } from '@modules/relationship/dtos';
 import { IUserDtos } from '@shared/dtos';
+import { Err } from '@shared/errors/AppError';
 import { eachDayOfInterval, format, isThursday } from 'date-fns';
 import { injectable } from 'tsyringe';
 
-import { Err } from '@shared/errors/AppError';
 import { prisma } from '../../utils/prisma';
 import { IMetricUser, TClassification } from './dtos';
 
@@ -232,7 +232,8 @@ export class MetricService {
     const users = await prisma.user.findMany({
       orderBy: { nome: 'asc' },
       include: {
-        profile: true
+        profile: true,
+        situation: true,
       }
     })
 
@@ -250,7 +251,8 @@ export class MetricService {
         created: format(new Date(user.created_at), 'dd/MM/yy'),
         workname: user.profile?.workName,
         presenca: pres,
-        relations: relation
+        relations: relation,
+        situation: user.situation
       }
     })
 
