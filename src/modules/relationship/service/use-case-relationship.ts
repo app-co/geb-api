@@ -521,17 +521,11 @@ export class UseCasesRelationship {
   }
 
   async listByPrestador(prestador_id: string): Promise<RelationShip[]> {
-    let list = await this.repoCache.recover<IRelationship[]>(
-      `relation-prest:${prestador_id}`,
-    );
 
-    if (!list) {
-      list = (await this.repoRelation.listByPrestador(
-        prestador_id,
-      )) as unknown as IRelationship[];
+    const list = (await this.repoRelation.listByPrestador(
+      prestador_id,
+    )) as unknown as IRelationship[];
 
-      await this.repoCache.save(`relation-prest:${prestador_id}`, list);
-    }
 
     let currency = '';
     let totalValor = 0;
