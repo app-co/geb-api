@@ -17,7 +17,9 @@ const sgmests = [
   , 'INDICATION'
   , 'DONATE'
   , 'INVIT'
-  , 'PRESENCA']
+  , 'PRESENCA'
+  , 'Sports'
+]
 
 const translateSeg = {
   CONSUMO_OUT: 'Compras',
@@ -28,6 +30,7 @@ const translateSeg = {
   DONATE: 'Donativos',
   INVIT: 'Convidados',
   PRESENCA: 'Presença',
+  Sports: 'Saúde/Esportes',
 }
 
 const ponts = {
