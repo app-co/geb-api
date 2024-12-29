@@ -30,8 +30,8 @@ export const clients: Array<any> = [];
 // });
 
 app.use((req: Request, res: Response, nex: NextFunction) => {
-   req.io = io;
-   nex();
+  req.io = io;
+  nex();
 });
 // app.use(rateLimiter);
 app.use(cors());
@@ -41,49 +41,49 @@ app.use(Route);
 app.use(errors());
 
 app.use(
-   '/file/post',
-   express.static(
-      path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'post'),
-   ),
+  '/file/post',
+  express.static(
+    path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'post'),
+  ),
 );
 
 app.use(
-   '/file/avatar',
-   express.static(
-      path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'avatar'),
-   ),
+  '/file/avatar',
+  express.static(
+    path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'avatar'),
+  ),
 );
 
 app.use(
-   '/file/logo',
-   express.static(
-      path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'logo'),
-   ),
+  '/file/logo',
+  express.static(
+    path.resolve(__dirname, '..', '..', '..', '..', 'tmp', 'logo'),
+  ),
 );
 
 app.use((err: Error, req: Request, res: Response, _: NextFunction) => {
-   if (err instanceof Err) {
-      return res.status(err.statusCode).json({
-         status: 'error',
-         message: err.message,
-      });
-   }
-
-   if (err instanceof ZodError) {
-      return res.status(409).json({
-         status: 'error',
-         message: `Erro de validação: ${err.errors[0].path[0]} ${err.errors[0].message}`,
-      });
-   }
-
-   console.log(err);
-
-   return res.status(500).json({
+  if (err instanceof Err) {
+    return res.status(err.statusCode).json({
       status: 'error',
-      message: 'Erro interno',
-   });
+      message: err.message,
+    });
+  }
+
+  if (err instanceof ZodError) {
+    return res.status(409).json({
+      status: 'error',
+      message: `Erro de validação: ${err.errors[0].path[0]} ${err.errors[0].message}`,
+    });
+  }
+
+  console.log(err);
+
+  return res.status(500).json({
+    status: 'error',
+    message: 'Erro interno',
+  });
 });
 
-server.listen(3333, () => console.log('listening on port 3333'));
+server.listen(3334, () => console.log('listening on port 3334'));
 
 export { app };

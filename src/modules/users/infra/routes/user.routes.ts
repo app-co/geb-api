@@ -10,10 +10,12 @@ const control = new UserController();
 
 const img = multer(upload);
 
+user.get('/sincro', control.sincro)
 user.post('/update-pass', control.updateSenha);
 user.post('/session', control.session);
 user.post('/create-user', control.create);
 user.post('/refresh-token', control.refreshToken);
+
 
 user.use(Auth);
 user.patch('/update-membro', control.updateMembro);
