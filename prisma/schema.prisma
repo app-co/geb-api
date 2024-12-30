@@ -1,184 +1,111 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-datasource db {
-   provider = "postgresql"
-   url      = env("DATABASE_URL")
-}
-
 generator client {
-   provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
-enum HUB {
-   GEB
-   CLUB_MENTORIA
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// !! INFO USER
+model user {
+  id String @id @default(uuid())
 
-model User {
-   id         String         @id @default(uuid())
-   nome       String
-   membro     String         @unique
-   token      String?
-   senha      String?
-   adm        Boolean
-   created_at DateTime       @default(now())
-   profile    Profile?
-   situation  SituationUser?
-   region     Region?
-   hub        HUB            @default(GEB)
+  nome        String
+  apelido     String  @unique
+  token       String?
+  senha       String?
+  adm         Boolean
+  apadrinhado Boolean @default(false)
+  hub         Int[]
 
-   Stars Stars[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
 
-   DadosFire    DadosFire?
-   midia        midia[]
-   RelationShip RelationShip[]
-   RefreshToken RefreshToken?
+  profile      profile?
+  region       region?
+  RefreshToken refreshToken?
+
+  midia        midia[]
+  RelationShip relationShip[]
+  Stars        Stars[]
 }
 
-model Profile {
-   id            String  @id @default(uuid())
-   whats         String?
-   logotipo      String?
-   avatar        String?
-   workName      String?
-   CNPJ          String?
-   CPF           String?
-   ramo          String?
-   enquadramento String?
-   email         String?
-   avatarPath    String?
-   logoPath      String?
-   user          User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user    String  @unique
-   // post                    Post           @relation(fields: [fk_id_post], references: [id])
-   // fk_id_post              String         @unique
+model profile {
+  id            String  @id @default(uuid())
+  whats         String?
+  logotipo      String?
+  avatar        String?
+  workName      String?
+  CNPJ          String?
+  CPF           String?
+  ramo          String?
+  enquadramento String?
+  email         String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 }
 
-model RefreshToken {
-   id        String @id @default(uuid())
-   expiresIn Int
-   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-   userId    String @unique
+model refreshToken {
+  id        String @id @default(uuid())
+  expiresIn Int
+  user      user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String @unique
 }
 
-model SituationUser {
-   id          String  @id @default(uuid())
-   inativo     Boolean @default(false)
-   firstLogin  Boolean @default(false)
-   apadrinhado Boolean @default(false)
-   logado      Boolean @default(false)
-   user        User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user  String  @unique
-}
-
-model Region {
-   id         String  @id @default(uuid())
-   city       String? @default("BOTUCATU")
-   user       User    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user String  @unique
-}
-
-model Post {
-   id          String   @id @default(uuid())
-   image       String
-   description String
-   created_at  DateTime @default(now())
-   like        Like[]
-   fk_id_user  String
-   // user                    User?
-   // profile                 Profile?       
-}
-
-model Like {
-   id         String @id @default(uuid())
-   like       Int    @default(0)
-   user_id    String
-   post       Post   @relation(fields: [fk_id_post], references: [id], onDelete: Cascade)
-   fk_id_post String
-}
-
-model Links {
-   id      String @id @default(uuid())
-   nome    String
-   link    String
-   user_id String
-}
-
-model Feed {
-   id         String   @id @default(uuid())
-   image      String
-   title      String
-   subTitle   String
-   texto      String
-   user_id    String
-   // user                    User                    @relation(fields: [user_id], references: [id])   
-   created_at DateTime
-}
-
-model Pontos {
-   id       String @id @default(uuid())
-   presenca Int    @default(0)
-   padrinho Int    @default(0)
-   compra   Int    @default(0)
-   venda    Int    @default(0)
-   user_id  String
-   // user           User?                   @relation(references: [id], fields: [user_id])
-}
-
-model DadosFire {
-   user         User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   fk_id_user   String @unique
-   qntIdication Int?   @default(0)
-   qntPadrinho  Int?   @default(0)
-}
-
-model Stars {
-   id         String @id @default(uuid())
-   fk_id_user String
-   star       Int    @default(0)
-   user       User   @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
-   valiador   String
+model region {
+  id         Int     @id @default(autoincrement())
+  city       String? @default("BOTUCATU")
+  user       user    @relation(fields: [fk_id_user], references: [id], onDelete: Cascade)
+  fk_id_user String  @unique
 }
 
 model midia {
-   id         String @id @default(uuid())
-   nome       String
-   link       String
-   fk_user_id String
-   user       User   @relation(fields: [fk_user_id], references: [id], onDelete: Cascade)
+  id         Int    @id @default(autoincrement())
+  nome       String
+  link       String
+  type_midia Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  user_id String
+  user    user   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-enum RelationType {
-   B2B
-   CONSUMO_IN
-   CONSUMO_OUT
-   PADRINHO
-   PRESENCA
-   INDICATION
-   DONATE
-   INVIT
+model relationShip {
+  id             Int     @id @default(autoincrement())
+  objeto         Json?
+  status         Int     @default(0)
+  userId         String
+  avatar         String
+  userReceptorId String?
+  hub            Int
+  type           Int
+  valor          Float   @default(0)
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
 }
 
-model RelationShip {
-   id           String  @id @default(uuid())
-   objto        Json
-   situation    Boolean @default(false)
-   ponts        Int
-   fk_user_id   String
-   prestador_id String?
-   client_id    String?
-   hub          HUB     @default(GEB)
-
-   type       RelationType @default(CONSUMO_IN)
-   user       User         @relation(fields: [fk_user_id], references: [id])
-   created_at DateTime     @default(now())
-   updated_at DateTime     @updatedAt
+model Stars {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  star       Int      @default(0)
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
 }
 
-model accumulated {
-   id     Int @id @default(autoincrement())
-   amount Int
+model anoCorrente {
+  id    Int   @id @default(autoincrement())
+  price Float
 }

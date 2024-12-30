@@ -2,24 +2,12 @@
 module.exports = function (plop) {
   // cria um novo componente
   plop.setGenerator('Novo Componente', {
-    description: 'Gerador para criar um novo componente React',
+    description: 'Gerador para criar um novo componente node',
     prompts: [
       {
         type: 'input',
         name: 'model',
-        message: 'Qual o nome do model',
-      },
-
-      {
-        type: 'input',
-        name: 'service',
-        message: 'Qual o nome do service',
-      },
-
-      {
-        type: 'input',
-        name: 'vm',
-        message: 'Qual o nome da variavel model',
+        message: 'Qual o nome da tabela',
       },
 
       // {
@@ -32,7 +20,7 @@ module.exports = function (plop) {
         type: 'list',
         name: 'tipoAcao',
         message: 'Qual tipo de ação você quer criar?',
-        choices: ['service', 'full-api', 'irepository', 'repository'],
+        choices: ['service', 'full-api'],
       },
     ],
     actions(dados) {
@@ -51,38 +39,20 @@ module.exports = function (plop) {
         actions = [
           {
             type: 'add',
-            path: '../src/modules/{{model}}/services/{{service}}.ts',
-            templateFile: 'templates/service.ts.hbs',
+            path: '../src/modules/{{model}}/service.ts',
+            templateFile: 'templates/services.ts.hbs',
           },
 
           {
             type: 'add',
-            path: '../src/modules/{{model}}/repositories/models/{{model}}PrismaRepository.ts',
-            templateFile: 'templates/repository.ts.hbs',
-          },
-
-          {
-            type: 'add',
-            path: '../src/modules/{{model}}/repositories/IRepository/I{{model}}Repository.ts',
-            templateFile: 'templates/IRepository.ts.hbs',
-          },
-
-          {
-            type: 'add',
-            path: '../src/modules/{{model}}/http/controller/{{model}}Controller.ts',
+            path: '../src/modules/{{model}}/controller.ts',
             templateFile: 'templates/controler.ts.hbs',
           },
 
           {
             type: 'add',
-            path: '../src/modules/{{model}}/http/routes/{{vm}}.ts',
+            path: '../src/modules/{{model}}/routes.ts',
             templateFile: 'templates/routes.ts.hbs',
-          },
-
-          {
-            type: 'add',
-            path: '../src/modules/{{model}}/http/routes/index.ts',
-            templateFile: 'templates/index.route.ts.hbs',
           },
         ];
       } else if (dados.tipoAcao === 'page-app') {

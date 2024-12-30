@@ -1,35 +1,35 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Request, Response } from 'express';
-import { {{service}} } from '@modules/End/services/{{service}}';
-import { container } from 'tsyringe';
+import { Service } from '@modules/{{model}}/service';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
+const make = new Service()
 
-export class {{model}}Controller {
-  async create(req: Request, res: Response): Promise<Response> {
-    const service = container.resolve({{service}});
+export class Controller {
+async register(req: FastifyRequest, res: FastifyReply) {
+const schema = req.body
+const rs = await make.register(schema);
 
-    const {} = req.body;
+return res.status(201).send(rs);
+}
 
-    const create = await service.create({});
+async getUser(req: FastifyRequest, res: FastifyReply) {
+const schema = req.body
+const rs = await make.register(schema);
 
-    return res.json(create);
-  }
+return res.status(201).send(rs);
+}
 
+async getAll(req: FastifyRequest, res: FastifyReply) {
+const schema = req.body
+const rs = await make.register(schema);
 
-  async listMany(req: Request, res: Response): Promise<Response> {
-    const service = container.resolve({{service}});
+return res.status(201).send(rs);
+}
 
-    const list = await service.listMany();
+async delete(req: FastifyRequest, res: FastifyReply) {
+const schema = req.body
+const rs = await make.register(schema);
 
-    return res.json(list);
-  }
+return res.status(201).send(rs);
+}
 
-    async findById(req: Request, res: Response): Promise<Response> {
-    const service = container.resolve({{service}});
-    const id = req.params
-
-    const list = await service.findById({id: String(id)});
-
-    return res.json(list);
-  }
 }

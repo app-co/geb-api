@@ -1,14 +1,8 @@
-import { Router } from 'express';
+import { FastifyInstance } from 'fastify';
+import {Controller} from './controller'
 
-import { {{model}}Controller } from '../controller/{{model}}Controller';
+const controler = new Controller()
 
-const {{vm}} = Router();
-const control = new {{model}}Controller();
-
-
-{{vm}}.post('/create-{{vm}}', control.create);
-{{vm}}.get('/:id/',  control.findById);
-{{vm}}.get('/',  control.listMany)
-
-
-export { {{vm}} };
+export async function RoutesClient(app: FastifyInstance) {
+app.post('/{{model}}/register', controler.register);
+}
