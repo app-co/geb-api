@@ -59,6 +59,8 @@
     "jsonwebtoken": "^9.0.2",
     "plop": "^4.0.1",
     "react-native-highcharts": "^1.0.2",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "react-native-svg": "^15.10.1",
     "uuid": "^11.0.3",
     "zod": "^3.24.1"
