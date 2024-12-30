@@ -15,7 +15,7 @@ const envSche = z.object({
 });
 
 
-const _env = envSche.safeParse(en);
+const _env = envSche.safeParse(process.env);
 
 if (_env.success === false) {
   console.error('Invalid environment', _env.error.format());
