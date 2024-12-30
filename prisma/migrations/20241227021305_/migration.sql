@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "anoCorrente" ALTER COLUMN "price" SET DATA TYPE DOUBLE PRECISION;

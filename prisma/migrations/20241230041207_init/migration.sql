@@ -81,6 +81,25 @@ CREATE TABLE "relationShip" (
     CONSTRAINT "relationShip_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Stars" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "star" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Stars_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "anoCorrente" (
+    "id" SERIAL NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT "anoCorrente_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_apelido_key" ON "user"("apelido");
 
@@ -107,3 +126,6 @@ ALTER TABLE "midia" ADD CONSTRAINT "midia_user_id_fkey" FOREIGN KEY ("user_id") 
 
 -- AddForeignKey
 ALTER TABLE "relationShip" ADD CONSTRAINT "relationShip_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Stars" ADD CONSTRAINT "Stars_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -12,7 +12,7 @@
     "md": "yarn prisma migrate dev",
     "push": "yarn prisma studio",
     "st": "yarn prisma studio",
-    "build": "tsup src --out-dir build"
+    "build": "tsup src --out-dir dist"
   },
   "keywords": [],
   "author": "",
