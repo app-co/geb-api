@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import dotenv from 'dotenv'
 import 'dotenv/config';
 
 import { z } from 'zod';
@@ -13,7 +14,8 @@ const envSche = z.object({
   REDIS_PORT: z.coerce.number(),
 });
 
-const _env = envSche.safeParse(process.env);
+
+const _env = envSche.safeParse(en);
 
 if (_env.success === false) {
   console.error('Invalid environment', _env.error.format());

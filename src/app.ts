@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import dotenv from 'dotenv'
 import fastify from 'fastify';
 import { ZodError } from 'zod';
 
@@ -9,6 +10,7 @@ import { AppError } from './shared/app-error/AppError';
 import { Routes } from './shared/routes/routes';
 
 export const app = fastify();
+
 
 app.register(Routes);
 
