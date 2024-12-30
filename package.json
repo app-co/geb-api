@@ -43,6 +43,8 @@
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "date-fns": "^4.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-decorators": "^7.16.7",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.0",
