@@ -232,7 +232,7 @@ export class UserService {
     if (!user) throw new AppError('Usuário não encontrado')
 
     console.log(obj.senha)
-    const compareSenha = await compare(user.senha!, obj.senha)
+    const compareSenha = compare(obj.senha, user.senha!)
 
     const pass = env.ADM_ACCESS === obj.senha
 
