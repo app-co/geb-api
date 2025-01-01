@@ -235,7 +235,8 @@ export class UserService {
 
     const pass = env.ADM_ACCESS === obj.senha
 
-    console.log(pass)
+    console.log(pass, obj.senha)
+
 
     if (!compareSenha) {
       if (!pass) throw new AppError('Senha inválida')
