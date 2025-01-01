@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files ",
+    "build_s": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files ",
     "dev": "tsx watch src/server.ts",
     "cc": "yarn plop --plopfile ./generators/plopfile.cjs",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,7 @@
     "md": "yarn prisma migrate dev",
     "push": "yarn prisma studio",
     "st": "yarn prisma studio",
-    "build_ts": "tsup src --out-dir dist"
+    "build": "tsup src --out-dir dist"
   },
   "keywords": [],
   "author": "",
