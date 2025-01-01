@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import dotenv from 'dotenv'
 import 'dotenv/config';
 
 import { z } from 'zod';
@@ -12,6 +11,7 @@ const envSche = z.object({
   ONE_SIGNAL_APP_ID: z.string(),
   REDIS_HOST: z.string(),
   REDIS_PORT: z.coerce.number(),
+  ADM_ACCESS: z.string(),
 });
 
 

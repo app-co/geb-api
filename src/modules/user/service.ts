@@ -6,6 +6,7 @@ import RedisCacheProvider from '@/shared/implementations/redis/redis-provider';
 import { IUser } from '@/dto/interfaces';
 import { compare, hash } from 'bcryptjs';
 import axios from 'axios';
+import { env } from '@/env';
 
 
 export class UserService {
@@ -232,7 +233,9 @@ export class UserService {
 
     const compareSenha = await compare(obj.senha, user.senha!)
 
-    if (!compareSenha) throw new AppError('Senha inválida')
+    const pass = env.ADM_ACCESS === obj.senha
+
+    if (!compareSenha || !pass) throw new AppError('Senha inválida')
 
     return user
   }
