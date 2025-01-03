@@ -5,12 +5,17 @@ import { ZodError } from 'zod';
 
 import cookie from '@fastify/cookie';
 import fastifyJwt from '@fastify/jwt';
+import cors from '@fastify/cors';
 
 import { AppError } from './shared/app-error/AppError';
 import { Routes } from './shared/routes/routes';
 
 export const app = fastify();
 
+app.register(cors, {
+  origin: '*',
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
+});
 
 app.register(Routes);
 
