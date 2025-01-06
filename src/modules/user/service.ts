@@ -174,12 +174,26 @@ export class UserService {
       senha = await hash(obj.senha, 6)
     }
 
-    const data = await prisma.user.update({
-      where: { id: obj.id },
-      data: {
+    let dt = {}
+
+    if (senha) {
+      dt = {
         ...obj,
         senha
       }
+    } else {
+      dt = {
+        nome: obj.nome,
+        apelido: obj.apelido,
+        adm: obj.adm,
+        apadrinhado: obj.apadrinhado,
+        hub: obj.hub,
+      }
+    }
+
+    const data = await prisma.user.update({
+      where: { id: obj.id },
+      data: dt
     })
 
     await this.redis.invalidate(`${obj.id}:user`)
