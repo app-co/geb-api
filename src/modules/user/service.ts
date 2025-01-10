@@ -59,14 +59,14 @@ export class UserService {
 
   async userByHub({ hub, nome, pageNumber, pageSize, userId }: TUsersByHub) {
 
+    console.log(hub)
     if (nome && nome.length < 4) return
 
-    console.log(pageNumber)
     const totalUsers = await prisma.user.count()
 
     const users = await prisma.user.findMany({
       where: {
-        hub: { hasEvery: hub },
+        hub: { hasSome: hub },
         AND: {
           nome: {
             contains: nome,

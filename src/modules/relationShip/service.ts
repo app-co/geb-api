@@ -26,14 +26,11 @@ export class RelationshipService {
   async register(obj: Omit<TRelationships, 'id' | 'avatar'>) {
     const user = await this.user.getUserById(obj.userId)
 
-    console.log(obj)
-
     if (!user) throw new AppError('Usuário não encontrado')
 
 
-
-
     if (obj.type === 8) {
+      console.log(obj)
       const userReceptor = await prisma.user.findUnique({ where: { id: obj.userReceptorId! } })
 
       const reletion = await prisma.relationShip.create({
@@ -52,6 +49,7 @@ export class RelationshipService {
           }
         })
       }
+      return
     }
 
     const reletion = await prisma.relationShip.create({
