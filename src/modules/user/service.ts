@@ -191,6 +191,8 @@ export class UserService {
       }
     }
 
+    console.log(dt)
+
     const data = await prisma.user.update({
       where: { id: obj.id },
       data: dt

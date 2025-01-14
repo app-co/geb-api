@@ -65,9 +65,11 @@ export class Controller {
   }
 
   async delete(req: FastifyRequest, res: FastifyReply) {
-    const userId = req.query as string
+    const { id } = req.params as { id: string }
 
-    const rs = await service.deleteUser(userId);
+    console.log({ userId: id })
+
+    const rs = await service.deleteUser(id);
 
     return res.status(201).send(rs);
   }
