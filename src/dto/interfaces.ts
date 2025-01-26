@@ -3,6 +3,7 @@ import { TRelationships, TUser } from "./types";
 export interface IUser extends TUser {
   profile: IProfile
   Stars: IStars[]
+  midia: IMidia[]
   created_at: string | Date
   updated_at: string | Date
 }
@@ -23,6 +24,16 @@ export interface IProfile {
   created_at: string | Date
   updated_at: string | Date
   userId: string
+}
+
+interface IMidia {
+  id: number
+  user_id: string
+  nome: string
+  link: string
+  created_at: string | Date
+  updated_at: string | Date
+  mida_type: number
 }
 
 export interface IStars {

@@ -48,6 +48,8 @@ export class UserService {
         where: { id: userId },
         include: {
           profile: true,
+          Stars: true,
+          midia: true,
         }
       }) as IUser;
 
@@ -59,7 +61,6 @@ export class UserService {
 
   async userByHub({ hub, nome, pageNumber, pageSize, userId }: TUsersByHub) {
 
-    console.log(hub)
     if (nome && nome.length < 4) return
 
     const totalUsers = await prisma.user.count()
@@ -80,6 +81,7 @@ export class UserService {
       include: {
         profile: true,
         Stars: true,
+        midia: true
       },
       orderBy: { nome: 'asc' },
       take: pageSize,
