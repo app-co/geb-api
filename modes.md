@@ -17,3 +17,7 @@
   3 - youtube
   4 - site
   5 - instagram
+
+# HUBS
+0 - GEB networking
+1 - club da mentoria

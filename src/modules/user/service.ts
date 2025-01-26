@@ -1,4 +1,4 @@
-import { TProfile, TSession, TUser, TUsersByHub } from '@/dto/types';
+import { TMidia, TProfile, TSession, TUser, TUsersByHub } from '@/dto/types';
 import { prisma } from '@/lib';
 import { AppError } from '@/shared/app-error/AppError';
 import { make } from './make';
@@ -282,6 +282,33 @@ export class UserService {
 
     await this.redis.invalidatePrefix(`${userId}:user`)
     await this.redis.invalidate('users')
+  }
+
+  async registerMidia(obj: Omit<TMidia, 'nome' | 'created_at' | 'updated_at' | 'type_midia'>) {
+    const midia = await prisma.midia.findFirst({
+      where: { user_id: obj.user_id }
+    })
+
+    if (midia) {
+      await prisma.midia.update({
+        where: { id: obj.id },
+        data: {
+          link: obj.link
+        }
+      })
+
+      return
+    }
+
+    await prisma.midia.create({
+      data: {
+        link: obj.link,
+        user_id: obj.user_id,
+        type_midia: 0,
+        nome: 'Google Empresa'
+      }
+    })
+
   }
 
 }

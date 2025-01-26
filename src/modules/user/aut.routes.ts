@@ -17,4 +17,5 @@ export async function userAutRoute(app: FastifyInstance) {
   app.post('/user/profile', controler.registerProfile);
 
   app.delete('/user/:id', controler.delete);
+  app.post('/user/midia', controler.midia)
 }

@@ -128,4 +128,18 @@ export class Controller {
     return res.status(201).send(rs);
   }
 
+
+  async midia(req: FastifyRequest, res: FastifyReply) {
+    const obj = validation.midia.omit({
+      nome: true,
+      created_at: true,
+      updated_at: true,
+      type_midia: true
+    }).parse(req.body);
+
+    const rs = await service.registerMidia(obj);
+
+    return res.status(201).send(rs);
+  }
+
 }
