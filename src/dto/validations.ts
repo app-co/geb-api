@@ -26,11 +26,7 @@ export const validation = {
   }),
   midia: z.object({
     id: z.number(),
-    nome: z.string(),
     link: z.string(),
-    type_midia: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
     user_id: z.string(),
   }),
   relationships: z.object({

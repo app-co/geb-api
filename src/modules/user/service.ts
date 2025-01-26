@@ -284,7 +284,7 @@ export class UserService {
     await this.redis.invalidate('users')
   }
 
-  async registerMidia(obj: Omit<TMidia, 'nome' | 'created_at' | 'updated_at' | 'type_midia'>) {
+  async registerMidia(obj: TMidia) {
     const midia = await prisma.midia.findFirst({
       where: { user_id: obj.user_id }
     })
