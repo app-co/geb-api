@@ -25,7 +25,7 @@ export const validation = {
     userId: z.string({ message: '* campo obrigatório' })
   }),
   midia: z.object({
-    id: z.number(),
+    id: z.number().optional(),
     link: z.string(),
     user_id: z.string(),
   }),
