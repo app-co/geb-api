@@ -293,11 +293,12 @@ export class UserService {
 
     if (midia) {
       await prisma.midia.update({
-        where: { id: obj.id },
+        where: { id: midia.id },
         data: {
           link: obj.link
         }
       })
+      await this.redis.invalidate(`${midia.user_id}:user`)
 
       return
     }
