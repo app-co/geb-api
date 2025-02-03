@@ -2,248 +2,257 @@ import { TDonate, TRelationships } from '@/dto/types';
 import { prisma } from '@/lib';
 import { AppError } from '@/shared/app-error/AppError';
 import RedisCacheProvider from '@/shared/implementations/redis/redis-provider';
+import { _convertionType, _pontos } from '@/shared/utils/convertions';
+import { _toCurrency } from '@/shared/utils/toCorrency';
+import { _toPorcent } from '@/shared/utils/toPercent';
+
 import { UserService } from '../user/service';
-import { IRelationship } from '@/dto/interfaces';
-import { _convertionType, _pontos } from '@/shared/utils/convertions'
 
 interface I {
-  qnt: number
-  pontos: number
-  nome: string
-  type: number
-  type_str: string
-  userId: string
+  qnt: number;
+  pontos: number;
+  nome: string;
+  type: number;
+  type_str: string;
+  userId: string;
 }
 
-
 export class RelationshipService {
-
-  constructor(
-    private redis: RedisCacheProvider,
-    private user: UserService
-  ) { }
+  constructor(private redis: RedisCacheProvider, private user: UserService) { }
 
   async register(obj: Omit<TRelationships, 'id' | 'avatar'>) {
-    const user = await this.user.getUserById(obj.userId)
+    const user = await this.user.getUserById(obj.userId);
 
-    if (!user) throw new AppError('Usuário não encontrado')
-
+    if (!user) throw new AppError('Usuário não encontrado');
 
     if (obj.type === 8) {
-      console.log(obj)
-      const userReceptor = await prisma.user.findUnique({ where: { id: obj.userReceptorId! } })
+      console.log(obj);
+      const userReceptor = await prisma.user.findUnique({
+        where: { id: obj.userReceptorId! },
+      });
 
       const reletion = await prisma.relationShip.create({
         data: {
           ...obj,
           status: 1,
-          avatar: user?.profile?.avatar ?? "https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg",
-        }
-      })
+          avatar:
+            user?.profile?.avatar ??
+            'https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg',
+        },
+      });
 
       if (userReceptor) {
         await prisma.user.update({
           where: { id: userReceptor.id },
           data: {
-            apadrinhado: true
-          }
-        })
+            apadrinhado: true,
+          },
+        });
       }
-      return
+      return;
     }
 
     const reletion = await prisma.relationShip.create({
       data: {
         ...obj,
-        avatar: user?.profile?.avatar ?? "https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg",
-      }
-    })
+        avatar:
+          user?.profile?.avatar ??
+          'https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg',
+      },
+    });
 
-
-    await this.redis.invalidate('relationships')
-    await this.redis.invalidatePrefix(obj.userId)
-    return reletion
+    await this.redis.invalidate('relationships');
+    await this.redis.invalidatePrefix(obj.userId);
+    return reletion;
   }
 
   async all() {
-    let relations = await this.redis.recover<TRelationships[]>('relationships')
-
+    let relations = await this.redis.recover<TRelationships[]>('relationships');
 
     if (!relations) {
-      relations = await prisma.relationShip.findMany({ orderBy: { type: 'asc' } }) as TRelationships[];
+      relations = (await prisma.relationShip.findMany({
+        orderBy: { type: 'asc' },
+      })) as TRelationships[];
 
-      await this.redis.save('relationships', relations)
-
+      await this.redis.save('relationships', relations);
     }
 
     const rl = relations.map(h => {
       return {
         ...h,
-        type_str: _convertionType[h.type] ?? "Desconhecido"
-      }
-    })
-    return rl
+        type_str: _convertionType[h.type] ?? 'Desconhecido',
+      };
+    });
+    return rl;
   }
 
   async byUser(userId: string) {
-    let relations = await this.redis.recover<TRelationships[]>(`${userId}:relationships`)
+    let relations = await this.redis.recover<TRelationships[]>(
+      `${userId}:relationships`,
+    );
 
     if (!relations) {
-      relations = await prisma.relationShip.findMany({
+      relations = (await prisma.relationShip.findMany({
         where: { userId },
-        orderBy: { type: 'asc' }
-      }) as TRelationships[]
+        orderBy: { type: 'asc' },
+      })) as TRelationships[];
     }
 
     const rl = relations.map(h => {
       return {
         ...h,
-        type_str: _convertionType[h.type] ?? "Desconhecido"
-      }
-    })
+        type_str: _convertionType[h.type] ?? 'Desconhecido',
+      };
+    });
 
-
-    return rl
+    return rl;
   }
 
   async byReceptor(receptorId: string) {
-    let relations = await this.redis.recover<TRelationships[]>(`${receptorId}:relationships`)
+    let relations = await this.redis.recover<TRelationships[]>(
+      `${receptorId}:relationships`,
+    );
 
     if (!relations) {
-      relations = await prisma.relationShip.findMany({
+      relations = (await prisma.relationShip.findMany({
         where: { userReceptorId: receptorId },
-        orderBy: { type: 'asc' }
-      }) as TRelationships[]
+        orderBy: { type: 'asc' },
+      })) as TRelationships[];
     }
 
     const rl = relations.map(h => {
       return {
         ...h,
-        type_str: _convertionType[h.type] ?? "Desconhecido"
-      }
-    })
+        type_str: _convertionType[h.type] ?? 'Desconhecido',
+      };
+    });
 
-
-    return rl
+    return rl;
   }
 
   async relationForAprovation(userId: string) {
     const relations = await prisma.relationShip.findMany({
       where: {
         userReceptorId: userId,
-        status: 0
-      }
-    })
+        status: 0,
+      },
+    });
 
-    return relations
+    return relations;
   }
 
   async validate(relationId: number) {
-    const relation = await prisma.relationShip.findFirst({ where: { id: relationId } })
+    const relation = await prisma.relationShip.findFirst({
+      where: { id: relationId },
+    });
 
-    if (!relation) throw new AppError('Relacionamento não encontrado')
+    if (!relation) throw new AppError('Relacionamento não encontrado');
 
-    if (relation.status === 1) throw new AppError('Relacionamento já aprovado')
+    if (relation.status === 1) throw new AppError('Relacionamento já aprovado');
 
-    const userProvider = await this.user.getUserById(relation.userId)
-
+    const userProvider = await this.user.getUserById(relation.userId);
 
     if (relation.type === 1) {
-
-
       await prisma.relationShip.create({
         data: {
           userId: relation.userReceptorId!,
           type: 2,
           status: 1,
-          avatar: userProvider?.profile?.avatar ?? "https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg",
+          avatar:
+            userProvider?.profile?.avatar ??
+            'https://st.depositphotos.com/1537427/3571/v/450/depositphotos_35717211-stock-illustration-vector-user-icon.jpg',
           valor: relation.valor,
           hub: relation.hub,
-          objeto: relation.objeto!
-        }
-      })
+          objeto: relation.objeto!,
+        },
+      });
     }
 
     await prisma.relationShip.update({
       where: { id: relationId },
-      data: { status: 1 }
-    })
+      data: { status: 1 },
+    });
 
-    await this.redis.invalidate('relationships')
-    await this.redis.invalidatePrefix(relation.userId)
-    await this.redis.invalidatePrefix(relation?.userReceptorId ?? '')
+    await this.redis.invalidate('relationships');
+    await this.redis.invalidatePrefix(relation.userId);
+    await this.redis.invalidatePrefix(relation?.userReceptorId ?? '');
   }
 
   async validateMany(relationId: number[]) {
-    const relation = await prisma.relationShip.findMany({ where: { id: { in: relationId } } })
+    const relation = await prisma.relationShip.findMany({
+      where: { id: { in: relationId } },
+    });
 
-    if (!relation) throw new AppError('Relacionamento não encontrado')
+    if (!relation) throw new AppError('Relacionamento não encontrado');
 
-    if (relation.length > 0) throw new AppError('Relacionamentos já aprovados')
+    if (relation.length > 0) throw new AppError('Relacionamentos já aprovados');
 
     await prisma.relationShip.updateMany({
       where: { id: { in: relationId } },
-      data: { status: 1 }
-    })
+      data: { status: 1 },
+    });
 
-    await this.redis.removeAll()
+    await this.redis.removeAll();
   }
 
   async podiun(userId: string) {
-    const users = await this.user.listAll()
-    const relationships = await this.all()
+    const users = await this.user.listAll();
+    const relationships = await this.all();
 
-    const types = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const types = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-    let position: { [key: string]: any } = {}
-    let aprovaded: { [key: string]: TRelationships[] } = {}
-    let notAprovaded: { [key: string]: TRelationships[] } = {}
-    let totalPontos = 0
+    const position: { [key: string]: any } = {};
+    const aprovaded: { [key: string]: TRelationships[] } = {};
+    const notAprovaded: { [key: string]: TRelationships[] } = {};
+    let totalPontos = 0;
 
-    const Position = []
-
+    const Position = [];
 
     types.forEach(t => {
-      let item: I[] = []
+      const item: I[] = [];
 
       users.forEach(user => {
-        let metrica = {
+        const metrica = {
           qnt: 0,
           pontos: 0,
           type: t,
           nome: user.nome,
           userId: user.id,
-          type_str: _convertionType[t] ?? "Desconhecido",
-        }
+          type_str: _convertionType[t] ?? 'Desconhecido',
+        };
 
         const itensAproveded = relationships.filter(r => {
-          if (r.status === 1 && r.userId === user.id && r.type !== 6 && r.type === t) {
-            return r
+          if (
+            r.status === 1 &&
+            r.userId === user.id &&
+            r.type !== 6 &&
+            r.type === t
+          ) {
+            return r;
           }
-        })
+        });
 
         if (t === 6) {
-          let pt = 0
-          const donates = relationships.filter(h => h.type === 6 && h.userId === user.id && h.status === 1)
+          let pt = 0;
+          const donates = relationships.filter(
+            h => h.type === 6 && h.userId === user.id && h.status === 1,
+          );
 
-          donates.forEach((h) => {
-            const donate = h.objeto.donate as TDonate[]
+          donates.forEach(h => {
+            const donate = h.objeto.donate as TDonate[];
             if (donate && donate.length > 0) {
-              const calc = donate.reduce((ac, i) => ac + i.ponto, 0)
-              pt += calc
-
+              const calc = donate.reduce((ac, i) => ac + i.ponto, 0);
+              pt += calc;
             }
-          })
-          metrica.pontos += pt
-
+          });
+          metrica.pontos += pt;
         }
 
-        metrica.qnt += itensAproveded.length
-        metrica.pontos += itensAproveded.length * _pontos[t]
+        metrica.qnt += itensAproveded.length;
+        metrica.pontos += itensAproveded.length * _pontos[t];
 
-        item.push(metrica)
-      })
-
+        item.push(metrica);
+      });
 
       const rl = item
         .sort((a, b) => b.pontos - a.pontos)
@@ -254,33 +263,35 @@ export class RelationshipService {
             nome: h.nome,
             rank: i + 1,
             qnt: h.qnt,
-            type_str: h?.type_str
-          }
+            type_str: h?.type_str,
+          };
         })
-        .find(h => h.userId === userId)
+        .find(h => h.userId === userId);
 
+      const aprov = relationships.filter(
+        h => h.userId === userId && h.status === 1 && h.type === t,
+      );
+      const notAprov = relationships.filter(
+        h => h.userId === userId && h.status === 0 && h.type === t,
+      );
 
-      const aprov = relationships.filter(h => h.userId === userId && h.status === 1 && h.type === t)
-      const notAprov = relationships.filter(h => h.userId === userId && h.status === 0 && h.type === t)
+      position[_convertionType[t]] = rl;
 
-      position[_convertionType[t]] = rl
+      Position.push(rl);
+      aprovaded[_convertionType[t]] = aprov;
+      notAprovaded[_convertionType[t]] = notAprov;
 
+      totalPontos += rl?.pontos;
+    });
 
+    const currncyYear = await prisma.anoCorrente.findFirst();
 
-      Position.push(rl)
-      aprovaded[_convertionType[t]] = aprov
-      notAprovaded[_convertionType[t]] = notAprov
+    const globalCurrency = relationships
+      .filter(h => h.type === 1 && h.status === 1)
+      .reduce((ac, h) => ac + h.valor, currncyYear?.price);
 
-      totalPontos += rl?.pontos
-
-    })
-
-    const currncyYear = await prisma.anoCorrente.findFirst()
-
-    const globalCurrency = relationships.filter(h => h.type === 1 && h.status === 1).reduce((ac, h) => ac + h.valor, currncyYear?.price)
-
-    const currencyVenda = aprovaded.VENDA.reduce((ac, item) => ac + item.valor, 0) ?? 0
-
+    const currencyVenda =
+      aprovaded.VENDA.reduce((ac, item) => ac + item.valor, 0) ?? 0;
 
     const validations = {
       position: Position,
@@ -288,30 +299,67 @@ export class RelationshipService {
       notAprovaded,
       totalPontos,
       currencyVenda,
-      globalCurrency
-    }
+      globalCurrency,
+    };
 
-    return validations
+    return validations;
   }
 
   async notValides(type: number) {
     const relatons = await prisma.relationShip.findMany({
       where: { type, status: 0 },
-      orderBy: { status: 'asc' }
-    })
+      orderBy: { status: 'asc' },
+    });
 
-    return relatons
+    return relatons;
   }
 
   async deleteRealation(id: number) {
-    const relation = await prisma.relationShip.findFirst({ where: { id } })
+    const relation = await prisma.relationShip.findFirst({ where: { id } });
 
-    if (!relation) throw new AppError('Relacionamento não encontrado')
+    if (!relation) throw new AppError('Relacionamento não encontrado');
 
-    await prisma.relationShip.delete({ where: { id } })
+    await prisma.relationShip.delete({ where: { id } });
 
-    await this.redis.invalidate('relationships')
-    await this.redis.invalidatePrefix(relation.userId)
-    await this.redis.invalidatePrefix(relation?.userReceptorId ?? '')
+    await this.redis.invalidate('relationships');
+    await this.redis.invalidatePrefix(relation.userId);
+    await this.redis.invalidatePrefix(relation?.userReceptorId ?? '');
+  }
+
+  async metricasUser(userId: string) {
+    const relation = await prisma.relationShip.findMany({
+      where: {
+        userId,
+        status: 1,
+        type: 2,
+      },
+    });
+
+    const mensalidades = await prisma.relationShip.findMany({
+      where: {
+        userReceptorId: '54be7274-835a-42f5-aa24-ba2c27560f7a',
+        status: 1,
+        type: 1,
+      },
+    });
+
+    const totalNegocios = relation.length;
+    const valorEmVenda = relation.reduce((ac, h) => ac + h.valor, 0);
+    const totalMensalidades = mensalidades.reduce((ac, h) => ac + h.valor, 0);
+    const percent = valorEmVenda / totalMensalidades;
+
+    return {
+      negocios: {
+        totalNegocios,
+        currency: _toCurrency(valorEmVenda),
+        value: valorEmVenda,
+      },
+      conpensacao: {
+        totalMensalidades,
+        currency: _toCurrency(totalMensalidades),
+        value: totalMensalidades,
+        conpensacao: _toPorcent(percent),
+      },
+    };
   }
 }

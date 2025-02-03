@@ -1,15 +1,19 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { make } from './make';
+
 import { validation } from '@/dto/validations';
 
-const service = make()
+import { make } from './make';
+
+const service = make();
 
 export class Controller {
   async register(req: FastifyRequest, res: FastifyReply) {
-    const schema = validation.relationships.omit({ avatar: true, id: true }).parse({
-      ...req.body as any,
-      userId: req.user.sub,
-    })
+    const schema = validation.relationships
+      .omit({ avatar: true, id: true })
+      .parse({
+        ...(req.body as any),
+        userId: req.user.sub,
+      });
     const rs = await service.register(schema);
 
     return res.status(201).send(rs);
@@ -29,7 +33,7 @@ export class Controller {
   }
 
   async byReceptor(req: FastifyRequest, res: FastifyReply) {
-    const receptorId = req.user.sub
+    const receptorId = req.user.sub;
     const rs = await service.byReceptor(receptorId);
 
     return res.status(201).send(rs);
@@ -43,7 +47,7 @@ export class Controller {
   }
 
   async validate(req: FastifyRequest, res: FastifyReply) {
-    const { id } = req.params as { id: string }
+    const { id } = req.params as { id: string };
 
     await service.validate(Number(id));
 
@@ -58,17 +62,23 @@ export class Controller {
   }
 
   async notValides(req: FastifyRequest, res: FastifyReply) {
-    const { type } = req.params as { type: string }
+    const { type } = req.params as { type: string };
     const rs = await service.notValides(Number(type));
 
     return res.status(201).send(rs);
   }
 
   async delete(req: FastifyRequest, res: FastifyReply) {
-    const { id } = req.params as { id: string }
+    const { id } = req.params as { id: string };
     await service.deleteRealation(Number(id));
 
     return res.status(201).send('ok');
   }
 
+  async metrica(req: FastifyRequest, res: FastifyReply) {
+    const userId = req.user.sub;
+    const rs = await service.metricasUser(userId);
+
+    return res.status(201).send(rs);
+  }
 }
