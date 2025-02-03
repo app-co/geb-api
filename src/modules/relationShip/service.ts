@@ -1,3 +1,5 @@
+import { eachDayOfInterval, isThursday } from 'date-fns';
+
 import { TDonate, TRelationships } from '@/dto/types';
 import { prisma } from '@/lib';
 import { AppError } from '@/shared/app-error/AppError';
@@ -331,7 +333,7 @@ export class RelationshipService {
       where: {
         userId,
         status: 1,
-        type: 2,
+        type: { in: [1, 3] },
       },
     });
 
@@ -343,10 +345,27 @@ export class RelationshipService {
       },
     });
 
+    const presencas = await prisma.relationShip.findMany({
+      where: {
+        userReceptorId: '54be7274-835a-42f5-aa24-ba2c27560f7a',
+        status: 1,
+        type: 3,
+      },
+    });
+
     const totalNegocios = relation.length;
     const valorEmVenda = relation.reduce((ac, h) => ac + h.valor, 0);
     const totalMensalidades = mensalidades.reduce((ac, h) => ac + h.valor, 0);
     const percent = valorEmVenda / totalMensalidades;
+
+    const countThursdaysUntilToday = (startDate: Date): number => {
+      const today = new Date();
+
+      const weeks = eachDayOfInterval({ start: startDate, end: today });
+      return weeks.filter(date => isThursday(date)).length;
+    };
+    const startDate = new Date(2025, 0, 1); // 1º de janeiro de 2024
+    const week = countThursdaysUntilToday(startDate);
 
     return {
       negocios: {
@@ -359,6 +378,10 @@ export class RelationshipService {
         currency: _toCurrency(totalMensalidades),
         value: totalMensalidades,
         conpensacao: _toPorcent(percent),
+      },
+      presenca: {
+        totalPresenca: presencas.length,
+        totalEncontros: week,
       },
     };
   }

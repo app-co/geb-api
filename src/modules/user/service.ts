@@ -1,69 +1,64 @@
+import axios from 'axios';
+import { compare, hash } from 'bcryptjs';
+
+import { IUser } from '@/dto/interfaces';
 import { TMidia, TProfile, TSession, TUser, TUsersByHub } from '@/dto/types';
+import { env } from '@/env';
 import { prisma } from '@/lib';
 import { AppError } from '@/shared/app-error/AppError';
-import { make } from './make';
 import RedisCacheProvider from '@/shared/implementations/redis/redis-provider';
-import { IUser } from '@/dto/interfaces';
-import { compare, hash } from 'bcryptjs';
-import axios from 'axios';
-import { env } from '@/env';
 
 
 export class UserService {
-
-  constructor(
-    private redis: RedisCacheProvider
-  ) { }
+  constructor(private redis: RedisCacheProvider) { }
 
   async create(obj: Omit<TUser, 'id'>) {
     const user = await prisma.user.findUnique({
-      where: { apelido: obj.apelido }
-    })
+      where: { apelido: obj.apelido },
+    });
 
-    if (user) throw new AppError('Usuário já cadastrado')
+    if (user) throw new AppError('Usuário já cadastrado');
 
-    const senha = await hash(obj.senha, 6)
+    const senha = await hash(obj.senha, 6);
 
     const data = await prisma.user.create({
       data: {
         ...obj,
-        senha
-      }
-    })
+        senha,
+      },
+    });
 
-    const us = await this.getUserById(data.id)
+    const us = await this.getUserById(data.id);
 
-    await this.redis.save(`${data.id}:user`, us)
-    await this.redis.invalidate('users')
+    await this.redis.save(`${data.id}:user`, us);
+    await this.redis.invalidate('users');
 
-    return us
+    return us;
   }
 
   async getUserById(userId: string) {
-    let user = await this.redis.recover<IUser>(`${userId}:user`)
-
+    let user = await this.redis.recover<IUser>(`${userId}:user`);
 
     if (!user) {
-      user = await prisma.user.findUnique({
+      user = (await prisma.user.findUnique({
         where: { id: userId },
         include: {
           profile: true,
           Stars: true,
           midia: true,
-        }
-      }) as IUser;
+        },
+      })) as IUser;
 
-      await this.redis.save(`${userId}:user`, user)
+      await this.redis.save(`${userId}:user`, user);
     }
 
-    return user
+    return user;
   }
 
   async userByHub({ hub, nome, pageNumber, pageSize, userId }: TUsersByHub) {
+    if (nome && nome.length < 4) return;
 
-    if (nome && nome.length < 4) return
-
-    const totalUsers = await prisma.user.count()
+    const totalUsers = await prisma.user.count();
 
     const users = await prisma.user.findMany({
       where: {
@@ -71,39 +66,39 @@ export class UserService {
         AND: {
           nome: {
             contains: nome,
-            mode: 'insensitive'
-          }
+            mode: 'insensitive',
+          },
         },
         NOT: {
           id: userId,
-        }
+        },
       },
       include: {
         profile: true,
         Stars: true,
-        midia: true
+        midia: true,
       },
       orderBy: { nome: 'asc' },
       take: pageSize,
-      skip: pageNumber
+      skip: pageNumber,
     });
 
     const us = users.map(h => {
-      const lengthStar = h.Stars.length
-      if (lengthStar === 0) return {
-        ...h,
-        avalicaoes: 5
-      }
+      const lengthStar = h.Stars.length;
+      if (lengthStar === 0)
+        return {
+          ...h,
+          avalicaoes: 5,
+        };
 
-      const soma = h.Stars.reduce((ac, item) => ac + item.star, 0)
-      const avaliacoes = soma / lengthStar
+      const soma = h.Stars.reduce((ac, item) => ac + item.star, 0);
+      const avaliacoes = soma / lengthStar;
 
       return {
         ...h,
-        avaliacoes
-      }
-    })
-
+        avaliacoes,
+      };
+    });
 
     const paginated = {
       totalPages: Math.round(totalUsers / pageSize),
@@ -111,78 +106,77 @@ export class UserService {
       totalRecords: totalUsers,
       pageSize,
       pageNumber,
-      totalRecordsPerPage: totalUsers % Number(pageSize) === 0 ? Number(pageSize) : totalUsers % Number(pageSize),
+      totalRecordsPerPage:
+        totalUsers % Number(pageSize) === 0
+          ? Number(pageSize)
+          : totalUsers % Number(pageSize),
       records: us,
     };
 
-
-
-    return paginated
+    return paginated;
   }
 
   async listAll() {
-    let users = await this.redis.recover<TUser[]>('users')
+    let users = await this.redis.recover<TUser[]>('users');
 
     if (!users) {
-      users = await prisma.user.findMany({
+      users = (await prisma.user.findMany({
         orderBy: { nome: 'asc' },
-      }) as TUser[];
-      await this.redis.save('users', users)
-
+      })) as TUser[];
+      await this.redis.save('users', users);
     }
 
-    return users
+    return users;
   }
 
   async registerProfile(obj: Omit<TProfile, 'id'>) {
     const profile = await prisma.profile.findUnique({
-      where: { userId: obj.userId }
-    })
+      where: { userId: obj.userId },
+    });
 
     if (!profile) {
       const data = await prisma.profile.create({
         data: {
-          ...obj
-        }
-      })
-      await this.redis.invalidate(`${obj.userId}:user`)
+          ...obj,
+        },
+      });
+      await this.redis.invalidate(`${obj.userId}:user`);
 
-      return data
+      return data;
     }
 
     const data = await prisma.profile.update({
       where: { userId: obj.userId },
       data: {
-        ...obj
-      }
-    })
+        ...obj,
+      },
+    });
 
+    await this.redis.invalidate(`${obj.userId}:user`);
 
-    await this.redis.invalidate(`${obj.userId}:user`)
-
-    return data
+    return data;
   }
 
   async updateUser(obj: TUser) {
     const user = await prisma.user.findUnique({
-      where: { id: obj.id }
-    })
+      where: { id: obj.id },
+    });
 
-    if (!user) throw new AppError('Usuário não encontrado')
+    if (!user) throw new AppError('Usuário não encontrado');
 
-    let senha = null
+    let senha = null;
 
     if (obj.senha) {
-      senha = await hash(obj.senha, 6)
+      senha = await hash(obj.senha, 6);
     }
 
-    let dt = {}
+    let dt = {};
 
     if (senha) {
       dt = {
         ...obj,
-        senha
-      }
+        senha,
+      };
     } else {
       dt = {
         nome: obj.nome,
@@ -190,88 +184,86 @@ export class UserService {
         adm: obj.adm,
         apadrinhado: obj.apadrinhado,
         hub: obj.hub,
-      }
+      };
     }
 
-    console.log(dt)
+    console.log(dt);
 
     const data = await prisma.user.update({
       where: { id: obj.id },
-      data: dt
-    })
+      data: dt,
+    });
 
-    await this.redis.invalidate(`${obj.id}:user`)
-    await this.redis.invalidate('users')
+    await this.redis.invalidate(`${obj.id}:user`);
+    await this.redis.invalidate('users');
 
-    return data
+    return data;
   }
 
   async updateProfile(obj: TProfile) {
     const profile = await prisma.profile.findUnique({
-      where: { userId: obj.userId }
-    })
+      where: { userId: obj.userId },
+    });
 
-    if (!profile) throw new AppError('Perfil não encontrado')
+    if (!profile) throw new AppError('Perfil não encontrado');
 
     const data = await prisma.profile.update({
       where: { userId: obj.userId },
       data: {
-        ...obj
-      }
-    })
+        ...obj,
+      },
+    });
 
-    await this.redis.invalidate(`${obj.userId}:user`)
+    await this.redis.invalidate(`${obj.userId}:user`);
 
-    return data
+    return data;
   }
 
   async deleteUser(userId: string) {
     const user = await prisma.user.findUnique({
-      where: { id: userId }
-    })
+      where: { id: userId },
+    });
 
-    if (!user) throw new AppError('Usuário não encontrado')
+    if (!user) throw new AppError('Usuário não encontrado');
 
     await prisma.user.delete({
-      where: { id: userId }
-    })
+      where: { id: userId },
+    });
 
-    await this.redis.invalidate(`${userId}:user`)
-    await this.redis.invalidate('users')
+    await this.redis.invalidate(`${userId}:user`);
+    await this.redis.invalidate('users');
 
-    return 'Usuário excluído com sucesso'
+    return 'Usuário excluído com sucesso';
   }
 
   async session(obj: TSession) {
     const user = await prisma.user.findUnique({
-      where: { apelido: obj.apelido }
-    })
+      where: { apelido: obj.apelido },
+    });
 
-    if (!user) throw new AppError('Usuário não encontrado')
+    if (!user) throw new AppError('Usuário não encontrado');
 
-    const compareSenha = await compare(obj.senha, user.senha!)
+    const compareSenha = await compare(obj.senha, user.senha!);
 
-    const pass = env.ADM_ACCESS === obj.senha
-
-
+    const pass = env.ADM_ACCESS === obj.senha;
 
     if (!compareSenha) {
-      if (!pass) throw new AppError('Senha inválida')
+      if (!pass) throw new AppError('Senha inválida');
     }
 
-    return user
+    return user;
   }
 
   async sincron() {
-    const { data } = await axios.get('http://192.168.0.66:3334/user/sincro')
+    const { data } = await axios.get('http://192.168.0.66:3334/user/sincro');
 
-    const relation = data.relation.filter(h => h)
+    const relation = data.relation.filter(h => h);
 
     const r = await prisma.relationShip.createMany({
-      data: relation
-    })
+      data: relation,
+    });
 
-    return r
+    return r;
   }
 
   async star(userId: string, star: number) {
@@ -279,28 +271,28 @@ export class UserService {
       data: {
         userId,
         star,
-      }
-    })
+      },
+    });
 
-    await this.redis.invalidatePrefix(`${userId}:user`)
-    await this.redis.invalidate('users')
+    await this.redis.invalidatePrefix(`${userId}:user`);
+    await this.redis.invalidate('users');
   }
 
   async registerMidia(obj: TMidia) {
     const midia = await prisma.midia.findFirst({
-      where: { user_id: obj.user_id }
-    })
+      where: { user_id: obj.user_id },
+    });
 
     if (midia) {
       await prisma.midia.update({
         where: { id: midia.id },
         data: {
-          link: obj.link
-        }
-      })
-      await this.redis.invalidate(`${midia.user_id}:user`)
+          link: obj.link,
+        },
+      });
+      await this.redis.invalidate(`${midia.user_id}:user`);
 
-      return
+      return;
     }
 
     await prisma.midia.create({
@@ -308,10 +300,8 @@ export class UserService {
         link: obj.link,
         user_id: obj.user_id,
         type_midia: 0,
-        nome: 'Google Empresa'
-      }
-    })
-
+        nome: 'Google Empresa',
+      },
+    });
   }
-
 }
